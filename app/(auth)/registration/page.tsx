@@ -1,51 +1,52 @@
 "use client";
 
-import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/utils/auth/auth-client";
+import { Loader2, Lock, Mail, User } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Mail, Lock, User, Loader2, UserRoundKey } from "lucide-react";
-import { authClient } from "@/lib/utils/auth/auth-client";
+import { useState, useTransition } from "react";
 
 export default function RegisterPage() {
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, startTransition] = useTransition();
   const [error, setError] = useState("");
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
 
-    const { data, error } = await authClient.signUp.email({
-      email,
-      password,
-      name,
+    startTransition(async () => {
+      setError("");
+      const { error } = await authClient.signUp.email({
+        email,
+        password,
+        name,
+      });
+
+      if (error) {
+        setError(error.message || "Failed to create account");
+        return;
+      }
+      router.push("/");
     });
-
-    if (error) {
-      setError(error.message || "Failed to create account");
-      setLoading(false);
-      return;
-    }
-
-    // Better Auth auto-signs in after sign up by default
-    router.push("/dashboard");
   };
 
-  const handleGithubSignup = async () => {
-    await authClient.signIn.social({ provider: "github" });
+  const handleGoogleSignup = async () => {
+    await authClient.signIn.social({ provider: "google" });
   };
 
   return (
-    <div className="min-h-screen w-full grid lg:grid-cols-2 bg-zinc-50 dark:bg-zinc-950">
+    <div className=" relative min-h-screen w-full grid lg:grid-cols-2">
+      <div className=" absolute inset-0 bg-linear-to-r from-violet-500/10 to-secondary/10 -z-10" />
       {/* Decorative Section (Left on Register) */}
-      <div className="hidden lg:flex flex-col justify-center items-center bg-zinc-900 p-12 text-white order-2 lg:order-1">
+      <div className="hidden relative lg:flex flex-col justify-center items-center  order-2 lg:order-1">
         <div className="max-w-md space-y-6">
           <div className="h-12 w-12 rounded-xl bg-white/10 flex items-center justify-center backdrop-blur-sm border border-white/20">
-            <User className="h-6 w-6 text-white" />
+            <User className="h-6 w-6 text-secondary " />
           </div>
           <h2 className="text-3xl font-bold tracking-tight">
             Start your journey with us today.
@@ -58,13 +59,13 @@ export default function RegisterPage() {
       </div>
 
       {/* Form Section (Right on Register) */}
-      <div className="flex items-center justify-center p-8 lg:p-12 order-1 lg:order-2">
+      <div className=" relative flex items-center justify-center p-8 lg:p-12 order-1 lg:order-2">
         <div className="w-full max-w-md space-y-8">
           <div className="space-y-2 text-center lg:text-left">
-            <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+            <h1 className="text-3xl font-bold tracking-tight ">
               Create an account
             </h1>
-            <p className="text-zinc-500 dark:text-zinc-400">
+            <p className=" dark:text-zinc-400">
               Enter your details to get started
             </p>
           </div>
@@ -78,12 +79,12 @@ export default function RegisterPage() {
 
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                <label className="text-sm text-zinc-400 font-medium ">
                   Full Name
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-zinc-400" />
+                    <User className="h-5 w-5 text-secondary " />
                   </div>
                   <input
                     type="text"
@@ -97,12 +98,12 @@ export default function RegisterPage() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                <label className="text-sm text-zinc-400 font-medium ">
                   Email
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Mail className="h-5 w-5 text-zinc-400" />
+                    <Mail className="h-5 w-5 text-secondary " />
                   </div>
                   <input
                     type="email"
@@ -116,12 +117,12 @@ export default function RegisterPage() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                <label className="text-sm font-medium text-zinc-400 ">
                   Password
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-zinc-400" />
+                    <Lock className="h-5 w-5 text-secondary " />
                   </div>
                   <input
                     type="password"
@@ -136,17 +137,17 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <button
+            <Button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center items-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-zinc-900 hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="w-full py-2.5 px-4 "
             >
               {loading ? (
                 <Loader2 className="animate-spin h-5 w-5" />
               ) : (
                 "Create Account"
               )}
-            </button>
+            </Button>
           </form>
 
           <div className="relative">
@@ -154,27 +155,30 @@ export default function RegisterPage() {
               <div className="w-full border-t border-zinc-300 dark:border-zinc-800" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-zinc-50 dark:bg-zinc-950 text-zinc-500">
+              <span className="px-2 bg-secondary text-white rounded-full">
                 Or sign up with
               </span>
             </div>
           </div>
 
-          <button
-            onClick={handleGithubSignup}
+          <Button
+            onClick={handleGoogleSignup}
             type="button"
             className="w-full flex justify-center items-center py-2.5 px-4 border border-zinc-300 dark:border-zinc-800 rounded-lg shadow-sm bg-white dark:bg-zinc-900 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
           >
-            <UserRoundKey className="h-5 w-5 mr-2" />
-            GitHub
-          </button>
+            <Image
+              src={"https://cdn-icons-png.flaticon.com/128/281/281764.png"}
+              alt="Logo-google"
+              width={100}
+              height={100}
+              className="h-5 w-5 mr-2"
+            />
+            Google
+          </Button>
 
-          <p className="text-center text-sm text-zinc-600 dark:text-zinc-400">
+          <p className="text-center text-sm ">
             Already have an account?{" "}
-            <Link
-              href="/login"
-              className="font-medium text-zinc-900 dark:text-white hover:underline"
-            >
+            <Link href="/signUp" className="font-medium text-primary underline">
               Sign in
             </Link>
           </p>
