@@ -23,6 +23,7 @@ const navLinks = [
   { title: "Schedule", href: "#schedule" },
   { title: "Contact", href: "/contact" },
   { title: "Profile", href: "/dashboard" },
+  { title: "Profile", href: "/dashboard" },
 ];
 
 export default function Navbar() {
