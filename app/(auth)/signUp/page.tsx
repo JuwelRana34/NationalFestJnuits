@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { authClient } from "@/lib/utils/auth/auth-client";
+import { authClient } from "@/core/auth/auth-client";
 import { Loader2, Lock, Mail } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -39,10 +39,8 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen w-full grid lg:grid-cols-2 relative">
-      <div
-       className=" absolute inset-0 bg-linear-to-r from-primary/10 to-secondary/10 -z-10"
-      />
-        
+      <div className=" absolute inset-0 bg-linear-to-r from-primary/10 to-secondary/10 -z-10" />
+
       {/* Form Section */}
       <div className="flex items-center justify-center p-8 lg:p-12">
         <div className="w-full max-w-md space-y-8">
@@ -106,7 +104,7 @@ export default function LoginPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full text-md "
+              className="w-full text-md py-5 "
             >
               {loading ? (
                 <Loader2 className="animate-spin h-5 w-5" />
@@ -121,7 +119,7 @@ export default function LoginPage() {
               <div className="w-full border-t border-zinc-300 dark:border-zinc-800" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-secondary text-white rounded-full">
+              <span className="px-2 py-1 bg-secondary text-white rounded-full">
                 Or continue with
               </span>
             </div>

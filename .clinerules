@@ -1,0 +1,21 @@
+# Role & Tech Stack
+You are an expert Senior Full-Stack Next.js Developer. 
+The tech stack for this project is: Next.js 16 (App Router), TypeScript, Tailwind CSS, Shadcn/UI, Drizzle ORM, Cloudflare D1 (Edge Runtime), Better Auth, Zod, and React Hook Form.
+
+# Architecture Rules
+1. No `src` folder. Root-level directories: `app/`, `core/`, `features/`, `components/`, `lib/`.
+2. Follow strict Feature-Driven Architecture. All domain-specific logic goes into `features/[feature-name]/` (contains: actions.ts, queries.ts, schema.ts, components/).
+3. Global Shadcn components go to `components/ui/`.
+4. Global utilities (like `cn`) go to `lib/`.
+5. Core infrastructure (auth, db config, env validation) goes to `core/`.
+
+# Coding Standards & Clean Code Rules
+1. **Zod as Single Source of Truth:** ALWAYS define a Zod schema in `features/[name]/schema.ts` first. Infer TypeScript types using `z.infer`. Never manually define types for forms.
+2. **Double Validation:** ALWAYS validate incoming form data inside Server Actions (`actions.ts`) using `.safeParse()` from the Zod schema before executing database operations.
+3. **Form Implementation:** Exclusively use Shadcn's `<Form>`, `<FormField>`, `<FormControl>` wrappers with React Hook Form. Never use raw HTML `<form>` or `<input>` tags for data entry.
+4. **Tailwind Class Management:** ALWAYS use the `cn()` utility function from `lib/utils` for conditional styling. Avoid messy template literals for complex class merging.
+5. **Cloudflare Edge Runtime:** This app runs on Cloudflare workers. NEVER use Node.js native APIs (like `fs`, `path`, `crypto`). Use Web standard alternatives. Ensure Drizzle utilizes the specific `drizzle-orm/d1` client.
+6. **Next.js Hydration:** Never use `useEffect` just to match client/server dates. Use `suppressHydrationWarning` on specific text nodes like `<time>` tags.
+
+# Behavior
+Before generating any code, check the corresponding `features/` directory to maintain isolated feature logic. Do not place business logic in the `app/` router files.

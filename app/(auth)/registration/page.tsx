@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { authClient } from "@/lib/utils/auth/auth-client";
+import { authClient } from "@/core/auth/auth-client";
 import { Loader2, Lock, Mail, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -140,7 +140,7 @@ export default function RegisterPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 px-4 "
+              className="w-full py-5 px-4 "
             >
               {loading ? (
                 <Loader2 className="animate-spin h-5 w-5" />
@@ -155,7 +155,7 @@ export default function RegisterPage() {
               <div className="w-full border-t border-zinc-300 dark:border-zinc-800" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-secondary text-white rounded-full">
+              <span className="px-2 py-1 bg-secondary text-white rounded-full">
                 Or sign up with
               </span>
             </div>
@@ -164,7 +164,7 @@ export default function RegisterPage() {
           <Button
             onClick={handleGoogleSignup}
             type="button"
-            className="w-full flex justify-center items-center py-2.5 px-4 border border-zinc-300 dark:border-zinc-800 rounded-lg shadow-sm bg-white dark:bg-zinc-900 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+            className="w-full flex justify-center items-center py-5 px-4 border border-zinc-300 dark:border-zinc-800 rounded-lg shadow-sm bg-white dark:bg-zinc-900 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
           >
             <Image
               src={"https://cdn-icons-png.flaticon.com/128/281/281764.png"}
