@@ -8,6 +8,13 @@
       "when": 1776960259628,
       "tag": "0000_illegal_nehzno",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1777114176798,
+      "tag": "0001_legal_stone_men",
+      "breakpoints": true
     }
   ]
 }

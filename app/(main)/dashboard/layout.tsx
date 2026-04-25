@@ -1,0 +1,40 @@
+import Link from "next/link";
+import type { ReactNode } from "react";
+
+type DashboardLayoutProps = {
+  children: ReactNode;
+};
+
+const navItems = [
+  { href: "/dashboard", label: "Overview" },
+  { href: "/dashboard/events", label: "Events" },
+  { href: "/dashboard/teams", label: "Teams" },
+  { href: "/dashboard/settings", label: "Settings" },
+];
+
+export default function DashboardLayout({ children }: DashboardLayoutProps) {
+  return (
+    <div className="min-h-screen ">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-4 py-6 md:grid-cols-[240px_1fr] md:px-6 lg:px-8">
+        <aside className="h-full rounded-xl border border-slate-800 bg-slate-800  p-4 shadow-sm">
+          <h2 className="mb-4 text-lg font-semibold text-secondary">Dashboard</h2>
+          <nav className="space-y-1">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="block rounded-md px-3 py-2 text-sm font-medium text-slate-300 hover:bg-slate-700 hover:text-white"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+        </aside>
+
+        <main className="rounded-xl border border-slate-800 bg-slate-800 p-4 shadow-sm md:p-6">
+          {children}
+        </main>
+      </div>
+    </div>
+  );
+}

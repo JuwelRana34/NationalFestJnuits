@@ -2,82 +2,62 @@
 
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/core/auth/auth-client";
-import { Loader2, Lock, Mail, User } from "lucide-react";
+import { Loader2, Lock, Mail } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
-export default function RegisterPage() {
+export default function LoginPage() {
   const router = useRouter();
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, startTransition] = useTransition();
   const [error, setError] = useState("");
 
-  const handleRegister = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-
     startTransition(async () => {
       setError("");
-      const { error } = await authClient.signUp.email({
+
+      const { error } = await authClient.signIn.email({
         email,
         password,
-        name,
       });
 
       if (error) {
-        setError(error.message || "Failed to create account");
+        setError(error.message || "Invalid credentials");
         return;
       }
-      router.push("/");
+
+      router.push("/dashboard");
     });
   };
-
-  const handleGoogleSignin = async () => {
+  const handleGoogleLogin = async () => {
     await authClient.signIn.social({ provider: "google" });
   };
 
   return (
-    <div className="relative min-h-screen w-full">
+    <div className="min-h-screen w-full  relative">
       <div className=" w-full p-5 ">
         <Link href="/" className=" underline ">
           Back to Home
         </Link>
       </div>
+      <div className="grid lg:grid-cols-2">
+        <div className=" absolute inset-0 bg-linear-to-r from-primary/10 to-secondary/10 -z-10" />
 
-      <div className="  grid lg:grid-cols-2">
-        <div className=" absolute inset-0 bg-linear-to-r from-violet-500/10 to-secondary/10 -z-10" />
-        {/* Decorative Section (Left on Register) */}
-        <div className="hidden relative lg:flex flex-col justify-center items-center  order-2 lg:order-1">
-          <div className="max-w-md space-y-6">
-            <div className="h-12 w-12 rounded-xl bg-white/10 flex items-center justify-center backdrop-blur-sm border border-white/20">
-              <User className="h-6 w-6 text-secondary " />
-            </div>
-            <h2 className="text-3xl font-bold tracking-tight">
-              Start your journey with us today.
-            </h2>
-            <p className="text-zinc-400 text-lg">
-              Join thousands of developers building the next generation of web
-              applications.
-            </p>
-          </div>
-        </div>
-
-        {/* Form Section (Right on Register) */}
-        <div className=" relative flex items-center justify-center p-8 lg:p-12 order-1 lg:order-2">
+        {/* Form Section */}
+        <div className="flex items-center justify-center p-8 lg:p-12">
           <div className="w-full max-w-md space-y-8">
             <div className="space-y-2 text-center lg:text-left">
-              <h1 className="text-3xl font-bold tracking-tight ">
-                Create an account
+              <h1 className="text-3xl font-bold tracking-tight">
+                Welcome back
               </h1>
-              <p className=" dark:text-zinc-400">
-                Enter your details to get started
-              </p>
+              <p>Enter your credentials to access your account</p>
             </div>
 
-            <form onSubmit={handleRegister} className="space-y-6">
+            <form onSubmit={handleLogin} className="space-y-6">
               {error && (
                 <div className="p-3 text-sm text-red-500 bg-red-50 dark:bg-red-950/50 rounded-lg border border-red-200 dark:border-red-900">
                   {error}
@@ -86,26 +66,7 @@ export default function RegisterPage() {
 
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <label className="text-sm text-zinc-400 font-medium ">
-                    Full Name
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <User className="h-5 w-5 text-secondary " />
-                    </div>
-                    <input
-                      type="text"
-                      required
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="block w-full pl-10 pr-3 py-2.5 border border-zinc-300 dark:border-zinc-800 rounded-lg bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent transition-colors sm:text-sm"
-                      placeholder="John Doe"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm text-zinc-400 font-medium ">
+                  <label className="text-sm font-medium text-zinc-400">
                     Email
                   </label>
                   <div className="relative">
@@ -124,9 +85,17 @@ export default function RegisterPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-zinc-400 ">
-                    Password
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium text-zinc-400">
+                      Password
+                    </label>
+                    <Link
+                      href="/forgot-password"
+                      className="text-sm font-medium"
+                    >
+                      Forgot password?
+                    </Link>
+                  </div>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <Lock className="h-5 w-5 text-secondary " />
@@ -136,7 +105,6 @@ export default function RegisterPage() {
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      minLength={8}
                       className="block w-full pl-10 pr-3 py-2.5 border border-zinc-300 dark:border-zinc-800 rounded-lg bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent transition-colors sm:text-sm"
                       placeholder="••••••••"
                     />
@@ -147,12 +115,12 @@ export default function RegisterPage() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full py-5 px-4 "
+                className="w-full text-md py-5 "
               >
                 {loading ? (
                   <Loader2 className="animate-spin h-5 w-5" />
                 ) : (
-                  "Create Account"
+                  "Sign In"
                 )}
               </Button>
             </form>
@@ -163,15 +131,15 @@ export default function RegisterPage() {
               </div>
               <div className="relative flex justify-center text-sm">
                 <span className="px-2 py-1 bg-secondary text-white rounded-full">
-                  Or sign up with
+                  Or continue with
                 </span>
               </div>
             </div>
 
-            <Button
-              onClick={handleGoogleSignin}
+            <button
+              onClick={handleGoogleLogin}
               type="button"
-              className="w-full flex justify-center items-center py-5 px-4 border border-zinc-300 dark:border-zinc-800 rounded-lg shadow-sm bg-white dark:bg-zinc-900 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+              className="w-full flex justify-center items-center py-2.5 px-4 border border-zinc-300 dark:border-zinc-800 rounded-lg shadow-sm bg-white dark:bg-zinc-900 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
             >
               <Image
                 src={"https://cdn-icons-png.flaticon.com/128/281/281764.png"}
@@ -182,17 +150,33 @@ export default function RegisterPage() {
                 unoptimized
               />
               Google
-            </Button>
+            </button>
 
-            <p className="text-center text-sm ">
-              Already have an account?{" "}
+            <p className="text-center text-sm t">
+              Don&apos;t have an account?{" "}
               <Link
                 prefetch={false}
-                href="/signin"
+                href="/registration"
                 className="font-medium text-primary underline"
               >
-                Sign in
+                Sign up
               </Link>
+            </p>
+          </div>
+        </div>
+
+        {/* Decorative Section */}
+        <div className="hidden lg:flex flex-col justify-center items-center p-12">
+          <div className="max-w-md space-y-6">
+            <div className="h-12 w-12 rounded-xl bg-white/10 flex items-center justify-center backdrop-blur-sm border border-white/20">
+              <Lock className="h-6 w-6 text-secondary" />
+            </div>
+            <h2 className="text-3xl font-bold tracking-tight">
+              Secure, fast, and reliable authentication.
+            </h2>
+            <p className="text-zinc-400 text-lg">
+              Manage your digital workspace with confidence. Everything you
+              need, right where you need it.
             </p>
           </div>
         </div>

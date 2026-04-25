@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/custom/navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,12 +16,12 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://jnuits.org.bd"),
-  title: "National IT Fest 2026 | JnU IT Society",
+  title: "National AI & IT Summit 2026|JnUITS",
   description:
-    "Welcome to the official portal for the National IT Fest 2026 organized by the Jagannath University IT Society (JnUITS). Register now to compete, showcase your projects, and join the biggest tech celebration.",
+    "Welcome to the official portal for the National AI & IT Summit 2026 organized by the Jagannath University IT Society (JnUITS). Register now to compete, showcase your projects, and join the biggest tech celebration.",
   keywords: [
-    "National IT Fest 2026",
-    "JnUITS Fest",
+    "National AI & IT Summit 2026",
+    "JnUITS Summit",
     "JnU IT Society",
     "Jagannath University IT Society",
     "Tech Fest Bangladesh",
@@ -32,17 +33,17 @@ export const metadata: Metadata = {
     icon: "/MainLogo.svg",
   },
   openGraph: {
-    title: "National IT Fest 2026 | JnU IT Society",
+    title: "National AI & IT Summit 2026 | JnU IT Society",
     description:
-      "Join the brightest minds at the National IT Fest 2026 hosted by JnUITS. Register your team for programming contests, project showcases, and esports tournaments.",
+      "Join the brightest minds at the National AI & IT Summit 2026 hosted by JnUITS. Register your team for programming contests, project showcases, and esports tournaments.",
     url: "https://jnuits.org.bd/",
-    siteName: "JnUITS National IT Fest",
+    siteName: "JnUITS National AI & IT Summit",
     images: [
       {
         url: "https://res.cloudinary.com/dp4fgwjik/image/upload/v1776816318/WhatsApp_Image_2026-04-22_at_6.02.24_AM_hnszse.jpg",
         width: 1200,
         height: 630,
-        alt: "JnUITS National IT Fest 2026 Banner",
+        alt: "JnUITS National AI & IT Summit 2026 Banner",
       },
     ],
     locale: "en_US",

@@ -1,4 +1,4 @@
-import { createAuth } from "@/lib/utils/auth/auth";
+import { createAuth } from "@/core/auth/auth";
 
 // per-request auth instance
 export async function GET(req: Request) {

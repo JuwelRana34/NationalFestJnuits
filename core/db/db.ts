@@ -1,4 +1,4 @@
-import * as schema from "@/app/dbschema/schema";
+import * as schema from "@/core/db/schema";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { drizzle } from "drizzle-orm/d1";
 import { cache } from "react";
