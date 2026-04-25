@@ -4,6 +4,13 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { drizzle } from "drizzle-orm/d1";
 
+const generateFestId = () => {
+  const array = new Uint32Array(1);
+  crypto.getRandomValues(array);
+  const randomNum = (array[0] % 90000) + 10000;
+  return `JnUITSFest-${randomNum}`;
+};
+
 export const createAuth = () => {
   const { env } = getCloudflareContext();
   const db = drizzle(env.jnu_it_fest_db, { schema });
@@ -27,7 +34,8 @@ export const createAuth = () => {
       additionalFields: {
         festId: {
           type: "string",
-          required: true,
+          required: false,
+          defaultValue: () => generateFestId(),
         },
       },
     },
