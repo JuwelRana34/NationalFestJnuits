@@ -1,8 +1,22 @@
 import { sqliteTable } from "drizzle-orm/sqlite-core";
 import * as t from "drizzle-orm/sqlite-core";
 
+// Crypto API ব্যবহার করে Unique ID জেনারেট করা
+const generateFestId = () => {
+  const array = new Uint32Array(1);
+  crypto.getRandomValues(array);
+  const randomNum = (array[0] % 90000) + 10000;
+  return `jnuitsFest-${randomNum}`;
+};
+
+
 export const user = sqliteTable("user", {
   id: t.text("id").primaryKey(),
+  festId: t
+    .text("fest_id")
+    .notNull()
+    .unique()
+    .$defaultFn(() => generateFestId()),
   name: t.text("name").notNull(),
   email: t.text("email").notNull().unique(),
   emailVerified: t.integer("email_verified").notNull(),
