@@ -28,7 +28,7 @@ export default function UserInfoCard() {
   const [userinfo, setUserData] = useState<DbUser | null>(null);
   useEffect(() => {
     const fetchUserFromDB = async () => {
-      const response = await getUserProfile();
+      const response = await getUserProfile({ id: userData?.user?.id || "" });
 
       if (response.success && response.data) {
         setUserData(response.data as DbUser);
@@ -38,7 +38,7 @@ export default function UserInfoCard() {
     };
 
     fetchUserFromDB();
-  }, []);
+  }, [userData?.user?.id]);
 
   return (
     <Card className=" bg-slate-700 border-none shadow-sm">

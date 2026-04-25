@@ -4,28 +4,21 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { drizzle } from "drizzle-orm/d1";
 import * as schema from "@/core/db/schema";
 import { eq } from "drizzle-orm";
-import { createAuth } from "@/core/auth/auth";
-import { headers } from "next/headers";
 
-export async function getUserProfile() {
+
+export async function getUserProfile({id}:{id:string}) {
   try {
     const { env } = getCloudflareContext();
     const db = drizzle(env.jnu_it_fest_db, { schema });
 
-    // ২. সার্ভার সাইড থেকে ইউজারের বর্তমান সেশন চেক করা
-    const auth = createAuth();
-    const sessionHeaders = await headers();
-    const session = await auth.api.getSession({
-      headers: sessionHeaders,
-    });
 
-    if (!session?.user?.id) {
-      return { success: false, error: "User is not logged in" };
+    if (!id) {
+      return { success: false, error: "user not found!" };
     }
 
-    // ৩. Drizzle দিয়ে ডাটাবেস থেকে ইউজারের সব ইনফরমেশন বের করা
+    // ৩. DB থেকে ইউজার ডেটা ফেচ 
     const userData = await db.query.user.findFirst({
-      where: eq(schema.user.id, session.user.id),
+      where: eq(schema.user.id, id),
     });
 
     if (!userData) {

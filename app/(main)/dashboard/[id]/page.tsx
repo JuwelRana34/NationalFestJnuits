@@ -7,9 +7,14 @@ import UserInfoCard from "@/features/users/components/UserInfoCard";
 import { getUserProfile } from "@/features/users/queries";
 import { Metadata } from "next";
 
+type PageProps = {
+  params: Promise<{ id: string }>;
+};
+
 // ডায়নামিক মেটাডেটা জেনারেট
-export async function generateMetadata(): Promise<Metadata> {
-  const response = await getUserProfile();
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id } = await params;
+  const response = await getUserProfile({ id });
 
   const userName =
     response.success && response.data ? response.data.name : "Participant";
@@ -20,6 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
       : "https://yourwebsite.com/images/default-fest-og.jpg";
 
   return {
+    metadataBase: new URL("https://jnu-it-fest.rk370613.workers.dev"),
     title: `${userName} | Dashboard - National IT Fest 2026`,
     description: `View ${userName}'s registered segments and fest profile for Jagannath University IT Society.`,
     openGraph: {
