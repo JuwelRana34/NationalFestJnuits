@@ -22,16 +22,13 @@ const navLinks = [
   { title: "Segments", href: "#segments" },
   { title: "Schedule", href: "#schedule" },
   { title: "Contact", href: "/contact" },
+  { title: "Profile", href: "/dashboard" },
 ];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
   const [isScrolled, setIsScrolled] = React.useState(false);
-  const {
-    data: session,
-    isPending, //loading state
-    error, //error object
-  } = authClient.useSession();
+  const { data: session, isPending } = authClient.useSession();
 
   // Scroll event listener
   React.useEffect(() => {
@@ -74,7 +71,11 @@ export default function Navbar() {
           {navLinks.map((link) => (
             <Link
               key={link.title}
-              href={link.href}
+              href={
+                link.href === "/dashboard" && session?.user?.id
+                  ? `/dashboard/${session.user.id}`
+                  : link.href
+              }
               className="text-sm font-medium text-slate-300 transition-colors hover:text-amber-400"
             >
               {link.title}
@@ -145,7 +146,11 @@ export default function Navbar() {
                 {navLinks.map((link) => (
                   <Link
                     key={link.title}
-                    href={link.href}
+                    href={
+                      link.href === "/dashboard" && session?.user?.id
+                        ? `/dashboard/${session.user.id}`
+                        : link.href
+                    }
                     onClick={() => setIsOpen(false)}
                     className="text-lg font-medium text-slate-300 transition-colors hover:text-amber-400"
                   >
