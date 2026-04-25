@@ -10,10 +10,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useSession } from "@/core/auth/auth-client";
 import { Building2, Edit, Mail, MapPin, Phone } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getUserProfile } from "../queries";
+import { useAuth } from "@/hooks/useUserSession";
 
 type DbUser = {
   id: string;
@@ -24,11 +24,11 @@ type DbUser = {
 };
 
 export default function UserInfoCard() {
-  const { data: userData } = useSession();
+   const {user, userId} = useAuth();
   const [userinfo, setUserData] = useState<DbUser | null>(null);
   useEffect(() => {
     const fetchUserFromDB = async () => {
-      const response = await getUserProfile({ id: userData?.user?.id || "" });
+      const response = await getUserProfile({ id: userId || "" });
 
       if (response.success && response.data) {
         setUserData(response.data as DbUser);
@@ -38,24 +38,21 @@ export default function UserInfoCard() {
     };
 
     fetchUserFromDB();
-  }, [userData?.user?.id]);
+  }, [userId]);
 
   return (
     <Card className=" bg-slate-700 border-none shadow-sm">
       <CardHeader className="text-center pb-4">
         <div className="flex justify-center mb-4">
           <Avatar className="h-24 w-24 border-2 border-violet-400">
-            <AvatarImage
-              src={userData?.user?.image || ""}
-              alt={userData?.user?.name}
-            />
+            <AvatarImage src={user?.image || ""} alt={user?.name} />
             <AvatarFallback className=" text-secondary text-2xl font-bold">
               RU
             </AvatarFallback>
           </Avatar>
         </div>
         <CardTitle className="text-2xl font-serif text-secondary">
-          {userData?.user?.name}
+          {user?.name}
         </CardTitle>
         <CardDescription className="text-amber-600 font-medium text-wrap">
           ID: {userinfo?.festId || "JNUITS-XX-XXXX"}
@@ -69,7 +66,7 @@ export default function UserInfoCard() {
         <div className="flex items-center gap-3 text-slate-600">
           <Mail className="w-5 h-5 text-secondary" />
           <span className="text-sm text-slate-300">
-            {userData?.user?.email}
+            {user?.email}
           </span>
         </div>
         <div className="flex items-center gap-3 text-slate-600">
