@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "b048db6d-2fae-42dc-b52a-e7251ae27c73",
+  "id": "00b21e52-1ce5-4344-bbbb-292ffd14449f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "account": {
@@ -217,6 +217,13 @@
           "notNull": true,
           "autoincrement": false
         },
+        "fest_id": {
+          "name": "fest_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "name": {
           "name": "name",
           "type": "text",
@@ -236,7 +243,8 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": false
         },
         "image": {
           "name": "image",
@@ -261,6 +269,13 @@
         }
       },
       "indexes": {
+        "user_fest_id_unique": {
+          "name": "user_fest_id_unique",
+          "columns": [
+            "fest_id"
+          ],
+          "isUnique": true
+        },
         "user_email_unique": {
           "name": "user_email_unique",
           "columns": [

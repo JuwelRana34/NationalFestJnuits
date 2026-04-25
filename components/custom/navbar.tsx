@@ -10,7 +10,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { authClient } from "@/core/auth/auth-client";
+import { useAuth } from "@/hooks/useUserSession";
 import { Menu } from "lucide-react"; // Removed LogOut as it's inside LogoutButton
 import Image from "next/image";
 import Link from "next/link";
@@ -28,8 +28,8 @@ const navLinks = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
   const [isScrolled, setIsScrolled] = React.useState(false);
-  const { data: session, isPending } = authClient.useSession();
-
+  const {user, isLoading, error} = useAuth();
+  
   // Scroll event listener
   React.useEffect(() => {
     const handleScroll = () => {
@@ -72,8 +72,8 @@ export default function Navbar() {
             <Link
               key={link.title}
               href={
-                link.href === "/dashboard" && session?.user?.id
-                  ? `/dashboard/${session.user.id}`
+                link.href === "/dashboard" && user?.id
+                  ? `/dashboard/${user?.id}`
                   : link.href
               }
               className="text-sm font-medium text-slate-300 transition-colors hover:text-amber-400"
@@ -82,23 +82,24 @@ export default function Navbar() {
             </Link>
           ))}
           <Separator orientation="vertical" className="h-6 bg-slate-700" />
-          {isPending ? (
+          {isLoading ? (
             <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-700 border-t-amber-400" />
-          ) : session?.user ? (
+          ) : user ? (
             <LogoutButton />
           ) : (
             <Link href="/signin">Login</Link>
           )}
-          {isPending ? (
+          {isLoading ? (
             <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-700 border-t-amber-400" />
-          ) : session?.user ? (
+          ) : user ? (
             <div>
               <Image
-                src={session.user.image || "/default-user-image.png"}
+                src={user?.image || ""}
                 alt="User Image"
                 width={45}
                 height={45}
                 className="rounded-full"
+                unoptimized
               />
             </div>
           ) : (
@@ -112,15 +113,16 @@ export default function Navbar() {
 
         {/* Mobile Navigation (Sheet) */}
         <div className="flex items-center gap-4 md:hidden">
-          {isPending ? (
+          {isLoading ? (
             <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-700 border-t-amber-400" />
-          ) : session?.user ? (
+          ) : user ? (
             <Image
-              src={session.user.image || "/default-user-image.png"}
+              src={user?.image || ""}
               alt="User Image"
               width={45}
               height={45}
               className="rounded-full"
+              unoptimized
             />
           ) : (
             // <LogoutButton />
@@ -147,8 +149,8 @@ export default function Navbar() {
                   <Link
                     key={link.title}
                     href={
-                      link.href === "/dashboard" && session?.user?.id
-                        ? `/dashboard/${session.user.id}`
+                      link.href === "/dashboard" && user?.id
+                        ? `/dashboard/${user?.id}`
                         : link.href
                     }
                     onClick={() => setIsOpen(false)}
@@ -158,7 +160,7 @@ export default function Navbar() {
                   </Link>
                 ))}
                 <Separator className="bg-slate-800" />
-                {isPending ? null : session?.user ? (
+                {isLoading ? null : user ? (
                   <LogoutButton />
                 ) : (
                   <Link
