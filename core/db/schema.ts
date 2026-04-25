@@ -18,7 +18,7 @@ export const user = sqliteTable("user", {
     .$defaultFn(() => generateFestId()),
   name: t.text("name").notNull(),
   email: t.text("email").notNull().unique(),
-  emailVerified: t.integer("email_verified").notNull(),
+  emailVerified: t.integer("email_verified", { mode: "boolean" }).notNull().default(false),
   image: t.text("image"),
   createdAt: t.integer("created_at", { mode: "timestamp_ms" }).notNull(),
   updatedAt: t.integer("updated_at", { mode: "timestamp_ms" }).notNull(),
