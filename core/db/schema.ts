@@ -6,7 +6,7 @@ const generateFestId = () => {
   const array = new Uint32Array(1);
   crypto.getRandomValues(array);
   const randomNum = (array[0] % 90000) + 10000;
-  return `jnuitsFest-${randomNum}`;
+  return `JnUITSFest-${randomNum}`;
 };
 
 
@@ -14,7 +14,6 @@ export const user = sqliteTable("user", {
   id: t.text("id").primaryKey(),
   festId: t
     .text("fest_id")
-    .notNull()
     .unique()
     .$defaultFn(() => generateFestId()),
   name: t.text("name").notNull(),
