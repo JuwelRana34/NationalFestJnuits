@@ -11,30 +11,30 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/useUserSession";
-import { Menu } from "lucide-react"; // Removed LogOut as it's inside LogoutButton
+import { Menu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import * as React from "react";
-
+import { motion } from "motion/react";
 const navLinks = [
   { title: "Home", href: "/" },
   { title: "About", href: "#about" },
   { title: "Segments", href: "#segments" },
-  { title: "Schedule", href: "#schedule" },
+  { title: "Events", href: "/events" },
   { title: "Contact", href: "/contact" },
-  { title: "Profile", href: "/dashboard" },
   { title: "Profile", href: "/dashboard" },
 ];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
   const [isScrolled, setIsScrolled] = React.useState(false);
-  const {user, isLoading, error} = useAuth();
-  
+  const { user, isLoading } = useAuth();
+  const path = usePathname();
+
   // Scroll event listener
   React.useEffect(() => {
     const handleScroll = () => {
-      // ২০ পিক্সেলের বেশি স্ক্রল করলে ব্যাকগ্রাউন্ড চেঞ্জ হবে
       if (window.scrollY > 20) {
         setIsScrolled(true);
       } else {
@@ -69,6 +69,7 @@ export default function Navbar() {
 
         {/* Desktop Navigation Links */}
         <div className="hidden items-center space-x-8 md:flex">
+
           {navLinks.map((link) => (
             <Link
               key={link.title}
@@ -77,12 +78,27 @@ export default function Navbar() {
                   ? `/dashboard/${user?.id}`
                   : link.href
               }
-              className="text-sm font-medium text-slate-300 transition-colors hover:text-amber-400"
+              className={`text-md font-medium relative py-1 transition-colors ${
+                path === link.href
+                  ? "text-secondary"
+                  : "text-slate-300 hover:text-white"
+              }`}
             >
               {link.title}
+              {/* Active underline */}
+              {path === link.href && (
+                <motion.span
+                  layoutId="underline"
+                  className="absolute bottom-0 left-0 w-full h-0.5 bg-secondary shadow-[0_0_8px_rgba(251,191,36,0.8)]"
+                  initial={{ scaleX: 0, opacity: 0 }}
+                  animate={{ scaleX: 1, opacity: 1 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  style={{ originX: 0 }}
+                />
+              )}
             </Link>
           ))}
-          <Separator orientation="vertical" className="h-6 bg-slate-700" />
+          <Separator orientation="vertical" className="h-10 my-4  bg-secondary/30" />
           {isLoading ? (
             <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-700 border-t-amber-400" />
           ) : user ? (
@@ -155,7 +171,7 @@ export default function Navbar() {
                         : link.href
                     }
                     onClick={() => setIsOpen(false)}
-                    className="text-lg font-medium text-slate-300 transition-colors hover:text-amber-400"
+                    className={`text-lg font-medium ${path === link.href ? "text-white bg-secondary px-4 py-2 rounded " : "text-slate-300"} transition-colors `}
                   >
                     {link.title}
                   </Link>

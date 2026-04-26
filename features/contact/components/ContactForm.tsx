@@ -79,7 +79,7 @@ export function ContactForm() {
 
         {/* Right Section: Standard Form */}
         <div className="relative ">
-          <div className=" absolute z-0 opacity-60 md:opacity-95 bg-violet-500 -top-2 w-80 h-80 blur-3xl" />
+          <div className=" absolute animate-pulse z-0 opacity-60 md:opacity-95 bg-violet-500 -top-2 w-80 h-80 blur-3xl" />
           <div className=" bg-white  z-10 relative p-6 rounded-xl shadow-sm">
             <form onSubmit={form.handleSubmit(onSubmit)} className=" space-y-5">
               <div className="space-y-2">
