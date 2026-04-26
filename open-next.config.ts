@@ -1,9 +1,19 @@
-// default open-next.config.ts file created by @opennextjs/cloudflare
 import { defineCloudflareConfig } from "@opennextjs/cloudflare";
-// import r2IncrementalCache from "@opennextjs/cloudflare/overrides/incremental-cache/r2-incremental-cache";
+import kvCache from "@opennextjs/cloudflare/overrides/incremental-cache/kv-incremental-cache";
+import d1NextTagCache from "@opennextjs/cloudflare/overrides/tag-cache/d1-next-tag-cache";
+import doQueue from "@opennextjs/cloudflare/overrides/queue/do-queue";
+//import { withFilter, softTagFilter } from "@opennextjs/cloudflare/overrides/tag-cache/tag-cache-filter";
 
 export default defineCloudflareConfig({
-	// For best results consider enabling R2 caching
-	// See https://opennext.js.org/cloudflare/caching for more details
-	// incrementalCache: r2IncrementalCache
+  incrementalCache: kvCache,
+  queue: doQueue,
+  // This is only required if you use On-demand revalidation
+  tagCache: d1NextTagCache,
+  //If you don't use `revalidatePath`, you can also filter internal soft tags using the `softTagFilter`
+  // tagCache: withFilter({
+  //   tagCache: d1NextTagCache,
+  //   filterFn: softTagFilter,
+  // }),
+  // Disable this if you want to use PPR
+  enableCacheInterception: true,
 });

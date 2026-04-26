@@ -1,0 +1,78 @@
+import { EventCardProps } from "@/features/Events/Types";
+
+export const eventData: EventCardProps[] = [
+  {
+    id: 1,
+    title: "JNU IT National Fest 2026",
+    image: "/assets/event1.jpg",
+    subtitle: "Organized by JNU IT Society",
+    type: "Festival",
+    description:
+      "Join the biggest national-level IT fest featuring hackathons, coding contests, tech talks, and project showcases from top participants across the country.",
+    date: "2026-05-15",
+    time: "10:00 AM",
+    venue: "JNU Main Auditorium",
+    fee: "500 BDT",
+    seatsTotal: 300,
+    seatsFilled: 180,
+  },
+  {
+    id: 2,
+    title: "National Hackathon",
+    image: "/assets/event2.jpg",
+    subtitle: "48-Hour Coding Challenge",
+    type: "Competition",
+    description:
+      "A high-intensity hackathon where developers, designers, and innovators collaborate to solve real-world problems.",
+    date: "2026-05-16",
+    time: "09:00 AM",
+    venue: "JNU IT Lab",
+    fee: "300 BDT",
+    seatsTotal: 100,
+    seatsFilled: 95,
+  },
+  {
+    id: 3,
+    title: "Tech Talk: Future of AI",
+    image: "/assets/event3.jpg",
+    subtitle: "Guest Speaker Session",
+    type: "Seminar",
+    description:
+      "Industry experts discuss AI trends, machine learning advancements, and career opportunities in tech.",
+    date: "2026-05-15",
+    time: "02:00 PM",
+    venue: "Seminar Hall 2",
+    fee: "Free",
+    seatsTotal: 200,
+    seatsFilled: 120,
+  },
+  {
+    id: 4,
+    title: "Project Showcase",
+    image: "/assets/event4.jpg",
+    subtitle: "Student Innovation Expo",
+    type: "Exhibition",
+    description:
+      "Students showcase their innovative projects including apps, IoT solutions, and AI-based systems.",
+    date: "2026-05-17",
+    time: "11:00 AM",
+    venue: "JNU Campus মাঠ",
+    seatsTotal: 150,
+    seatsFilled: 80,
+  },
+  {
+    id: 5,
+    title: "Coding Contest",
+    image: "/assets/event5.jpg",
+    subtitle: "Competitive Programming",
+    type: "Competition",
+    description:
+      "Test your problem-solving skills in this fast-paced coding competition with exciting prizes.",
+    date: "2026-05-16",
+    time: "03:00 PM",
+    venue: "Computer Lab 1",
+    fee: "200 BDT",
+    seatsTotal: 120,
+    seatsFilled: 110,
+  },
+];
