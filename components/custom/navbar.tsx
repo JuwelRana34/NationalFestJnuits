@@ -24,6 +24,7 @@ const navLinks = [
   { title: "Events", href: "/events" },
   { title: "Contact", href: "/contact" },
   { title: "Profile", href: "/dashboard" },
+  { title: "Profile", href: "/dashboard" },
 ];
 
 export default function Navbar() {
@@ -76,6 +77,8 @@ export default function Navbar() {
               href={
                 link.href === "/dashboard" && user?.id
                   ? `/dashboard/${user?.id}`
+                link.href === "/dashboard" && user?.id
+                  ? `/dashboard/${user?.id}`
                   : link.href
               }
               className={`text-md font-medium relative py-1 transition-colors ${
@@ -102,20 +105,25 @@ export default function Navbar() {
           {isLoading ? (
             <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-700 border-t-amber-400" />
           ) : user ? (
+          ) : user ? (
             <LogoutButton />
           ) : (
             <Link href="/signin">Login</Link>
           )}
           {isLoading ? (
+          {isLoading ? (
             <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-700 border-t-amber-400" />
+          ) : user ? (
           ) : user ? (
             <div>
               <Image
+                src={user?.image || ""}
                 src={user?.image || ""}
                 alt="User Image"
                 width={45}
                 height={45}
                 className="rounded-full"
+                unoptimized
                 unoptimized
               />
             </div>
@@ -131,14 +139,18 @@ export default function Navbar() {
         {/* Mobile Navigation (Sheet) */}
         <div className="flex items-center gap-4 md:hidden">
           {isLoading ? (
+          {isLoading ? (
             <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-700 border-t-amber-400" />
           ) : user ? (
+          ) : user ? (
             <Image
+              src={user?.image || ""}
               src={user?.image || ""}
               alt="User Image"
               width={45}
               height={45}
               className="rounded-full"
+              unoptimized
               unoptimized
             />
           ) : (
@@ -168,6 +180,8 @@ export default function Navbar() {
                     href={
                       link.href === "/dashboard" && user?.id
                         ? `/dashboard/${user?.id}`
+                      link.href === "/dashboard" && user?.id
+                        ? `/dashboard/${user?.id}`
                         : link.href
                     }
                     onClick={() => setIsOpen(false)}
@@ -177,6 +191,7 @@ export default function Navbar() {
                   </Link>
                 ))}
                 <Separator className="bg-slate-800" />
+                {isLoading ? null : user ? (
                 {isLoading ? null : user ? (
                   <LogoutButton />
                 ) : (
