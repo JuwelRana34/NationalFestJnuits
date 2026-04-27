@@ -71,48 +71,55 @@ export default function Navbar() {
 
         {/* Desktop Navigation Links */}
         <div className="hidden items-center space-x-8 md:flex">
-          {navLinks.map((link) => {
-            const isActive = path === link.href;
-            const finalHref = link.href === "/dashboard" && user?.id ? `/dashboard/${user.id}` : link.href;
 
-            return (
-              <Link
-                key={link.title}
-                href={finalHref}
-                className={`text-md font-medium relative py-1 transition-colors ${
-                  isActive ? "text-secondary" : "text-slate-300 hover:text-white"
-                }`}
-              >
-                {link.title}
-                {/* Active underline */}
-                {isActive && (
-                  <motion.span
-                    layoutId="underline"
-                    className="bg-secondary shadow-[0_0_8px_rgba(251,191,36,0.8)] absolute bottom-0 left-0 h-0.5 w-full"
-                    initial={{ scaleX: 0, opacity: 0 }}
-                    animate={{ scaleX: 1, opacity: 1 }}
-                    transition={{ duration: 0.3, ease: "easeOut" }}
-                    style={{ originX: 0 }}
-                  />
-                )}
-              </Link>
-            );
-          })}
-          
-          <Separator orientation="vertical" className="bg-secondary/30 my-4 h-10" />
-          
-          {/* Desktop Auth Logic */}
+          {navLinks.map((link) => (
+            <Link
+              key={link.title}
+              href={
+                link.href === "/dashboard" && user?.id
+                  ? `/dashboard/${user?.id}`:
+                link.href === "/dashboard" && user?.id
+                  ? `/dashboard/${user?.id}`
+                  : link.href
+              }
+              className={`text-md font-medium relative py-1 transition-colors ${
+                path === link.href
+                  ? "text-secondary"
+                  : "text-slate-300 hover:text-white"
+              }`}
+            >
+              {link.title}
+              {/* Active underline */}
+              {path === link.href && (
+                <motion.span
+                  layoutId="underline"
+                  className="absolute bottom-0 left-0 w-full h-0.5 bg-secondary shadow-[0_0_8px_rgba(251,191,36,0.8)]"
+                  initial={{ scaleX: 0, opacity: 0 }}
+                  animate={{ scaleX: 1, opacity: 1 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  style={{ originX: 0 }}
+                />
+              )}
+            </Link>
+          ))}
+          <Separator orientation="vertical" className="h-10 my-4  bg-secondary/30" />
           {isLoading ? (
-            <div className="border-t-amber-400 h-6 w-6 animate-spin rounded-full border-2 border-slate-700" />
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-700 border-t-amber-400" />
           ) : user ? (
-            <div className="flex items-center gap-4">
-              <LogoutButton />
+            <LogoutButton />
+          ) : (
+            <Link href="/signin">Login</Link>
+          )}
+          {isLoading ? (
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-700 border-t-amber-400" />
+          ) : user ? (
+            <div>
               <Image
-                src={user?.image || "/default-avatar.png"} // fallback image incase user.image is missing
+                src={user?.image || ""}
                 alt="User Image"
                 width={45}
                 height={45}
-                className="rounded-full object-cover"
+                className="rounded-full"
                 unoptimized
               />
             </div>
@@ -132,16 +139,15 @@ export default function Navbar() {
 
         {/* Mobile Navigation (Sheet) */}
         <div className="flex items-center gap-4 md:hidden">
-          {/* Mobile Profile Image/Login (Outside Sheet) */}
           {isLoading ? (
-            <div className="border-t-amber-400 h-6 w-6 animate-spin rounded-full border-2 border-slate-700" />
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-700 border-t-amber-400" />
           ) : user ? (
             <Image
-              src={user?.image || "/default-avatar.png"}
+              src={user?.image || ""}
               alt="User Image"
-              width={40}
-              height={40}
-              className="rounded-full object-cover"
+              width={45}
+              height={45}
+              className="rounded-full"
               unoptimized
             />
           ) : (
@@ -164,28 +170,24 @@ export default function Navbar() {
                   JnUITS Menu
                 </SheetTitle>
               </SheetHeader>
-              <div className="mt-8 flex flex-col items-center justify-center space-y-4">
-                {navLinks.map((link) => {
-                  const isActive = path === link.href;
-                  const finalHref = link.href === "/dashboard" && user?.id ? `/dashboard/${user.id}` : link.href;
-
-                  return (
-                    <Link
-                      key={link.title}
-                      href={finalHref}
-                      onClick={() => setIsOpen(false)}
-                      className={`text-lg font-medium transition-colors w-full text-center ${
-                        isActive ? "bg-secondary text-slate-900 rounded px-4 py-2" : "text-slate-300"
-                      }`}
-                    >
-                      {link.title}
-                    </Link>
-                  );
-                })}
-                
-                <Separator className="bg-slate-800 w-full" />
-                
-                {/* Mobile Auth Inside Sheet */}
+              <div className="mt-8 flex flex-col space-y-4 justify-center items-center">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.title}
+                    href={
+                      link.href === "/dashboard" && user?.id
+                        ? `/dashboard/${user?.id}`:
+                      link.href === "/dashboard" && user?.id
+                        ? `/dashboard/${user?.id}`
+                        : link.href
+                    }
+                    onClick={() => setIsOpen(false)}
+                    className={`text-lg font-medium ${path === link.href ? "text-white bg-secondary px-4 py-2 rounded " : "text-slate-300"} transition-colors `}
+                  >
+                    {link.title}
+                  </Link>
+                ))}
+                <Separator className="bg-slate-800" />
                 {isLoading ? null : user ? (
                   <LogoutButton />
                 ) : (
