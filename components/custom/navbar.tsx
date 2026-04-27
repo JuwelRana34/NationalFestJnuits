@@ -58,7 +58,7 @@ export default function Navbar() {
       }`}
     >
       {isScrolled && (
-        <div className="bg-gradient-to-r from-transparent via-cyan-400 to-transparent absolute bottom-0 left-0 h-px w-full" />
+        <div className="bg-linear-to-r from-transparent via-cyan-400 to-transparent absolute bottom-0 left-0 h-px w-full" />
       )}
       
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-8">
@@ -149,7 +149,7 @@ export default function Navbar() {
           )}
 
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild>
+            <SheetTrigger>
               <div className="hover:bg-slate-800 flex h-10 w-10 cursor-pointer items-center justify-center rounded-md text-white transition-colors">
                 <Menu className="h-6 w-6" />
                 <span className="sr-only">Toggle menu</span>
@@ -157,7 +157,7 @@ export default function Navbar() {
             </SheetTrigger>
             <SheetContent
               side="right"
-              className="w-[80vw] border-slate-800 bg-slate-900 text-white sm:w-[350px]"
+              className="w-[80vw] border-slate-800 bg-slate-900 text-white sm:w-87.5"
             >
               <SheetHeader className="text-left">
                 <SheetTitle className="font-serif text-amber-400">
