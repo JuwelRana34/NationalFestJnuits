@@ -104,7 +104,7 @@ export default function Navbar() {
           ))}
           <Separator orientation="vertical" className="h-10 my-4  bg-secondary/30" />
           {isLoading ? (
-            <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-700 border-t-amber-400" />
+            <div className="border-t-amber-400 h-6 w-6 animate-spin rounded-full border-2 border-slate-700" />
           ) : user ? (
             <LogoutButton />
           ) : (
@@ -139,6 +139,7 @@ export default function Navbar() {
 
         {/* Mobile Navigation (Sheet) */}
         <div className="flex items-center gap-4 md:hidden">
+          {/* Mobile Profile Image/Login (Outside Sheet) */}
           {isLoading ? (
             <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-700 border-t-amber-400" />
           ) : user ? (
