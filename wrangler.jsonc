@@ -1,65 +1,60 @@
 {
-	"$schema": "node_modules/wrangler/config-schema.json",
-	"main": ".open-next/worker.js",
-	"name": "jnu-it-fest",
-	"keep_names": false,
-	"compatibility_date": "2026-04-22",
-	"compatibility_flags": [
-		"nodejs_compat",
-		"global_fetch_strictly_public"
-	],
-	"assets": {
-		"directory": ".open-next/assets",
-		"binding": "ASSETS",
-	},
-	"services": [
-		{
-			"binding": "WORKER_SELF_REFERENCE",
-			"service": "jnu-it-fest",
-		},
-	],
-"kv_namespaces": [
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "main": ".open-next/worker.js",
+  "name": "jnu-it-fest",
+  "keep_names": false,
+  "compatibility_date": "2026-04-22",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS",
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "jnu-it-fest",
+    },
+  ],
+  "kv_namespaces": [
     {
       "binding": "NEXT_INC_CACHE_KV",
-      "id": "bbc0052d7fa94e0f854f2f76c8b5c327"
-    }
+      "id": "bbc0052d7fa94e0f854f2f76c8b5c327",
+    },
   ],
-  
-	"durable_objects": {
-		"bindings": [
-			{
-				"name": "NEXT_CACHE_DO_QUEUE",
-				"class_name": "DOQueueHandler",
-			},
-		],
-	},
-	"migrations": [
-		{
-			"tag": "v1",
-			"new_sqlite_classes": [
-				"DOQueueHandler"
-			],
-		},
-	],
-	"images": {
-		// Enable image optimization
-		// see https://opennext.js.org/cloudflare/howtos/image
-		"binding": "IMAGES",
-	},
-	"d1_databases": [
-		{
-			"binding": "jnu_it_fest_db",
-			"database_name": "itsociety",
-			"database_id": "ce07170e-a866-4dde-8762-c65f88b76ab5",
-			"migrations_dir": "drizzle",
-		},
-		{
-			"binding": "NEXT_TAG_CACHE_D1",
-			"database_id": "ce07170e-a866-4dde-8762-c65f88b76ab5",
-			"database_name": "itsociety",
-		},
-	],
-	"vars": {
-		"BETTER_AUTH_URL": "https://jnu-it-fest.rk370613.workers.dev",
-	},
+
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "NEXT_CACHE_DO_QUEUE",
+        "class_name": "DOQueueHandler",
+      },
+    ],
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["DOQueueHandler"],
+    },
+  ],
+  "images": {
+    // Enable image optimization
+    // see https://opennext.js.org/cloudflare/howtos/image
+    "binding": "IMAGES",
+  },
+  "d1_databases": [
+    {
+      "binding": "jnu_it_fest_db",
+      "database_name": "itsociety",
+      "database_id": "ce07170e-a866-4dde-8762-c65f88b76ab5",
+      "migrations_dir": "drizzle",
+    },
+    {
+      "binding": "NEXT_TAG_CACHE_D1",
+      "database_id": "ce07170e-a866-4dde-8762-c65f88b76ab5",
+      "database_name": "itsociety",
+    },
+  ],
+  "vars": {
+    "BETTER_AUTH_URL": "https://jnu-it-fest.rk370613.workers.dev",
+  },
 }
