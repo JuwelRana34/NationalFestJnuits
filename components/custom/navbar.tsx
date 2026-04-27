@@ -110,31 +110,6 @@ export default function Navbar() {
           ) : (
             <Link href="/signin">Login</Link>
           )}
-          {isLoading ? (
-            <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-700 border-t-amber-400" />
-          ) : user ? (
-            <div>
-              <Image
-                src={user?.image || ""}
-                alt="User Image"
-                width={45}
-                height={45}
-                className="rounded-full"
-                unoptimized
-              />
-            </div>
-          ) : (
-            <div className="flex items-center gap-4">
-              <Link href="/signin" className="text-slate-300 hover:text-white transition-colors">
-                Login
-              </Link>
-              <Link href="/registration">
-                <Button className="bg-amber-500 hover:bg-amber-600 text-slate-900 rounded py-5 font-semibold">
-                  Register Now
-                </Button>
-              </Link>
-            </div>
-          )}
         </div>
 
         {/* Mobile Navigation (Sheet) */}
