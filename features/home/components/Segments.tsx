@@ -10,8 +10,7 @@ import {
 import type { Variants } from "motion/react";
 import { motion } from "motion/react";
 
-// Mapped design system tokens directly to standard Tailwind classes.
-// This prevents Tailwind's compiler from purging dynamically constructed class names.
+
 const themeStyles = {
   primary: {
     text: "text-primary",
@@ -87,10 +86,10 @@ const itemVariants: Variants = {
 
 export default function App() {
   return (
-    <section className="min-h-screen w-full bg-zinc-950 text-zinc-50 py-24 px-6 md:px-12 font-sans relative overflow-hidden font-inter">
+    <section className="min-h-screen w-full bg-slate-950 text-slate-300 py-24 px-6 md:px-12 font-sans relative overflow-hidden font-inter">
       {/* Background ambient glows using generic tokens */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full blur-[120px] opacity-10 pointer-events-none bg-primary" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full blur-[120px] opacity-10 pointer-events-none bg-secondary" />
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full blur-[120px] opacity-40 pointer-events-none bg-primary" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full blur-[120px] opacity-20 pointer-events-none bg-violet-500" />
 
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
@@ -101,14 +100,14 @@ export default function App() {
               viewport={{ once: true }}
               className="text-4xl md:text-5xl font-bold tracking-tight mb-4"
             >
-              Explore <span className="text-primary">Event Segments</span>
+              Explore <span className="text-amber-400">Event Segments</span>
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-zinc-400 text-lg"
+              className="text-slate-400 text-lg"
             >
               Discover the perfect stage to showcase your talents. From coding
               marathons to strategic gaming, choose your arena.
@@ -121,7 +120,7 @@ export default function App() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             viewport={{ once: true }}
-            className="hidden md:flex items-center gap-2 px-6 py-3 rounded-md font-medium transition-all border border-zinc-800 hover:border-primary/50 hover:bg-zinc-900 text-zinc-100"
+            className="hidden md:flex items-center gap-2 px-6 py-3 rounded-md font-medium transition-all border border-slate-600 hover:border-cyan-400/50 hover:bg-slate-900 text-slate-300"
           >
             View Schedule <ArrowRight className="w-4 h-4" />
           </motion.button>
@@ -142,7 +141,7 @@ export default function App() {
               <motion.div
                 key={segment.id}
                 variants={itemVariants}
-                className={`group relative bg-zinc-900/40 backdrop-blur-md border border-zinc-800 p-6 rounded-md flex flex-col h-full overflow-hidden cursor-pointer transition-all duration-500 hover:-translate-y-2 shadow-lg ${styles.shadow}`}
+                className={`group relative bg-slate-900/40 backdrop-blur-md border border-slate-600 p-6 rounded-md flex flex-col h-full overflow-hidden cursor-pointer transition-all duration-500 hover:-translate-y-2 shadow-lg ${styles.shadow}`}
               >
                 {/* Dynamic Inner Gradient on Hover */}
                 <div
@@ -158,7 +157,7 @@ export default function App() {
                   <div className="mb-6 relative">
                     {/* Icon Container with subtle color fill on hover */}
                     <div
-                      className={`w-14 h-14 rounded-md flex items-center justify-center bg-zinc-950/80 border border-zinc-800/80 group-hover:border-transparent transition-all duration-500 relative z-10 ${styles.iconBg}`}
+                      className={`w-14 h-14 rounded-md flex items-center justify-center bg-slate-900/80 border border-slate-600/80 group-hover:border-transparent transition-all duration-500 relative z-10 ${styles.iconBg}`}
                     >
                       <Icon
                         className={`w-6 h-6 transition-all duration-500 group-hover:scale-110 group-hover:-rotate-6 ${styles.text}`}
@@ -166,7 +165,7 @@ export default function App() {
                     </div>
                   </div>
 
-                  <h3 className="text-xl font-semibold mb-3 text-zinc-100 group-hover:text-white transition-colors duration-300">
+                  <h3 className="text-xl font-semibold mb-3 text-slate-300 group-hover:text-white transition-colors duration-300">
                     {segment.title}
                   </h3>
 

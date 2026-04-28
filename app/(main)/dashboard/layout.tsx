@@ -14,10 +14,12 @@ const navItems = [
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
-    <div className="min-h-screen ">
+    <div className="min-h-screen pt-16  ">
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-4 py-6 md:grid-cols-[240px_1fr] md:px-6 lg:px-8">
         <aside className="h-full rounded-xl border border-slate-800 bg-slate-800  p-4 shadow-sm">
-          <h2 className="mb-4 text-lg font-semibold text-secondary">Dashboard</h2>
+          <h2 className="mb-4 text-lg font-semibold text-secondary">
+            Dashboard
+          </h2>
           <nav className="space-y-1">
             {navItems.map((item) => (
               <Link

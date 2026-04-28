@@ -52,12 +52,12 @@ const About = () => {
 
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-8 leading-[1.15] text-slate-300">
               Empowering the Next Generation of{" "}
-              <span className="text-transparent bg-clip-text bg-linear-to-r from-secondary to-secondary/80">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-cyan-500 to-violet-500/90">
                 Tech Leaders
               </span>
             </h2>
 
-            <div className="prose prose-invert prose-lg max-w-none text-slate-400 mb-8 leading-relaxed">
+            <div className="prose prose-invert prose-lg max-w-none mb-8 leading-relaxed">
               <p>
                 The 2026 National Fest, proudly hosted by the Jagannath
                 University IT Society (JNUITS), is not merely an event—it&apos;s
@@ -70,14 +70,14 @@ const About = () => {
             {/* Core Values / Impact Grid */}
             <div className="grid sm:grid-cols-2 gap-8">
               {/* Vision */}
-              <div className="bg-white/[0.02] border border-white/5 p-6 rounded-md transition-colors hover:bg-white/[0.04]">
+              <div className="bg-slate-900 border border-white/5 p-6 rounded-md transition-colors hover:bg-white/4">
                 <div
                   className="mb-4 inline-flex p-3 rounded-md bg-white/5"
                   style={{ color: colors.secondary }}
                 >
                   <Target size={24} />
                 </div>
-                <h3 className="text-xl font-semibold mb-3 text-white">
+                <h3 className="text-xl font-semibold mb-3 text-slate-300">
                   Our Vision
                 </h3>
                 <p className="text-slate-400 text-sm leading-relaxed">
@@ -88,14 +88,14 @@ const About = () => {
               </div>
 
               {/* Impact */}
-              <div className="bg-white/[0.02] border border-white/5 p-6 rounded-md transition-colors hover:bg-white/[0.04]">
+              <div className="bg-slate-900 border border-white/5 p-6 rounded-md transition-colors hover:bg-white/4">
                 <div
                   className="mb-4 inline-flex p-3 rounded-md bg-white/5"
                   style={{ color: colors.primary }}
                 >
                   <Zap size={24} />
                 </div>
-                <h3 className="text-xl font-semibold mb-3 text-white">
+                <h3 className="text-xl font-semibold mb-3 text-slate-300">
                   Core Impact
                 </h3>
                 <p className="text-slate-400 text-sm leading-relaxed">

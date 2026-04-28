@@ -1,5 +1,7 @@
 import { ContactForm } from "@/features/contact/components/ContactForm";
 
 export default function ContactPage() {
-  return <ContactForm />;
+  return <div className="pt-20"> 
+    <ContactForm />;
+  </div> 
 }

@@ -22,85 +22,6 @@ export interface EventCardProps {
   onRegister?: () => void;
 }
 
-// Mock Data for the Events matching your EventCard Props
-// const eventsData: EventCardProps[] = [
-//   {
-//     id: "1",
-//     title: "CODE",
-//     subtitle: "NINJA",
-//     type: "Programming",
-//     description:
-//       "Battle it out with the best algorithmic minds in the national competitive programming contest.",
-//     date: "15 April, 2026",
-//     time: "10:00 AM",
-//     venue: "Computer Lab, CSE Dept",
-//     fee: "Free",
-//     seatsTotal: 120,
-//     seatsFilled: 95,
-//     image: "/placeholder-event.jpg", // Added to satisfy interface
-//   },
-//   {
-//     id: "2",
-//     title: "IDEA",
-//     subtitle: "PITCH",
-//     type: "Competition",
-//     description:
-//       "Present your innovative startup ideas to industry leaders and win seed funding opportunities.",
-//     date: "16 April, 2026",
-//     time: "11:30 AM",
-//     venue: "JnU Central Auditorium",
-//     fee: "300",
-//     seatsTotal: 50,
-//     seatsFilled: 22,
-//     image: "/placeholder-event.jpg",
-//   },
-//   {
-//     id: "3",
-//     title: "CYBER",
-//     subtitle: "DEFENDERS",
-//     type: "Workshop",
-//     description:
-//       "Learn hands-on ethical hacking and cybersecurity defense mechanisms from industry experts.",
-//     date: "17 April, 2026",
-//     time: "02:00 PM",
-//     venue: "Virtual Platform",
-//     fee: "Free",
-//     seatsTotal: 200,
-//     seatsFilled: 180,
-//     image: "/placeholder-event.jpg",
-//   },
-//   {
-//     id: "4",
-//     title: "VALORANT",
-//     subtitle: "CLASH",
-//     type: "Gaming",
-//     description:
-//       "Assemble your squad and dominate the server in the ultimate E-Sports championship.",
-//     date: "15-17 April, 2026",
-//     time: "Multiple",
-//     venue: "Virtual & On-Premise",
-//     fee: "500",
-//     seatsTotal: 64, // Squads
-//     seatsFilled: 48,
-//     image: "/placeholder-event.jpg",
-//   },
-//   {
-//     id: "5",
-//     title: "ROBO",
-//     subtitle: "SOCCER",
-//     type: "Exhibition",
-//     description:
-//       "Build and control your bots in a thrilling mechanical football tournament.",
-//     date: "16 April, 2026",
-//     time: "10:00 AM",
-//     venue: "Science Faculty Ground",
-//     fee: "400",
-//     seatsTotal: 30,
-//     seatsFilled: 15,
-//     image: "/placeholder-event.jpg",
-//   },
-// ];
-
 export default function Events() {
   const [activeTab, setActiveTab] = useState<string>("All");
 
@@ -117,9 +38,9 @@ export default function Events() {
 
   return (
     // Background matched with your EventCard's dark theme vibe
-    <div className="min-h-screen bg-[#050810] py-12 md:py-16 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-950 py-12 md:py-16 px-4 sm:px-6 lg:px-8">
       {/* Header Section */}
-      <div className="max-w-7xl mx-auto text-center mb-10 md:mb-14 space-y-4 md:space-y-5">
+      <div className="max-w-7xl mx-auto text-center mb-10 md:mb-14 space-y-4 md:space-y-5 pt-16">
         <Badge
           variant="outline"
           className="px-3 md:px-4 py-1.5 text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase border-amber-400/30 text-amber-400 bg-amber-400/10"

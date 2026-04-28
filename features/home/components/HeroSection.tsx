@@ -1,11 +1,10 @@
 "use client";
 
-import{ useEffect, useRef, useState } from "react";
+import { ChevronRight, Code2, Terminal, Timer, Zap } from "lucide-react";
 import { motion } from "motion/react";
-import { Zap, ChevronRight, Terminal, Code2, Timer } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 export default function HeroSection() {
-    
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
@@ -59,13 +58,13 @@ export default function HeroSection() {
 
     // Bubble Class
     class Bubble {
-      x: number=0;
-      y: number=0;
-      size: number=2;
+      x: number = 0;
+      y: number = 0;
+      size: number = 2;
       speedY: number = 0;
-      color: string="rgba(255, 255, 255, 0.5)";
-      angle: number=0;
-      angleVelocity: number=0;
+      color: string = "rgba(255, 255, 255, 0.5)";
+      angle: number = 0;
+      angleVelocity: number = 0;
 
       constructor() {
         if (!canvas) return;
@@ -160,7 +159,7 @@ export default function HeroSection() {
       />
 
       {/* 2. Fallback Background Grid */}
-      <div className="absolute inset-0 z-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-size-[3rem_3rem] opacity-20 pointer-events-none" />
+      <div className="absolute inset-0 z-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-size-[3rem_3rem] opacity-30 pointer-events-none" />
 
       {/* 3. Gradient Overlay for Depth */}
       <div className="absolute inset-0 z-0 pointer-events-none bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-slate-900/40 via-slate-950/80 to-slate-950" />
@@ -178,7 +177,7 @@ export default function HeroSection() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="inline-flex items-center p-1 pr-4 bg-slate-900/50 border border-slate-800 rounded-full backdrop-blur-md mb-8 hover:bg-slate-800/50 transition-colors"
         >
-          <span className="px-3 py-1 bg-linear-to-r from-amber-500 to-amber-600 text-slate-950 text-xs font-bold rounded-full mr-3 uppercase tracking-wider flex items-center gap-1">
+          <span className="px-3 py-1 bg-linear-to-r from-cyan-500 to-violet-600 text-slate-100 text-xs font-bold rounded-full mr-3 uppercase tracking-wider flex items-center gap-1">
             <Zap size={12} fill="currentColor" /> Live
           </span>
           <span className="text-sm font-medium text-slate-300">
@@ -193,7 +192,7 @@ export default function HeroSection() {
           transition={{ duration: 0.7, delay: 0.3, type: "spring" }}
           className="max-w-5xl"
         >
-          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight text-white mb-6 leading-[1.1]">
+          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight text-slate-200 mb-6 leading-[1.1]">
             National AI & IT <br />
             <span className="relative">
               <span className="absolute -inset-1 block bg-linear-to-r from-amber-500/20 to-cyan-500/20 blur-2xl animate-pulse"></span>
@@ -257,7 +256,7 @@ export default function HeroSection() {
                 Fest Starts In
               </span>
             </div>
-            <div className="flex items-center gap-3 sm:gap-6 text-white">
+            <div className="flex items-center gap-3 sm:gap-6 text-slate-300">
               {[
                 { label: "Days", value: timeLeft.days },
                 { label: "Hours", value: timeLeft.hours },
@@ -285,13 +284,13 @@ export default function HeroSection() {
           {/* Core Stats */}
           <div className="flex items-center justify-center gap-8 sm:gap-12 text-sm font-medium text-slate-500">
             <div className="flex flex-col items-center gap-1 group cursor-default">
-              <span className="text-white text-3xl sm:text-4xl font-bold group-hover:scale-105 transition-transform">
+              <span className="text-slate-300 text-3xl sm:text-4xl font-bold group-hover:scale-105 transition-transform">
                 500k+
               </span>
               Prize Pool
             </div>
             <div className="flex flex-col items-center gap-1 group cursor-default">
-              <span className="text-amber-400 text-3xl sm:text-4xl font-bold group-hover:scale-105 transition-transform">
+              <span className="text-cyan-400 text-3xl sm:text-4xl font-bold group-hover:scale-105 transition-transform">
                 100+
               </span>
               Universities

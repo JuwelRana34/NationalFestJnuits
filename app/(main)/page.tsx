@@ -1,16 +1,19 @@
 import About from "@/features/home/components/AboutSection";
+import EventSchedule from "@/features/home/components/EventSchedule";
 import HeroSection from "@/features/home/components/HeroSection";
 import Segments from "@/features/home/components/Segments";
+import SpeakersJudges from "@/features/home/components/SpeakersJudges";
 
 export default function JnUITFestLanding() {
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
+    <div className=" min-h-screen bg-slate-50 font-sans text-slate-900">
       <HeroSection />
       {/* About Section */}
       <About />
       {/* Segments Section */}
       <Segments />
-
+      <EventSchedule />
+      <SpeakersJudges />
       {/* Footer */}
       <footer className="bg-slate-900 text-slate-300 py-12 px-6 md:px-12 border-t border-slate-800">
         <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
