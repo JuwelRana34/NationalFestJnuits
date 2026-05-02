@@ -4,9 +4,12 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { drizzle } from "drizzle-orm/d1";
 import * as schema from "@/core/db/schema";
 import { eq } from "drizzle-orm";
+import { cacheLife } from "next/cache";
 
 
 export async function getUserProfile({id}:{id:string}) {
+  "use cache";
+  cacheLife("seconds");
   try {
     const { env } = getCloudflareContext();
     const db = drizzle(env.jnu_it_fest_db, { schema });
@@ -17,8 +20,8 @@ export async function getUserProfile({id}:{id:string}) {
     }
 
     // ৩. DB থেকে ইউজার ডেটা ফেচ 
-    const userData = await db.query.user.findFirst({
-      where: eq(schema.user.id, id),
+    const userData = await db.query.users.findFirst({
+      where: eq(schema.users.id, id),
     });
 
     if (!userData) {

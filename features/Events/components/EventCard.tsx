@@ -1,25 +1,27 @@
 "use client";
-import { Calendar, Clock, MapPin, Bookmark, ActivitySquare } from "lucide-react";
+import { FullEvent } from "@/app/(main)/events/page";
+import { Bookmark, Calendar, Clock, MapPin } from "lucide-react";
 import { motion } from "motion/react";
-import { EventCardProps } from "../Types";
 
+export default function EventCard(props: Partial<FullEvent>) {
+  const {
+    id,
+    title,
+    subtitle,
+    type,
+    description,
+    date,
+    time,
+    venue,
+    fee,
+    seatsTotal,
+    seatsFilled,
+  } = props;
 
-
-export default function EventCard({
-  title = "TECH",
-  subtitle = "OLYMPIAD",
-  type = "Competition",
-  description = "Compete in Bangladesh's most prestigious university-level tech challenge. Code, design, and innovate your way to the top.",
-  date = "15 Feb, 2025",
-  time = "9:00 AM",
-  venue = "JnU Auditorium",
-  fee = "Free",
-  seatsTotal = 100,
-  seatsFilled = 72,
-  onRegister,
-}: EventCardProps) {
-  const fillPercent = Math.round((seatsFilled / seatsTotal) * 100);
-  const seatsLeft = seatsTotal - seatsFilled;
+  const safeSeatsFilled = Number(seatsFilled ?? 0);
+  const safeSeatsTotal = Number(seatsTotal ?? 0);
+  const fillPercent = safeSeatsTotal > 0 ? Math.round((safeSeatsFilled / safeSeatsTotal) * 100) : 0;
+  const seatsLeft = Math.max(0, safeSeatsTotal - safeSeatsFilled);
 
   return (
     <motion.div
@@ -121,8 +123,8 @@ export default function EventCard({
             { label: "Venue", value: venue, icon: <MapPin size={12} /> },
             {
               label: "Entry Fee",
-              value: fee === "Free" ? `৳ ${fee}` : `৳${fee}`,
-              green: fee === "Free",
+              value: fee === 0 ? `৳ ${fee}` : `৳${fee}`,
+              green: fee === 0,
             },
           ].map((m) => (
             <div key={m.label} className="flex flex-col gap-0.5">
@@ -161,7 +163,6 @@ export default function EventCard({
         <div className="flex gap-2.5">
           <motion.button
             whileTap={{ scale: 0.97 }}
-            onClick={onRegister}
             className="flex-1 py-2.5 bg-amber-400 text-[#0a0f1e] text-[13px] font-bold rounded-[10px] hover:bg-amber-500 transition-colors"
           >
             Register Now →

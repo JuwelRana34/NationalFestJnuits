@@ -1,10 +1,14 @@
 import Navbar from "@/components/custom/navbar";
+import { Suspense } from "react";
 
-export default function layout({children}: { children: React.ReactNode }) {
-    return (
-      <div>
+export default function layout({ children }: { children: React.ReactNode }) {
+  return (
+    <div>
+      <Suspense fallback={null}>
         <Navbar />
-        <div className="">{children} </div>
-      </div>
-    );
+      </Suspense>
+
+      <div className="">{children} </div>
+    </div>
+  );
 }

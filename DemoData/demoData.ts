@@ -1,6 +1,6 @@
-import { EventCardProps } from "@/features/Events/Types";
 
-export const eventData: EventCardProps[] = [
+
+export const eventData = [
   {
     id: 1,
     title: "JNU IT National Fest 2026",

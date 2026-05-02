@@ -1,7 +1,97 @@
+// import { Download } from "lucide-react";
+
+// import { Button } from "@/components/ui/button";
+
+// import RegisteredEventsCard from "@/features/dashboard/components/RegisteredEventsCard";
+// import UserInfoCard from "@/features/users/components/UserInfoCard";
+// import { getUserProfile } from "@/features/users/queries";
+// import { Metadata } from "next";
+
+// type PageProps = {
+//   params: Promise<{ id: string }>;
+// };
+
+// // ডায়নামিক মেটাডেটা জেনারেট
+// export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+//   const { id } = await params;
+//   const response = await getUserProfile({ id });
+
+//   const userName =
+//     response.success && response.data ? response.data.name : "Participant";
+
+//   const userImage =
+//     response.success && response.data?.image
+//       ? response.data.image
+//       : "https://yourwebsite.com/images/default-fest-og.jpg";
+
+//   return {
+//     metadataBase: new URL("https://jnu-it-fest.rk370613.workers.dev"),
+//     title: `${userName} | Dashboard - National IT Fest 2026`,
+//     description: `View ${userName}'s registered segments and fest profile for Jagannath University IT Society.`,
+//     openGraph: {
+//       title: `${userName}'s Fest Profile | JnUITS`,
+//       description: "Join the biggest IT Fest of 2026!",
+//       images: [
+//         {
+//           url: userImage,
+//           width: 1200,
+//           height: 630,
+//           alt: `${userName}'s Profile Picture`,
+//         },
+//       ],
+//       type: "website",
+//     },
+
+//     twitter: {
+//       card: "summary_large_image",
+//       title: `${userName}'s Fest Profile | JnUITS`,
+//       description: "Join the biggest IT Fest of 2026!",
+//       images: [userImage],
+//     },
+//   };
+// }
+
+// export default function Profile() {
+//   return (
+//     <div className="min-h-screen">
+//       <div className="max-w-5xl mx-auto">
+//         {/* Page Header */}
+//         <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+//           <div>
+//             <h1 className="text-3xl font-serif font-bold ">Dashboard</h1>
+//             <p className=" text-slate-300 mt-1">
+//               Manage your fest profile and registrations.
+//             </p>
+//           </div>
+//           <Button className=" bg-secondary text-white hover:bg-secondary/90 font-medium">
+//             <Download className="w-4 h-4 mr-2" />
+//             Download ID Card
+//           </Button>
+//           <Button className=" bg-secondary text-white hover:bg-secondary/90 font-medium">
+//             verify email
+//           </Button>
+//         </div>
+
+//         {/* Dashboard Grid */}
+//         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+//           {/* Left Column: User Info (Takes 1 column) */}
+//           <div className="lg:col-span-1">
+//             <UserInfoCard />
+//           </div>
+
+//           {/* Right Column: Registered Events & Stats (Takes 2 columns) */}
+//           <div className="lg:col-span-2">
+//             <RegisteredEventsCard />
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+import { Suspense } from "react";
 import { Download } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
-
 import RegisteredEventsCard from "@/features/dashboard/components/RegisteredEventsCard";
 import UserInfoCard from "@/features/users/components/UserInfoCard";
 import { getUserProfile } from "@/features/users/queries";
@@ -12,7 +102,9 @@ type PageProps = {
 };
 
 // ডায়নামিক মেটাডেটা জেনারেট
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { id } = await params;
   const response = await getUserProfile({ id });
 
@@ -22,10 +114,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const userImage =
     response.success && response.data?.image
       ? response.data.image
-      : "https://yourwebsite.com/images/default-fest-og.jpg";
+      : "https://yourwebsite.com/images/default-fest-og.jpg ";
 
   return {
-    metadataBase: new URL("https://jnu-it-fest.rk370613.workers.dev"),
+    metadataBase: new URL("https://jnu-it-fest.rk370613.workers.dev "),
     title: `${userName} | Dashboard - National IT Fest 2026`,
     description: `View ${userName}'s registered segments and fest profile for Jagannath University IT Society.`,
     openGraph: {
@@ -41,7 +133,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       ],
       type: "website",
     },
-
     twitter: {
       card: "summary_large_image",
       title: `${userName}'s Fest Profile | JnUITS`,
@@ -51,7 +142,34 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default function Profile() {
+// Async component that fetches data
+async function DashboardContent({ id }: { id: string }) {
+  // If UserInfoCard or RegisteredEventsCard need the user data,
+  // fetch it here and pass it as props, or fetch inside them.
+  // Example:
+  // const response = await getUserProfile({ id });
+
+  return (
+    <>
+      {/* Dashboard Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Column: User Info (Takes 1 column) */}
+        <div className="lg:col-span-1">
+          <UserInfoCard />
+        </div>
+
+        {/* Right Column: Registered Events & Stats (Takes 2 columns) */}
+        <div className="lg:col-span-2">
+          <RegisteredEventsCard />
+        </div>
+      </div>
+    </>
+  );
+}
+
+export default async function Profile({ params }: PageProps) {
+  const { id } = await params;
+
   return (
     <div className="min-h-screen">
       <div className="max-w-5xl mx-auto">
@@ -63,27 +181,28 @@ export default function Profile() {
               Manage your fest profile and registrations.
             </p>
           </div>
-          <Button className=" bg-secondary text-white hover:bg-secondary/90 font-medium">
-            <Download className="w-4 h-4 mr-2" />
-            Download ID Card
-          </Button>
-          <Button className=" bg-secondary text-white hover:bg-secondary/90 font-medium">
-            verify email
-          </Button>
-        </div>
-
-        {/* Dashboard Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column: User Info (Takes 1 column) */}
-          <div className="lg:col-span-1">
-            <UserInfoCard />
-          </div>
-
-          {/* Right Column: Registered Events & Stats (Takes 2 columns) */}
-          <div className="lg:col-span-2">
-            <RegisteredEventsCard />
+          <div className="flex gap-2">
+            <Button className=" bg-secondary text-white hover:bg-secondary/90 font-medium">
+              <Download className="w-4 h-4 mr-2" />
+              Download ID Card
+            </Button>
+            <Button className=" bg-secondary text-white hover:bg-secondary/90 font-medium">
+              verify email
+            </Button>
           </div>
         </div>
+
+        {/* Wrap async data-dependent UI in Suspense */}
+        <Suspense
+          fallback={
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-1 h-64 bg-muted animate-pulse rounded-lg" />
+              <div className="lg:col-span-2 h-64 bg-muted animate-pulse rounded-lg" />
+            </div>
+          }
+        >
+          <DashboardContent id={id} />
+        </Suspense>
       </div>
     </div>
   );

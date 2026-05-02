@@ -15,9 +15,10 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "images.unsplash.com",
-      }
+      },
     ],
   },
+  cacheComponents: true,
   // env: {
   //   NEXT_PUBLIC_BETTER_AUTH_URL: "https://jnu-it-fest.rk370613.workers.dev",
   // },

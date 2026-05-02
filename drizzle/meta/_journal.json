@@ -5,8 +5,15 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1777133809410,
-      "tag": "0000_majestic_shadow_king",
+      "when": 1777610820675,
+      "tag": "0000_loud_medusa",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1777611960971,
+      "tag": "0001_supreme_shotgun",
       "breakpoints": true
     }
   ]

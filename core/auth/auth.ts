@@ -37,6 +37,28 @@ export const createAuth = () => {
           required: false,
           defaultValue: () => generateFestId(),
         },
+        role:{
+          type: "string",
+          required: false,
+          defaultValue: "USER",
+        },
+        phone:{
+          type: "string",
+          required: false,
+        },
+        university:{
+          type: "string",
+          required: false,
+        },
+        studentId:{
+          type: "string",
+          required: false,
+        },
+        tShirtSize:{
+          type: "string",
+          required: false,
+          enum: ["S", "M", "L", "XL", "XXL"],
+        }
       },
     },
     session: {

@@ -1,3 +1,4 @@
+import CreateSegmentForm from "@/features/Events/components/SegmentCreation";
 import About from "@/features/home/components/AboutSection";
 import EventSchedule from "@/features/home/components/EventSchedule";
 import HeroSection from "@/features/home/components/HeroSection";
@@ -14,6 +15,7 @@ export default function JnUITFestLanding() {
       <Segments />
       <EventSchedule />
       <SpeakersJudges />
+      <CreateSegmentForm />
       {/* Footer */}
       <footer className="bg-slate-900 text-slate-300 py-12 px-6 md:px-12 border-t border-slate-800">
         <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
@@ -62,7 +64,8 @@ export default function JnUITFestLanding() {
           </div>
         </div>
         <div className="max-w-6xl mx-auto mt-12 pt-8 border-t border-slate-800 text-sm text-center text-slate-500">
-          © {new Date().getFullYear()} Jagannath University IT Society. All
+          {/* © {new Date().getFullYear()}  */}
+          Jagannath University IT Society. All
           rights reserved.
         </div>
       </footer>
