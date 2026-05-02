@@ -10,10 +10,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useAuth } from "@/hooks/useUserSession";
 import { Building2, Edit, Mail, MapPin, Phone } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getUserProfile } from "../queries";
-import { useAuth } from "@/hooks/useUserSession";
 
 type DbUser = {
   id: string;
@@ -24,7 +24,7 @@ type DbUser = {
 };
 
 export default function UserInfoCard() {
-   const {user, userId} = useAuth();
+  const { user, userId } = useAuth();
   const [userinfo, setUserData] = useState<DbUser | null>(null);
   useEffect(() => {
     const fetchUserFromDB = async () => {
@@ -65,9 +65,7 @@ export default function UserInfoCard() {
         </div>
         <div className="flex items-center gap-3 text-slate-600">
           <Mail className="w-5 h-5 text-secondary" />
-          <span className="text-sm text-slate-300">
-            {user?.email}
-          </span>
+          <span className="text-sm text-slate-300">{user?.email}</span>
         </div>
         <div className="flex items-center gap-3 text-slate-600">
           <Phone className="w-5 h-5 text-secondary" />
