@@ -51,6 +51,6 @@ export async function getSegment() {
     return { success: true, data: newSegment };
   } catch (error) {
     console.error("Segment creation failed:", error);
-    return { success: false, error: "Failed to create segment" };
+    return { success: false, data: [], error: "Failed to create segment" };
   }
 }

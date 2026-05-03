@@ -1,8 +1,9 @@
-export default function SingleEvent() {
+
+
+export default async function SingleEvent() {
     return (
         <div>
-            SingleEvent
-            
+            SingleEvent         
         </div>
     );
 }

@@ -204,14 +204,77 @@ const navLinks: NavLink[] = [
 
 function UserMenuFallback() {
   return (
-    <Skeleton className="h-12 w-12 rounded-full ring-1 ring-cyan-500 shadow-2xl shadow-violet-500" />
+    <Skeleton className="h-10 w-10 md:h-12 md:w-12 rounded-full ring-1 ring-cyan-500 shadow-lg" />
   );
 }
 
+// ------------------------------------------------------------------
+// 🏗️ আর্কিটেকচার: usePathname-এর জন্য আইসোলেটেড কম্পোনেন্ট
+// ------------------------------------------------------------------
+
+function DesktopLinks() {
+  const path = usePathname(); // ডাইনামিক হুক এখন শুধু এই ছোট কম্পোনেন্টের ভেতর বন্দি!
+
+  return (
+    <>
+      {navLinks.map((link) => (
+        <Link
+          key={link.title}
+          href={link.href}
+          className={`text-md font-medium relative py-1 transition-colors ${
+            path === link.href
+              ? "text-secondary"
+              : "text-slate-300 hover:text-white"
+          }`}
+        >
+          {link.title}
+          {path === link.href && (
+            <motion.span
+              layoutId="underline"
+              className="absolute bottom-0 left-0 w-full h-0.5 bg-secondary shadow-[0_0_8px_rgba(251,191,36,0.8)]"
+              initial={{ scaleX: 0, opacity: 0 }}
+              animate={{ scaleX: 1, opacity: 1 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              style={{ originX: 0 }}
+            />
+          )}
+        </Link>
+      ))}
+    </>
+  );
+}
+
+function MobileLinks({ closeMenu }: { closeMenu: () => void }) {
+  const path = usePathname();
+
+  return (
+    <>
+      {navLinks.map((link) => (
+        <Link
+          key={link.title}
+          href={link.href}
+          onClick={closeMenu}
+          className={`text-lg font-medium ${
+            path === link.href
+              ? "text-white bg-secondary px-4 py-2 rounded"
+              : "text-slate-300"
+          } transition-colors`}
+        >
+          {link.title}
+        </Link>
+      ))}
+    </>
+  );
+}
+
+// ------------------------------------------------------------------
+// 🚀 Main Navbar (Safe & Static Wrapper)
+// ------------------------------------------------------------------
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const path = usePathname();
+
+  // ❌ usePathname এখান থেকে রিমুভ করা হয়েছে। ফলে Navbar এখন পুরোপুরি বিল্ড-সেফ!
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -234,49 +297,37 @@ export default function Navbar() {
       )}
 
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-8">
-        {/* Logo — সম্পূর্ণ static */}
+        {/* ✅ লোগো - ইনস্ট্যান্ট লোড হবে */}
         <Link href="/" className="flex items-center gap-2">
           <span className="font-serif text-xl font-bold tracking-wider text-amber-400">
             JnUITS
           </span>
         </Link>
 
-        {/* Desktop Nav Links — static */}
+        {/* ✅ ডেস্কটপ ন্যাভবার */}
         <div className="hidden items-center space-x-8 md:flex">
-          {navLinks.map((link) => (
-            <Link
-              key={link.title}
-              href={link.href}
-              className={`text-md font-medium relative py-1 transition-colors ${
-                path === link.href
-                  ? "text-secondary"
-                  : "text-slate-300 hover:text-white"
-              }`}
-            >
-              {link.title}
-              {path === link.href && (
-                <motion.span
-                  layoutId="underline"
-                  className="absolute bottom-0 left-0 w-full h-0.5 bg-secondary shadow-[0_0_8px_rgba(251,191,36,0.8)]"
-                  initial={{ scaleX: 0, opacity: 0 }}
-                  animate={{ scaleX: 1, opacity: 1 }}
-                  transition={{ duration: 0.3, ease: "easeOut" }}
-                  style={{ originX: 0 }}
-                />
-              )}
-            </Link>
-          ))}
+          {/* শুধু ডাইনামিক লিংকগুলোকে Suspense-এ রাখা হলো */}
+          <Suspense fallback={<Skeleton className="h-6 w-64 bg-slate-800" />}>
+            <DesktopLinks />
+          </Suspense>
+
           <Separator
             orientation="vertical"
             className="h-10 my-4 bg-secondary/30"
           />
+
+          {/* শুধু Auth ডাটাকে Suspense-এ রাখা হলো */}
           <Suspense fallback={<UserMenuFallback />}>
             <UserMenu />
           </Suspense>
         </div>
 
-        {/* Mobile Sheet */}
+        {/* ✅ মোবাইল ন্যাভবার */}
         <div className="flex items-center gap-4 md:hidden">
+          <Suspense fallback={<UserMenuFallback />}>
+            <UserMenu />
+          </Suspense>
+
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger>
               <div className="hover:bg-slate-800 flex h-10 w-10 cursor-pointer items-center justify-center rounded-md text-white transition-colors">
@@ -294,20 +345,13 @@ export default function Navbar() {
                 </SheetTitle>
               </SheetHeader>
               <div className="mt-8 flex flex-col space-y-4 justify-center items-center">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.title}
-                    href={link.href}
-                    onClick={() => setIsOpen(false)}
-                    className={`text-lg font-medium ${
-                      path === link.href
-                        ? "text-white bg-secondary px-4 py-2 rounded"
-                        : "text-slate-300"
-                    } transition-colors`}
-                  >
-                    {link.title}
-                  </Link>
-                ))}
+                {/* মোবাইলের ডাইনামিক লিংক */}
+                <Suspense
+                  fallback={<Skeleton className="h-40 w-full bg-slate-800" />}
+                >
+                  <MobileLinks closeMenu={() => setIsOpen(false)} />
+                </Suspense>
+
                 <Separator className="bg-slate-800" />
 
                 <Suspense fallback={<UserMenuFallback />}>
