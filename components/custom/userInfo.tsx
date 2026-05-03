@@ -19,7 +19,7 @@ export default function UserMenu() {
       {user ? (
         <>
           <Link
-            href={`/dashboard/${user.id}`} // ✅ Fix: user.id সরাসরি
+            href={`/dashboard`}
             className="text-cyan-300 hover:text-amber-400 font-medium"
           >
             Profile

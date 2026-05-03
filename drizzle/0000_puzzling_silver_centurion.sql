@@ -40,14 +40,23 @@ CREATE TABLE `registration` (
 CREATE TABLE `segment` (
 	`id` text PRIMARY KEY NOT NULL,
 	`title` text NOT NULL,
+	`subtitle` text,
+	`type` text,
 	`description` text NOT NULL,
 	`image` text,
+	`date` text,
+	`time` text,
+	`venue` text,
+	`seatsTotal` integer DEFAULT 0,
+	`seatsFilled` integer DEFAULT 0,
 	`responsible` text,
 	`isTeamEvent` integer NOT NULL,
 	`minMembers` integer,
 	`maxMembers` integer,
 	`prizeMoney` real,
-	`fee` real
+	`fee` real,
+	`created_at` integer NOT NULL,
+	`updated_at` integer NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE `session` (
@@ -74,14 +83,6 @@ CREATE TABLE `submitData` (
 	FOREIGN KEY (`segmentId`) REFERENCES `segment`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
-CREATE TABLE `teamMember` (
-	`teamId` text NOT NULL,
-	`userId` text NOT NULL,
-	PRIMARY KEY(`teamId`, `userId`),
-	FOREIGN KEY (`teamId`) REFERENCES `team`(`id`) ON UPDATE no action ON DELETE cascade,
-	FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE cascade
-);
---> statement-breakpoint
 CREATE TABLE `team` (
 	`id` text PRIMARY KEY NOT NULL,
 	`teamName` text NOT NULL,
@@ -94,6 +95,14 @@ CREATE TABLE `team` (
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `team_teamCode_unique` ON `team` (`teamCode`);--> statement-breakpoint
+CREATE TABLE `teamMember` (
+	`teamId` text NOT NULL,
+	`userId` text NOT NULL,
+	PRIMARY KEY(`teamId`, `userId`),
+	FOREIGN KEY (`teamId`) REFERENCES `team`(`id`) ON UPDATE no action ON DELETE cascade,
+	FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE cascade
+);
+--> statement-breakpoint
 CREATE TABLE `user` (
 	`id` text PRIMARY KEY NOT NULL,
 	`fest_id` text,

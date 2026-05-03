@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "fb099294-261a-45cc-86cf-534448e57105",
+  "id": "80ba5eec-0df5-463c-b3b1-be5ceea8da9a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "account": {
@@ -295,6 +295,20 @@
           "notNull": true,
           "autoincrement": false
         },
+        "subtitle": {
+          "name": "subtitle",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "description": {
           "name": "description",
           "type": "text",
@@ -308,6 +322,43 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+        },
+        "date": {
+          "name": "date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "time": {
+          "name": "time",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "venue": {
+          "name": "venue",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "seatsTotal": {
+          "name": "seatsTotal",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": 0
+        },
+        "seatsFilled": {
+          "name": "seatsFilled",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": 0
         },
         "responsible": {
           "name": "responsible",
@@ -349,6 +400,20 @@
           "type": "real",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
           "autoincrement": false
         }
       },
@@ -525,65 +590,6 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "teamMember": {
-      "name": "teamMember",
-      "columns": {
-        "teamId": {
-          "name": "teamId",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "userId": {
-          "name": "userId",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "teamMember_teamId_team_id_fk": {
-          "name": "teamMember_teamId_team_id_fk",
-          "tableFrom": "teamMember",
-          "tableTo": "team",
-          "columnsFrom": [
-            "teamId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "teamMember_userId_user_id_fk": {
-          "name": "teamMember_userId_user_id_fk",
-          "tableFrom": "teamMember",
-          "tableTo": "user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "teamMember_teamId_userId_pk": {
-          "columns": [
-            "teamId",
-            "userId"
-          ],
-          "name": "teamMember_teamId_userId_pk"
-        }
-      },
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
     "team": {
       "name": "team",
       "columns": {
@@ -668,6 +674,65 @@
         }
       },
       "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "teamMember": {
+      "name": "teamMember",
+      "columns": {
+        "teamId": {
+          "name": "teamId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "userId": {
+          "name": "userId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "teamMember_teamId_team_id_fk": {
+          "name": "teamMember_teamId_team_id_fk",
+          "tableFrom": "teamMember",
+          "tableTo": "team",
+          "columnsFrom": [
+            "teamId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "teamMember_userId_user_id_fk": {
+          "name": "teamMember_userId_user_id_fk",
+          "tableFrom": "teamMember",
+          "tableTo": "user",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "teamMember_teamId_userId_pk": {
+          "columns": [
+            "teamId",
+            "userId"
+          ],
+          "name": "teamMember_teamId_userId_pk"
+        }
+      },
       "uniqueConstraints": {},
       "checkConstraints": {}
     },

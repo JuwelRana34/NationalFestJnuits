@@ -10,7 +10,7 @@ const generateFestId = () => {
   return `JnUITSFest-${randomNum}`;
 };
 
-export const users = sqliteTable("user", {
+export const user = sqliteTable("user", {
   id: t.text("id").primaryKey(),
   festId: t
     .text("fest_id")
@@ -39,7 +39,7 @@ export const session = sqliteTable("session", {
   userId: t
     .text("user_id")
     .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
+    .references(() => user.id, { onDelete: "cascade" }),
   token: t.text("token").notNull().unique(),
   expiresAt: t.integer("expires_at", { mode: "timestamp_ms" }).notNull(),
   ipAddress: t.text("ip_address"),
@@ -54,7 +54,7 @@ export const account = sqliteTable("account", {
     .text("user_id")
     .notNull()
     // FIXED: Changed user.id to users.id
-    .references(() => users.id, { onDelete: "cascade" }),
+    .references(() => user.id, { onDelete: "cascade" }),
   accountId: t.text("account_id").notNull(),
   providerId: t.text("provider_id").notNull(),
   accessToken: t.text("access_token"),
@@ -84,7 +84,7 @@ export const verification = sqliteTable("verification", {
 // ==========================
 // Fest Core Tables (Business)
 // ==========================
-export const segments = sqliteTable("segment", {
+export const segment = sqliteTable("segment", {
   id: t.text("id").primaryKey(),
   title: t.text("title").notNull(),
   subtitle: t.text("subtitle"), // নতুন যুক্ত করা হয়েছে
@@ -120,32 +120,32 @@ export const segments = sqliteTable("segment", {
     .$defaultFn(() => new Date()),
 });
 
-export const teams = sqliteTable("team", {
+export const team = sqliteTable("team", {
   id: t.text("id").primaryKey(),
   teamName: t.text("teamName").notNull(),
   teamCode: t.text("teamCode").notNull().unique(),
   segmentId: t
     .text("segmentId")
     .notNull()
-    .references(() => segments.id),
+    .references(() => segment.id),
   creatorId: t
     .text("creatorId")
     .notNull()
-    .references(() => users.id),
+    .references(() => user.id),
   submissionInfo: t.text("submissionInfo"),
 });
 
-export const teamMembers = sqliteTable(
+export const teamMember = sqliteTable(
   "teamMember",
   {
     teamId: t
       .text("teamId")
       .notNull()
-      .references(() => teams.id, { onDelete: "cascade" }),
+      .references(() => team.id, { onDelete: "cascade" }),
     userId: t
       .text("userId")
       .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
+      .references(() => user.id, { onDelete: "cascade" }),
   },
   // FIXED: Changed variable name from 't' to 'table' to avoid shadowing, and used t.primaryKey
   (table) => ({
@@ -153,14 +153,14 @@ export const teamMembers = sqliteTable(
   }),
 );
 
-export const registrations = sqliteTable("registration", {
+export const registration = sqliteTable("registration", {
   id: t.text("id").primaryKey(),
   segmentId: t
     .text("segmentId")
     .notNull()
-    .references(() => segments.id),
-  userId: t.text("userId").references(() => users.id),
-  teamId: t.text("teamId").references(() => teams.id),
+    .references(() => segment.id),
+  userId: t.text("userId").references(() => user.id),
+  teamId: t.text("teamId").references(() => team.id),
 });
 
 // ==========================
@@ -171,7 +171,7 @@ export const payments = sqliteTable("payment", {
   registrationId: t
     .text("registrationId")
     .notNull()
-    .references(() => registrations.id),
+    .references(() => registration.id),
   transactionId: t.text("transactionId").notNull().unique(),
   amount: t.real("amount").notNull(),
   paymentMethod: t
@@ -190,11 +190,11 @@ export const submitData = sqliteTable("submitData", {
   userId: t
     .text("userId")
     .notNull()
-    .references(() => users.id),
+    .references(() => user.id),
   segmentId: t
     .text("segmentId")
     .notNull()
-    .references(() => segments.id),
+    .references(() => segment.id),
   fileLink: t.text("fileLink").notNull(),
   createdAt: t.integer("createdAt", { mode: "timestamp" }).notNull(),
   updatedAt: t.integer("updatedAt", { mode: "timestamp" }).notNull(),
@@ -205,92 +205,92 @@ export const submitData = sqliteTable("submitData", {
 // Drizzle Relations
 // ==========================
 
-export const usersRelations = relations(users, ({ many }) => ({
+export const userRelations = relations(user, ({ many }) => ({
   accounts: many(account),
   sessions: many(session),
-  createdTeams: many(teams),
-  teamMembers: many(teamMembers),
-  registrations: many(registrations),
+  createdTeams: many(team),
+  teamMembers: many(teamMember),
+  registrations: many(registration),
   submissions: many(submitData),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
-  user: one(users, {
+  user: one(user, {
     fields: [session.userId],
-    references: [users.id],
+    references: [user.id],
   }),
 }));
 
 export const accountRelations = relations(account, ({ one }) => ({
-  user: one(users, {
+  user: one(user, {
     fields: [account.userId],
-    references: [users.id],
+    references: [user.id],
   }),
 }));
 
-export const segmentsRelations = relations(segments, ({ many }) => ({
-  teams: many(teams),
-  registrations: many(registrations),
+export const segmentsRelations = relations(segment, ({ many }) => ({
+  teams: many(team),
+  registrations: many(registration),
   submissions: many(submitData),
 }));
 
-export const teamsRelations = relations(teams, ({ one, many }) => ({
-  segment: one(segments, {
-    fields: [teams.segmentId],
-    references: [segments.id],
+export const teamsRelations = relations(team, ({ one, many }) => ({
+  segment: one(segment, {
+    fields: [team.segmentId],
+    references: [segment.id],
   }),
-  creator: one(users, {
-    fields: [teams.creatorId],
-    references: [users.id],
+  creator: one(user, {
+    fields: [team.creatorId],
+    references: [user.id],
   }),
-  members: many(teamMembers),
-  registrations: many(registrations),
+  members: many(teamMember),
+  registrations: many(registration),
 }));
 
-export const teamMembersRelations = relations(teamMembers, ({ one }) => ({
-  team: one(teams, {
-    fields: [teamMembers.teamId],
-    references: [teams.id],
+export const teamMembersRelations = relations(teamMember, ({ one }) => ({
+  team: one(team, {
+    fields: [teamMember.teamId],
+    references: [team.id],
   }),
-  user: one(users, {
-    fields: [teamMembers.userId],
-    references: [users.id],
+  user: one(user, {
+    fields: [teamMember.userId],
+    references: [user.id],
   }),
 }));
 
 export const registrationsRelations = relations(
-  registrations,
+  registration,
   ({ one, many }) => ({
-    segment: one(segments, {
-      fields: [registrations.segmentId],
-      references: [segments.id],
+    segment: one(segment, {
+      fields: [registration.segmentId],
+      references: [segment.id],
     }),
-    user: one(users, {
-      fields: [registrations.userId],
-      references: [users.id],
+    user: one(user, {
+      fields: [registration.userId],
+      references: [user.id],
     }),
-    team: one(teams, {
-      fields: [registrations.teamId],
-      references: [teams.id],
+    team: one(team, {
+      fields: [registration.teamId],
+      references: [team.id],
     }),
     payments: many(payments),
   }),
 );
 
 export const paymentsRelations = relations(payments, ({ one }) => ({
-  registration: one(registrations, {
+  registration: one(registration, {
     fields: [payments.registrationId],
-    references: [registrations.id],
+    references: [registration.id],
   }),
 }));
 
 export const submitDataRelations = relations(submitData, ({ one }) => ({
-  user: one(users, {
+  user: one(user, {
     fields: [submitData.userId],
-    references: [users.id],
+    references: [user.id],
   }),
-  segment: one(segments, {
+  segment: one(segment, {
     fields: [submitData.segmentId],
-    references: [segments.id],
+    references: [segment.id],
   }),
 }));

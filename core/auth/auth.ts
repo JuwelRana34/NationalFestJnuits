@@ -37,28 +37,28 @@ export const createAuth = () => {
           required: false,
           defaultValue: () => generateFestId(),
         },
-        role:{
+        role: {
           type: "string",
           required: false,
           defaultValue: "USER",
         },
-        phone:{
+        phone: {
           type: "string",
           required: false,
         },
-        university:{
+        university: {
           type: "string",
           required: false,
         },
-        studentId:{
+        studentId: {
           type: "string",
           required: false,
         },
-        tShirtSize:{
+        tShirtSize: {
           type: "string",
           required: false,
           enum: ["S", "M", "L", "XL", "XXL"],
-        }
+        },
       },
     },
     session: {

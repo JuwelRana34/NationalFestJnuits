@@ -91,6 +91,7 @@ export default function LoginPage() {
                     </label>
                     <Link
                       href="/forgot-password"
+                      prefetch={false}
                       className="text-sm font-medium"
                     >
                       Forgot password?

@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1777610820675,
-      "tag": "0000_loud_medusa",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1777611960971,
-      "tag": "0001_supreme_shotgun",
+      "when": 1777805703847,
+      "tag": "0000_puzzling_silver_centurion",
       "breakpoints": true
     }
   ]

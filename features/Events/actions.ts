@@ -1,7 +1,7 @@
 "use server";
 
 import { getDb, getDbAsync } from "@/core/db/db";
-import { segments } from "@/core/db/schema";
+import { segment } from "@/core/db/schema";
 import { cacheTag, revalidateTag } from "next/cache";
 import { CreateSegmentParams } from "./Types";
 
@@ -10,7 +10,7 @@ export async function createSegment(data: CreateSegmentParams) {
     const db = getDb();
 
     const newSegment = await db
-      .insert(segments)
+      .insert(segment)
       .values({
         id: crypto.randomUUID(),
         title: data.title,
@@ -46,7 +46,7 @@ export async function getSegment() {
   try {
     const db = await getDbAsync();
 
-    const newSegment = await db.select().from(segments);
+    const newSegment = await db.select().from(segment);
 
     return { success: true, data: newSegment };
   } catch (error) {

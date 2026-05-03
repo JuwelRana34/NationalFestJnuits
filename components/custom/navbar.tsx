@@ -199,7 +199,6 @@ const navLinks: NavLink[] = [
   { title: "Segments", href: "#segments" },
   { title: "Events", href: "/events" },
   { title: "Contact", href: "/contact" },
-  { title: "Profile", href: "/dashboard" },
 ];
 
 function UserMenuFallback() {
@@ -273,8 +272,6 @@ function MobileLinks({ closeMenu }: { closeMenu: () => void }) {
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-
-  // ❌ usePathname এখান থেকে রিমুভ করা হয়েছে। ফলে Navbar এখন পুরোপুরি বিল্ড-সেফ!
 
   React.useEffect(() => {
     const handleScroll = () => {

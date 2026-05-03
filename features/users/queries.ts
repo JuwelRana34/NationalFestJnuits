@@ -20,8 +20,8 @@ export async function getUserProfile({id}:{id:string}) {
     }
 
     // ৩. DB থেকে ইউজার ডেটা ফেচ 
-    const userData = await db.query.users.findFirst({
-      where: eq(schema.users.id, id),
+    const userData = await db.query.user.findFirst({
+      where: eq(schema.user.id, id),
     });
 
     if (!userData) {
