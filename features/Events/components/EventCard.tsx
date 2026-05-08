@@ -1,7 +1,8 @@
 "use client";
 import { FullEvent } from "@/app/(main)/events/page";
-import { Bookmark, Calendar, Clock, MapPin } from "lucide-react";
+import { Calendar, Clock, MapPin } from "lucide-react";
 import { motion } from "motion/react";
+import Link from "next/link";
 
 export default function EventCard(props: Partial<FullEvent>) {
   const {
@@ -20,7 +21,10 @@ export default function EventCard(props: Partial<FullEvent>) {
 
   const safeSeatsFilled = Number(seatsFilled ?? 0);
   const safeSeatsTotal = Number(seatsTotal ?? 0);
-  const fillPercent = safeSeatsTotal > 0 ? Math.round((safeSeatsFilled / safeSeatsTotal) * 100) : 0;
+  const fillPercent =
+    safeSeatsTotal > 0
+      ? Math.round((safeSeatsFilled / safeSeatsTotal) * 100)
+      : 0;
   const seatsLeft = Math.max(0, safeSeatsTotal - safeSeatsFilled);
 
   return (
@@ -112,10 +116,6 @@ export default function EventCard(props: Partial<FullEvent>) {
           </span>
         </div>
 
-        <p className="text-[13px] text-white/50 leading-relaxed mb-4">
-          {description}
-        </p>
-
         <div className="grid grid-cols-2 gap-2.5 mb-4">
           {[
             { label: "Date", value: date, icon: <Calendar size={12} /> },
@@ -160,19 +160,19 @@ export default function EventCard(props: Partial<FullEvent>) {
         </div>
 
         {/* Actions */}
-        <div className="flex gap-2.5">
+        <div className="flex flex-col  gap-2.5">
           <motion.button
             whileTap={{ scale: 0.97 }}
             className="flex-1 py-2.5 bg-amber-400 text-[#0a0f1e] text-[13px] font-bold rounded-[10px] hover:bg-amber-500 transition-colors"
           >
             Register Now →
           </motion.button>
-          <motion.button
-            whileTap={{ scale: 0.93 }}
-            className="w-11 h-11 flex items-center justify-center bg-white/5 border border-white/10 rounded-[10px] hover:bg-white/10 transition-colors"
+          <Link
+            href={`/events/${id}`}
+            className="flex-1 py-2.5 text-center bg-cyan-600 text-slate-200  font-bold rounded-[10px] hover:bg-linear-to-r hover:from-cyan-400 hover:to-violet-400 transition-colors"
           >
-            <Bookmark size={15} className="text-white/50" />
-          </motion.button>
+            Details
+          </Link>
         </div>
       </div>
     </motion.div>

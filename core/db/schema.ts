@@ -1,21 +1,17 @@
+import { generateUniqueCode } from "@/lib/UniqueCodeGenarator";
 import { relations } from "drizzle-orm";
 import * as t from "drizzle-orm/sqlite-core";
 import { sqliteTable } from "drizzle-orm/sqlite-core";
 
-// Crypto API ব্যবহার করে Unique ID জেনারেট করা
-const generateFestId = () => {
-  const array = new Uint32Array(1);
-  crypto.getRandomValues(array);
-  const randomNum = (array[0] % 90000) + 10000;
-  return `JnUITSFest-${randomNum}`;
-};
-
+// ==========================
+// Auth & User Tables
+// ==========================
 export const user = sqliteTable("user", {
   id: t.text("id").primaryKey(),
   festId: t
     .text("fest_id")
     .unique()
-    .$defaultFn(() => generateFestId()),
+    .$defaultFn(() => generateUniqueCode("JnUITSFest")),
   name: t.text("name").notNull(),
   email: t.text("email").notNull().unique(),
   emailVerified: t
@@ -24,16 +20,24 @@ export const user = sqliteTable("user", {
     .default(false),
   image: t.text("image"),
 
-  // Custom Fest Fields
+  // Custom Fest Fields Updated
   role: t.text("role", { enum: ["USER", "ADMIN"] }).default("USER"),
-  phone: t.text("phone"),
-  university: t.text("university"),
-  studentId: t.text("studentId"),
+  phone: t.text("phone"), // WhatsApp Number হিসেবে ব্যবহৃত হবে
+  institution: t.text("institution"), // 'university' এর বদলে 'institution' (School/College কাভার করতে)
+  department: t.text("department"),
+  studentIdUrl: t.text("student_id_url"), // Student ID Scan Image URL (R2/S3)
   tShirtSize: t.text("tShirtSize", { enum: ["S", "M", "L", "XL", "XXL"] }),
-  createdAt: t.integer("created_at", { mode: "timestamp_ms" }).notNull(),
-  updatedAt: t.integer("updated_at", { mode: "timestamp_ms" }).notNull(),
+  createdAt: t
+    .integer("created_at", { mode: "timestamp_ms" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+  updatedAt: t
+    .integer("updated_at", { mode: "timestamp_ms" })
+    .notNull()
+    .$defaultFn(() => new Date()),
 });
 
+// Session, Account, Verification tables remain exactly the same...
 export const session = sqliteTable("session", {
   id: t.text("id").primaryKey(),
   userId: t
@@ -53,7 +57,6 @@ export const account = sqliteTable("account", {
   userId: t
     .text("user_id")
     .notNull()
-    // FIXED: Changed user.id to users.id
     .references(() => user.id, { onDelete: "cascade" }),
   accountId: t.text("account_id").notNull(),
   providerId: t.text("provider_id").notNull(),
@@ -87,29 +90,22 @@ export const verification = sqliteTable("verification", {
 export const segment = sqliteTable("segment", {
   id: t.text("id").primaryKey(),
   title: t.text("title").notNull(),
-  subtitle: t.text("subtitle"), // নতুন যুক্ত করা হয়েছে
-  type: t.text("type"), // নতুন যুক্ত করা হয়েছে (যেমন: "Workshop", "Contest")
+  subtitle: t.text("subtitle"),
+  type: t.text("type"),
   description: t.text("description").notNull(),
   image: t.text("image"),
-
-  // Schedule & Location (নতুন যুক্ত করা হয়েছে)
-  date: t.text("date"), // YYYY-MM-DD ফরম্যাটে রাখতে পারেন
-  time: t.text("time"), // HH:MM AM/PM ফরম্যাটে রাখতে পারেন
-  venue: t.text("venue"), // যেমন: "Central Auditorium"
-
-  // Capacity & Tracking (নতুন যুক্ত করা হয়েছে)
+  date: t.text("date"),
+  time: t.text("time"),
+  venue: t.text("venue"),
+  extraMemberFee: t.real("extra_member_fee").default(0),
   seatsTotal: t.integer("seatsTotal").default(0),
   seatsFilled: t.integer("seatsFilled").default(0),
-
-  // Management & Rules (আগেরগুলো)
   responsible: t.text("responsible", { mode: "json" }),
   isTeamEvent: t.integer("isTeamEvent", { mode: "boolean" }).notNull(),
   minMembers: t.integer("minMembers"),
   maxMembers: t.integer("maxMembers"),
   prizeMoney: t.real("prizeMoney"),
   fee: t.real("fee"),
-
-  // Timestamps
   createdAt: t
     .integer("created_at", { mode: "timestamp_ms" })
     .notNull()
@@ -123,7 +119,11 @@ export const segment = sqliteTable("segment", {
 export const team = sqliteTable("team", {
   id: t.text("id").primaryKey(),
   teamName: t.text("teamName").notNull(),
-  teamCode: t.text("teamCode").notNull().unique(),
+  teamCode: t
+    .text("teamCode")
+    .notNull()
+    .unique()
+    .$defaultFn(() => generateUniqueCode("TEAM")),
   segmentId: t
     .text("segmentId")
     .notNull()
@@ -132,35 +132,94 @@ export const team = sqliteTable("team", {
     .text("creatorId")
     .notNull()
     .references(() => user.id),
-  submissionInfo: t.text("submissionInfo"),
+  createdAt: t
+    .integer("created_at", { mode: "timestamp_ms" })
+    .notNull()
+    .$defaultFn(() => new Date()),
 });
 
-export const teamMember = sqliteTable(
-  "teamMember",
-  {
-    teamId: t
-      .text("teamId")
-      .notNull()
-      .references(() => team.id, { onDelete: "cascade" }),
-    userId: t
-      .text("userId")
-      .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
-  },
-  // FIXED: Changed variable name from 't' to 'table' to avoid shadowing, and used t.primaryKey
-  (table) => ({
-    pk: t.primaryKey({ columns: [table.teamId, table.userId] }),
-  }),
-);
+export const teamMember = sqliteTable("teamMember", {
+  id: t.text("id").primaryKey(),
+  teamId: t
+    .text("teamId")
+    .notNull()
+    .references(() => team.id, { onDelete: "cascade" }),
+  userId: t.text("userId").references(() => user.id, { onDelete: "set null" }),
 
+  name: t.text("name").notNull(),
+  institution: t.text("institution"),
+  phone: t.text("phone").notNull(),
+  department: t.text("department"),
+  isLeader: t
+    .integer("is_leader", { mode: "boolean" })
+    .notNull()
+    .default(false),
+  createdAt: t
+    .integer("created_at", { mode: "timestamp_ms" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+});
+
+export const announcement = sqliteTable("announcement", {
+  id: t.text("id").primaryKey(),
+  title: t.text("title").notNull(),
+  content: t.text("content").notNull(), // নোটিশের বিস্তারিত
+  image: t.text("image"), // নোটিশের সাথে কোনো ব্যানার থাকলে
+  isPublished: t
+    .integer("is_published", { mode: "boolean" })
+    .notNull()
+    .default(true), // ড্রাফট করে রাখার জন্য
+
+  // অপশনাল: যদি নির্দিষ্ট কোনো ইভেন্টের নোটিশ হয়, গ্লোবাল নোটিশ হলে এটা null থাকবে
+  segmentId: t
+    .text("segmentId")
+    .references(() => segment.id, { onDelete: "set null" }),
+
+  createdAt: t
+    .integer("created_at", { mode: "timestamp_ms" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+  updatedAt: t
+    .integer("updated_at", { mode: "timestamp_ms" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+});
+
+// ==========================
+// Updated Registration Table
+// ==========================
 export const registration = sqliteTable("registration", {
   id: t.text("id").primaryKey(),
+  trackingNumber: t
+    .text("tracking_number")
+    .notNull()
+    .unique()
+    .$defaultFn(() => generateUniqueCode("TRK")), // ইউজারের সার্চের জন্য
   segmentId: t
     .text("segmentId")
     .notNull()
     .references(() => segment.id),
-  userId: t.text("userId").references(() => user.id),
-  teamId: t.text("teamId").references(() => team.id),
+  userId: t.text("userId").references(() => user.id), // For Individual Events
+  teamId: t.text("teamId").references(() => team.id), // For Team Events
+
+  // Requirements Specific Fields
+  category: t.text("category", { enum: ["UNIVERSITY", "SCHOOL_COLLEGE"] }),
+  ambassadorCode: t.text("ambassador_code"), // 5% discount tracking
+  selectionStatus: t
+    .text("selection_status", { enum: ["PENDING", "SELECTED", "REJECTED"] })
+    .default("PENDING"), // Selection Status
+
+  // Dynamic data payload for Hackathon Links, IGN, App Abstracts, WPM etc.
+  metadata: t.text("metadata", { mode: "json" }),
+
+  couponId: t
+    .text("coupon_id")
+    .references(() => coupon.id, { onDelete: "set null" }),
+
+  createdAt: t
+    .integer("created_at", { mode: "timestamp_ms" })
+    .notNull()
+    .$defaultFn(() => new Date()),
 });
 
 // ==========================
@@ -172,17 +231,19 @@ export const payments = sqliteTable("payment", {
     .text("registrationId")
     .notNull()
     .references(() => registration.id),
-  transactionId: t.text("transactionId").notNull().unique(),
-  amount: t.real("amount").notNull(),
+  transactionId: t.text("transactionId").notNull().unique(), // SSLCommerz tran_id
+  baseAmount: t.real("base_amount").notNull(), // মূল ফি
+  paidAmount: t.real("paid_amount").notNull(), // ডিসকাউন্ট বাদে যা পেমেন্ট করা হয়েছে
   paymentMethod: t
-    .text("paymentMethod", {
-      enum: ["SSLCOMMERZ", "BKASH"],
-    })
+    .text("paymentMethod", { enum: ["SSLCOMMERZ", "BKASH"] })
     .notNull(),
   status: t
     .text("status", { enum: ["PENDING", "SUCCESS", "FAILED"] })
     .notNull(),
-  createdAt: t.integer("createdAt", { mode: "timestamp" }).notNull(),
+  createdAt: t
+    .integer("createdAt", { mode: "timestamp_ms" })
+    .notNull()
+    .$defaultFn(() => new Date()),
 });
 
 export const submitData = sqliteTable("submitData", {
@@ -195,11 +256,33 @@ export const submitData = sqliteTable("submitData", {
     .text("segmentId")
     .notNull()
     .references(() => segment.id),
+  description: t.text("description"),
+  teamId: t.text("teamId").references(() => team.id),
+
   fileLink: t.text("fileLink").notNull(),
-  createdAt: t.integer("createdAt", { mode: "timestamp" }).notNull(),
-  updatedAt: t.integer("updatedAt", { mode: "timestamp" }).notNull(),
+  createdAt: t
+    .integer("createdAt", { mode: "timestamp_ms" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+  updatedAt: t
+    .integer("updatedAt", { mode: "timestamp_ms" })
+    .notNull()
+    .$defaultFn(() => new Date()),
 });
 
+export const coupon = sqliteTable("coupon", {
+  id: t.text("id").primaryKey(),
+  code: t.text("code").notNull().unique(), // e.g., "JNUITS5", "CAMPUS26"
+  discountPercentage: t.real("discount_percentage").notNull(), // e.g., 5 for 5%
+  isActive: t.integer("is_active", { mode: "boolean" }).notNull().default(true),
+  maxUses: t.integer("max_uses"), // Null means unlimited
+  usedCount: t.integer("used_count").notNull().default(0),
+  expiresAt: t.integer("expires_at", { mode: "timestamp_ms" }),
+  createdAt: t
+    .integer("created_at", { mode: "timestamp_ms" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+});
 
 // ==========================
 // Drizzle Relations
@@ -245,6 +328,7 @@ export const teamsRelations = relations(team, ({ one, many }) => ({
   }),
   members: many(teamMember),
   registrations: many(registration),
+  submissions: many(submitData),
 }));
 
 export const teamMembersRelations = relations(teamMember, ({ one }) => ({
@@ -274,6 +358,11 @@ export const registrationsRelations = relations(
       references: [team.id],
     }),
     payments: many(payments),
+
+    coupon: one(coupon, {
+      fields: [registration.couponId],
+      references: [coupon.id],
+    }),
   }),
 );
 
@@ -291,6 +380,21 @@ export const submitDataRelations = relations(submitData, ({ one }) => ({
   }),
   segment: one(segment, {
     fields: [submitData.segmentId],
+    references: [segment.id],
+  }),
+  team: one(team, {
+    fields: [submitData.teamId],
+    references: [team.id],
+  }),
+}));
+
+export const couponRelations = relations(coupon, ({ many }) => ({
+  registrations: many(registration),
+}));
+
+export const announcementRelations = relations(announcement, ({ one }) => ({
+  segment: one(segment, {
+    fields: [announcement.segmentId],
     references: [segment.id],
   }),
 }));

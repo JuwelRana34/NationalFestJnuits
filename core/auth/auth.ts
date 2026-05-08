@@ -1,15 +1,9 @@
 import * as schema from "@/core/db/schema";
+import { generateUniqueCode } from "@/lib/UniqueCodeGenarator";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { drizzle } from "drizzle-orm/d1";
-
-const generateFestId = () => {
-  const array = new Uint32Array(1);
-  crypto.getRandomValues(array);
-  const randomNum = (array[0] % 90000) + 10000;
-  return `JnUITSFest-${randomNum}`;
-};
 
 export const createAuth = () => {
   const { env } = getCloudflareContext();
@@ -35,7 +29,7 @@ export const createAuth = () => {
         festId: {
           type: "string",
           required: false,
-          defaultValue: () => generateFestId(),
+          defaultValue: () =>generateUniqueCode("JnUITSFest"),
         },
         role: {
           type: "string",

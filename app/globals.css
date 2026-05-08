@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
@@ -57,7 +58,7 @@
   --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(82.8% 0.189 84.429);
   --primary-foreground: oklch(0.145 0 0);
-  --secondary: oklch(0.7 0.1 200); 
+  --secondary: oklch(0.7 0.1 200);
   --secondary-foreground: oklch(0.145 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
@@ -129,5 +130,11 @@
   }
   p {
     @apply text-zinc-400;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply tracking-tight text-transparent bg-clip-text bg-linear-to-r from-violet-400 to-cyan-400;
   }
 }

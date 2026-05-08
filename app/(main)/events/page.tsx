@@ -14,7 +14,7 @@ export default async function EventPage() {
   return (
     <>
       {data.length === 0 ? (
-        <div className="p-4 bg-gray-100 rounded">No events found.</div>
+        <div className="pt-20 flex min-h-screen justify-center items-center rounded">No events found!</div>
       ) : (
         <Events eventsData={data as FullEvent[]} />
       )}

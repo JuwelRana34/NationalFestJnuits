@@ -1,4 +1,5 @@
 "use client";
+
 import { useAuth } from "@/hooks/useUserSession";
 import Image from "next/image";
 import Link from "next/link";
@@ -18,21 +19,15 @@ export default function UserMenu() {
     <div className="flex items-center gap-4">
       {user ? (
         <>
-          <Link
-            href={`/dashboard`}
-            className="text-cyan-300 hover:text-amber-400 font-medium"
-          >
-            Profile
-          </Link>
           <Image
-            src={user.image || ""}
+            src={user?.image || ""}
             alt="User"
             width={30}
             height={30}
             className="rounded-full"
             unoptimized
           />
-          <LogoutButton />
+          <LogoutButton/>
         </>
       ) : (
         <Link href="/signin">Login</Link>

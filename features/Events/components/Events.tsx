@@ -71,7 +71,7 @@ export default function Events({ eventsData }: { eventsData: FullEvent[] }) {
             {/* Cards Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 justify-items-center w-full">
               {filteredEvents.map((event) => (
-                // Wrapper bounds the max-width to ensure the card doesn't stretch weirdly or overflow
+               
                 <div
                   key={event.id}
                   className="w-full max-w-90 flex justify-center"

@@ -40,6 +40,7 @@ export default function CreateSegmentForm() {
     defaultValues: {
       isTeamEvent: false,
       responsible: [],
+      extraMemberFee: 0,
     },
   });
 
@@ -53,9 +54,11 @@ export default function CreateSegmentForm() {
     name: "isTeamEvent",
     defaultValue: false,
   });
+
   const onSubmit = async (data: SegmentFormOutput) => {
     console.log("Validated Data Submitted:", data);
     alert("Form submitted successfully! Check console for payload.");
+    // seatsFilled is left exactly as requested
     await createSegment({ ...data, seatsFilled: 0 });
     reset();
   };
@@ -89,7 +92,7 @@ export default function CreateSegmentForm() {
                   </Label>
                   <Input
                     id="title"
-                    className="text-cyan-200"
+                    className="text-cyan-200 border-slate-600"
                     placeholder="e.g., Hackathon 2024"
                     {...register("title")}
                   />
@@ -105,7 +108,7 @@ export default function CreateSegmentForm() {
                   </Label>
                   <Input
                     id="subtitle"
-                    className="text-cyan-200"
+                    className="text-cyan-200 border-slate-600"
                     placeholder="e.g., Code for the future"
                     {...register("subtitle")}
                   />
@@ -123,17 +126,26 @@ export default function CreateSegmentForm() {
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
-                        <SelectTrigger className="w-full bg-slate-800 border-slate-300">
+                        <SelectTrigger
+                          className={`w-full bg-slate-800 border-slate-700 ${
+                            field.value ? "text-cyan-200" : "text-slate-400"
+                          }`}
+                        >
                           <SelectValue placeholder="Select a segment type" />
                         </SelectTrigger>
                         <SelectContent className="bg-slate-700 border-slate-700 text-slate-100">
                           <SelectItem value="Competition">
-                            Competition
+                            Competition (Hackathons, Olympiads)
                           </SelectItem>
-                          <SelectItem value="Workshop">Workshop</SelectItem>
-                          <SelectItem value="Seminar">Seminar</SelectItem>
-                          <SelectItem value="Webinar">Webinar</SelectItem>
-                          <SelectItem value="Cultural">Cultural</SelectItem>
+                          <SelectItem value="Exhibition">
+                            Exhibition (App Showcasing)
+                          </SelectItem>
+                          <SelectItem value="Gaming">
+                            Gaming (Esports)
+                          </SelectItem>
+                          <SelectItem value="General">
+                            General (Visitor, Tech Talk)
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     )}
@@ -145,21 +157,8 @@ export default function CreateSegmentForm() {
                   )}
                 </div>
 
-                {/* <div className="space-y-2">
-                  <Label htmlFor="type">Segment Type</Label>
-                  <Input
-                    id="type"
-                    placeholder="e.g., Competition, Workshop"
-                    {...register("type")}
-                  />
-                  {errors.type && (
-                    <p className="text-xs text-red-400">
-                      {errors.type.message}
-                    </p>
-                  )}
-                </div> */}
                 <div className="space-y-2">
-                  <Label className="text-cyan-200" htmlFor="image">
+                  <Label className="text-slate-200" htmlFor="image">
                     Image URL
                   </Label>
                   <div className="relative">
@@ -169,7 +168,7 @@ export default function CreateSegmentForm() {
                     <Input
                       id="image"
                       type="url"
-                      className="pl-10 text-cyan-200"
+                      className="pl-10 text-cyan-200 border-slate-600"
                       placeholder="https://example.com/image.jpg"
                       {...register("image")}
                     />
@@ -188,7 +187,7 @@ export default function CreateSegmentForm() {
                 <Textarea
                   id="description"
                   rows={4}
-                  className="text-cyan-200"
+                  className="text-cyan-200 border-slate-600"
                   placeholder="Detailed description of the segment..."
                   {...register("description")}
                 />
@@ -221,7 +220,7 @@ export default function CreateSegmentForm() {
                     <Input
                       id="date"
                       type="date"
-                      className="pl-10 text-slate-200"
+                      className="pl-10 text-slate-200 border-slate-600"
                       {...register("date")}
                     />
                   </div>
@@ -231,7 +230,7 @@ export default function CreateSegmentForm() {
                     Time<span className="text-red-400">*</span>
                   </Label>
                   <Input
-                    className="text-slate-200"
+                    className="text-slate-200 border-slate-600"
                     id="time"
                     type="time"
                     {...register("time")}
@@ -247,7 +246,7 @@ export default function CreateSegmentForm() {
                     </div>
                     <Input
                       id="venue"
-                      className="pl-10 text-slate-200"
+                      className="pl-10 text-slate-200 border-slate-600"
                       placeholder="Main Auditorium"
                       {...register("venue")}
                     />
@@ -287,7 +286,7 @@ export default function CreateSegmentForm() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="space-y-2">
+                <div className="space-y-2 ">
                   <Label className="text-slate-300" htmlFor="seatsTotal">
                     Total Seats<span className="text-red-400">*</span>
                   </Label>
@@ -299,7 +298,7 @@ export default function CreateSegmentForm() {
                       id="seatsTotal"
                       type="number"
                       min="0"
-                      className="pl-10 text-slate-200"
+                      className="pl-10 text-slate-200 border-slate-600"
                       placeholder="e.g., 100"
                       {...register("seatsTotal", { valueAsNumber: true })}
                     />
@@ -323,7 +322,7 @@ export default function CreateSegmentForm() {
                       type="number"
                       min="0"
                       step="0.01"
-                      className="pl-10 text-slate-200"
+                      className="pl-10 text-slate-200 border-slate-600"
                       placeholder="0.00"
                       {...register("fee", { valueAsNumber: true })}
                     />
@@ -344,7 +343,7 @@ export default function CreateSegmentForm() {
                       id="prizeMoney"
                       type="number"
                       min="0"
-                      className="pl-10 text-slate-200"
+                      className="pl-10 text-slate-200 border-slate-600"
                       placeholder="0.00"
                       {...register("prizeMoney", { valueAsNumber: true })}
                     />
@@ -357,9 +356,9 @@ export default function CreateSegmentForm() {
                 </div>
               </div>
 
-              {/* Conditional Team Inputs */}
+              {/* Conditional Team Inputs with added extraMemberFee */}
               {isTeamEvent && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-cyan-950/30 border border-cyan-900/50 rounded-lg animate-in fade-in slide-in-from-top-2">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4 bg-cyan-950/30 border border-cyan-900/50 rounded-lg animate-in fade-in slide-in-from-top-2">
                   <div className="space-y-2">
                     <Label className="text-cyan-300" htmlFor="minMembers">
                       Minimum Members per Team
@@ -396,6 +395,30 @@ export default function CreateSegmentForm() {
                       </p>
                     )}
                   </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="extraMemberFee" className="text-cyan-300">
+                      Extra Member Fee
+                    </Label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <DollarSign className="h-4 w-4 text-cyan-600/50" />
+                      </div>
+                      <Input
+                        id="extraMemberFee"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        placeholder="0.00"
+                        className="pl-10 border-cyan-800 focus:ring-cyan-500 text-cyan-300"
+                        {...register("extraMemberFee", { valueAsNumber: true })}
+                      />
+                    </div>
+                    {errors.extraMemberFee && (
+                      <p className="text-xs text-red-400">
+                        {errors.extraMemberFee.message}
+                      </p>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
@@ -414,7 +437,6 @@ export default function CreateSegmentForm() {
               </div>
               <Button
                 type="button"
-                // variant="outline"
                 size="sm"
                 onClick={() =>
                   append({
@@ -461,7 +483,7 @@ export default function CreateSegmentForm() {
                           </Label>
                           <Input
                             placeholder="Jane Doe"
-                            className="text-slate-200"
+                            className="text-slate-200 border-slate-600"
                             {...register(`responsible.${index}.name` as const)}
                           />
                           {errors.responsible?.[index]?.name && (
@@ -476,7 +498,7 @@ export default function CreateSegmentForm() {
                           </Label>
                           <Input
                             placeholder="Coordinator"
-                            className="text-slate-200"
+                            className="text-slate-200 border-slate-600"
                             {...register(`responsible.${index}.role` as const)}
                           />
                           {errors.responsible?.[index]?.role && (
@@ -491,7 +513,7 @@ export default function CreateSegmentForm() {
                           </Label>
                           <Input
                             placeholder="+1 234..."
-                            className="text-slate-200"
+                            className="text-slate-200 border-slate-600"
                             {...register(`responsible.${index}.phone` as const)}
                           />
                           {errors.responsible?.[index]?.phone && (
@@ -507,7 +529,7 @@ export default function CreateSegmentForm() {
                           <Input
                             type="email"
                             placeholder="jane@example.com"
-                            className="text-slate-200"
+                            className="text-slate-200 border-slate-600"
                             {...register(`responsible.${index}.email` as const)}
                           />
                           {errors.responsible?.[index]?.email && (
@@ -524,7 +546,7 @@ export default function CreateSegmentForm() {
                             </div>
                             <Input
                               type="url"
-                              className="pl-10 text-cyan-500 underline"
+                              className="pl-10 text-cyan-500 underline border-slate-600"
                               placeholder="https://linkedin.com/in/username"
                               {...register(
                                 `responsible.${index}.socialLink` as const,
@@ -554,7 +576,11 @@ export default function CreateSegmentForm() {
             >
               Cancel
             </Button>
-            <Button  className="bg-cyan-600 text-slate-100" type="submit" disabled={isSubmitting}>
+            <Button
+              className="bg-cyan-600 text-slate-100 hover:bg-cyan-700"
+              type="submit"
+              disabled={isSubmitting}
+            >
               {isSubmitting ? "Creating..." : "Create Segment"}
             </Button>
           </div>

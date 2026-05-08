@@ -14,6 +14,7 @@ export interface CreateSegmentParams {
   subtitle?: string;
   type: string;
   description: string;
+  extraMemberFee?: number;
   image?: string;
   date: string;
   time: string;
@@ -28,8 +29,6 @@ export interface CreateSegmentParams {
   fee: number;
 }
 
-
-
 // --- Zod Schemas ---
 
 export const responsiblePersonSchema = z.object({
@@ -43,11 +42,13 @@ export const responsiblePersonSchema = z.object({
 export const segmentSchema = z.object({
   title: z.string().min(1, "Title is required"),
   subtitle: z.string().optional(),
-  type: z.enum(
-    ["Competition", "Workshop", "Seminar", "Webinar", "Cultural"] as const,
-    { message: "Please select a valid segment type" },
-  ),
-
+  type: z.enum(["Competition", "Exhibition", "Gaming", "General"] as const, {
+    message: "Please select a valid segment type",
+  }),
+  extraMemberFee: z
+    .number()
+    .nonnegative("Extra member fee cannot be negative")
+    .optional(),
   description: z.string().min(1, "Description is required"),
   image: z.string().optional(),
   date: z.string().min(1, "Date is required"),
