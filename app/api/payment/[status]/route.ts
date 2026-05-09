@@ -1,3 +1,4 @@
+import { updatePaymentStatus } from "@/features/registration/paymentAction";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -5,15 +6,14 @@ export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ status: string }> },
 ) {
-  const { status } = await params; // success, fail, or cancel
+  const { status } = await params; 
   const { env } = getCloudflareContext();
   // SSLCommerz POST request হিসেবে ডেটা পাঠায়, তাই formData রিড করতে হবে
   const formData = await request.formData();
   const tran_id = formData.get("tran_id") as string;
-  const val_id = formData.get("val_id") as string; // Success হলে Validation ID আসবে
+  const val_id = formData.get("val_id") as string;
 
-  console.log("Received Payment Callback:", params);
-
+ 
   if (status === "success" && val_id) {
     // Cloudflare Edge-compatible Validation
     const isSandbox = env.SSL_IS_SANDBOX === "true";
@@ -25,14 +25,21 @@ export async function POST(
       const validateResponse = await fetch(validationUrl);
       const validationData = (await validateResponse.json()) as {
         status?: string;
+        card_type?: string;
       };
+
+       console.log("Validation Response:", validationData);
 
       if (
         validationData.status === "VALID" ||
         validationData.status === "VALIDATED"
       ) {
         // এখানে Drizzle ORM দিয়ে ডেটাবেসে পেমেন্ট স্ট্যাটাস 'Paid' করে দিন
-        // await db.update(segment).set({ paymentStatus: 'Paid' }).where(eq(segment.tranId, tran_id));
+       await updatePaymentStatus(
+        tran_id,
+        "SUCCESS",
+        validationData.card_type ?? "SSLCOMMERZ",
+      );
 
         return NextResponse.redirect(
           new URL(`/payment/success?tran_id=${tran_id}`, request.url),
@@ -46,6 +53,7 @@ export async function POST(
 
   // যদি fail বা cancel হয়, অথবা ভ্যালিডেশন ফেইল করে
   // ডেটাবেসে স্ট্যাটাস 'Failed' করে দিন
+  await updatePaymentStatus(tran_id, "FAILED", "SSLCOMMERZ");
   return NextResponse.redirect(
     new URL(`/failed?tran_id=${tran_id}`, request.url),
     303,

@@ -26,6 +26,7 @@ type DbUser = {
 export default function UserInfoCard() {
   const { user, userId } = useAuth();
   const [userinfo, setUserData] = useState<DbUser | null>(null);
+
   useEffect(() => {
     const fetchUserFromDB = async () => {
       const response = await getUserProfile({ id: userId || "" });

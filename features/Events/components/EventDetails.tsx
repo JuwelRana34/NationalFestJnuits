@@ -27,6 +27,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { getSegmentById } from "../actions";
+import RegistrationButton from "@/features/payments/Components/TestPayments";
 
 export default async function SegmentDetailsPage({
   params,
@@ -43,9 +44,8 @@ export default async function SegmentDetailsPage({
 
   return (
     <div className="min-h-screen pt-20 bg-background font-sans">
-      <header className="bg-slate-900/50 backdrop-blur-sm sticky top-0 z-10">
+      <header className="bg-slate-900/50  ">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-
           <Link
             href="/events"
             className="flex items-center justify-center text-secondary hover:text-foreground"
@@ -322,12 +322,22 @@ export default async function SegmentDetailsPage({
                   </div>
 
                   {/* Call to Action */}
-                  <Button
+                  {/* <Button
                     className="w-full py-6 text-base shadow-md"
                     disabled={occupancyPercentage >= 100}
                   >
                     {occupancyPercentage >= 100 ? "Sold Out" : "Register Now"}
-                  </Button>
+                  </Button> */}
+                  <RegistrationButton
+                    minMembers={segment?.minMembers || undefined}
+                    maxMembers={segment?.maxMembers || undefined}
+                    extraMemberFee={segment?.extraMemberFee || undefined}
+                    segmentId={segment?.id || ""}
+                    segmentName={segment?.title || "Event"}
+                    segmentCategory={segment?.type || "General"}
+                    isTeamEvent={segment?.isTeamEvent || false}
+                    baseFee={segment?.fee || 0}
+                  />
                 </div>
               </Card>
             </AnimatedItem>

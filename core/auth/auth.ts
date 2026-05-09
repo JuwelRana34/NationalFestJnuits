@@ -29,7 +29,7 @@ export const createAuth = () => {
         festId: {
           type: "string",
           required: false,
-          defaultValue: () =>generateUniqueCode("JnUITSFest"),
+          defaultValue: () => generateUniqueCode("JnUITSFest"),
         },
         role: {
           type: "string",
@@ -40,22 +40,26 @@ export const createAuth = () => {
           type: "string",
           required: false,
         },
-        university: {
+        institution: {
           type: "string",
           required: false,
         },
-        studentId: {
-          type: "string",
-          required: false,
-        },
-        tShirtSize: {
-          type: "string",
-          required: false,
-          enum: ["S", "M", "L", "XL", "XXL"],
-        },
+        // studentId: {
+        //   type: "string",
+        //   required: false,
+        // },
+        // tShirtSize: {
+        //   type: "string",
+        //   required: false,
+        //   enum: ["S", "M", "L", "XL", "XXL"],
+        // },
       },
     },
     session: {
+      cookieCache: {
+        enabled: true,
+        maxAge: 5 * 60, // Cache duration in seconds (5 minutes)
+      },
       expiresIn: 60 * 60 * 24 * 7,
       updateAge: 60 * 60 * 24,
     },

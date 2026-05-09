@@ -18,6 +18,7 @@ import { Suspense, useState } from "react";
 import UserMenu from "./userInfo";
 import { useAuth } from "@/hooks/useUserSession";
 import LogoutButton from "./logout";
+import Image from "next/image";
 
 interface NavLink {
   title: string;
@@ -148,9 +149,14 @@ export default function Navbar() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-8">
         {/* ✅ লোগো - ইনস্ট্যান্ট লোড হবে */}
         <Link href="/" className="flex items-center gap-2">
-          <span className="font-serif text-xl font-bold tracking-wider text-amber-400">
-            JnUITS
-          </span>
+          <Image
+           src={"/Logo.png"}
+           alt="JnUITS Logo"
+           width={300}
+           height={300}
+           unoptimized
+           className="h-12  w-12 md:h-14 md:w-14"
+          />
         </Link>
 
         {/* ✅ ডেস্কটপ ন্যাভবার */}

@@ -138,27 +138,27 @@ export const team = sqliteTable("team", {
     .$defaultFn(() => new Date()),
 });
 
-export const teamMember = sqliteTable("teamMember", {
-  id: t.text("id").primaryKey(),
-  teamId: t
-    .text("teamId")
-    .notNull()
-    .references(() => team.id, { onDelete: "cascade" }),
-  userId: t.text("userId").references(() => user.id, { onDelete: "set null" }),
+// export const teamMember = sqliteTable("teamMember", {
+//   id: t.text("id").primaryKey(),
+//   teamId: t
+//     .text("teamId")
+//     .notNull()
+//     .references(() => team.id, { onDelete: "cascade" }),
+//   userId: t.text("userId").references(() => user.id, { onDelete: "set null" }),
 
-  name: t.text("name").notNull(),
-  institution: t.text("institution"),
-  phone: t.text("phone").notNull(),
-  department: t.text("department"),
-  isLeader: t
-    .integer("is_leader", { mode: "boolean" })
-    .notNull()
-    .default(false),
-  createdAt: t
-    .integer("created_at", { mode: "timestamp_ms" })
-    .notNull()
-    .$defaultFn(() => new Date()),
-});
+//   name: t.text("name").notNull(),
+//   institution: t.text("institution"),
+//   phone: t.text("phone").notNull(),
+//   department: t.text("department"),
+//   isLeader: t
+//     .integer("is_leader", { mode: "boolean" })
+//     .notNull()
+//     .default(false),
+//   createdAt: t
+//     .integer("created_at", { mode: "timestamp_ms" })
+//     .notNull()
+//     .$defaultFn(() => new Date()),
+// });
 
 export const announcement = sqliteTable("announcement", {
   id: t.text("id").primaryKey(),
@@ -185,8 +185,9 @@ export const announcement = sqliteTable("announcement", {
     .$defaultFn(() => new Date()),
 });
 
+
 // ==========================
-// Updated Registration Table
+//  Registration Table
 // ==========================
 export const registration = sqliteTable("registration", {
   id: t.text("id").primaryKey(),
@@ -235,7 +236,7 @@ export const payments = sqliteTable("payment", {
   baseAmount: t.real("base_amount").notNull(), // মূল ফি
   paidAmount: t.real("paid_amount").notNull(), // ডিসকাউন্ট বাদে যা পেমেন্ট করা হয়েছে
   paymentMethod: t
-    .text("paymentMethod", { enum: ["SSLCOMMERZ", "BKASH"] })
+    .text("paymentMethod")
     .notNull(),
   status: t
     .text("status", { enum: ["PENDING", "SUCCESS", "FAILED"] })
@@ -292,7 +293,7 @@ export const userRelations = relations(user, ({ many }) => ({
   accounts: many(account),
   sessions: many(session),
   createdTeams: many(team),
-  teamMembers: many(teamMember),
+  // teamMembers: many(teamMember),
   registrations: many(registration),
   submissions: many(submitData),
 }));
@@ -326,21 +327,21 @@ export const teamsRelations = relations(team, ({ one, many }) => ({
     fields: [team.creatorId],
     references: [user.id],
   }),
-  members: many(teamMember),
+  // members: many(teamMember),
   registrations: many(registration),
   submissions: many(submitData),
 }));
 
-export const teamMembersRelations = relations(teamMember, ({ one }) => ({
-  team: one(team, {
-    fields: [teamMember.teamId],
-    references: [team.id],
-  }),
-  user: one(user, {
-    fields: [teamMember.userId],
-    references: [user.id],
-  }),
-}));
+// export const teamMembersRelations = relations(teamMember, ({ one }) => ({
+//   team: one(team, {
+//     fields: [teamMember.teamId],
+//     references: [team.id],
+//   }),
+//   user: one(user, {
+//     fields: [teamMember.userId],
+//     references: [user.id],
+//   }),
+// }));
 
 export const registrationsRelations = relations(
   registration,

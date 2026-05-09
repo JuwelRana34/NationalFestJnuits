@@ -24,10 +24,11 @@ export default function UserMenu() {
             alt="User"
             width={30}
             height={30}
-            className="rounded-full"
+            className="rounded-full h-10 w-10 ring-2 ring-cyan-500/50"
             unoptimized
           />
-          <LogoutButton/>
+          <div className="hidden md:block"><LogoutButton/> </div>
+          
         </>
       ) : (
         <Link href="/signin">Login</Link>

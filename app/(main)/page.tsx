@@ -1,10 +1,10 @@
+import CouponForm from "@/features/coupon/_components/CouponCreateion";
 import CreateSegmentForm from "@/features/Events/components/SegmentCreation";
 import About from "@/features/home/components/AboutSection";
 import EventSchedule from "@/features/home/components/EventSchedule";
 import HeroSection from "@/features/home/components/HeroSection";
 import Segments from "@/features/home/components/Segments";
 import SpeakersJudges from "@/features/home/components/SpeakersJudges";
-import PaymentForm from "@/features/payments/Components/TestPayments";
 
 export default function JnUITFestLanding() {
   return (
@@ -17,7 +17,7 @@ export default function JnUITFestLanding() {
       <EventSchedule />
       <SpeakersJudges />
       <CreateSegmentForm />
-      <PaymentForm />
+      <CouponForm />
       {/* Footer */}
       <footer className="bg-slate-900 text-slate-300 py-12 px-6 md:px-12 border-t border-slate-800">
         <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
