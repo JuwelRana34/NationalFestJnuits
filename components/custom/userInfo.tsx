@@ -27,6 +27,9 @@ export default function UserMenu() {
             className="rounded-full h-10 w-10 ring-2 ring-cyan-500/50"
             unoptimized
           />
+          <Link href="/dashboard" className="">
+          Profile
+          </Link>
           <div className="hidden md:block"><LogoutButton/> </div>
           
         </>

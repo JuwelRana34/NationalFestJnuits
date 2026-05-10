@@ -150,12 +150,13 @@ export default function Navbar() {
         {/* ✅ লোগো - ইনস্ট্যান্ট লোড হবে */}
         <Link href="/" className="flex items-center gap-2">
           <Image
-           src={"/Logo.png"}
-           alt="JnUITS Logo"
-           width={300}
-           height={300}
-           unoptimized
-           className="h-12  w-12 md:h-14 md:w-14"
+            src={"/Logo.png"}
+            alt="JnUITS Logo"
+            width={300}
+            height={300}
+            unoptimized
+            priority
+            className="h-12  w-12 md:h-14 md:w-14"
           />
         </Link>
 

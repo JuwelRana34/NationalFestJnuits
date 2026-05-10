@@ -1,5 +1,8 @@
 "use client";
 import { FullEvent } from "@/app/(main)/events/page";
+import RegistrationButton from "@/features/payments/Components/TestPayments";
+import { SegmentType } from "@/features/payments/types";
+import { formatDate, formatTime } from "@/lib/DateAndTimeFormater";
 import { Calendar, Clock, MapPin } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
@@ -10,13 +13,16 @@ export default function EventCard(props: Partial<FullEvent>) {
     title,
     subtitle,
     type,
-    description,
     date,
     time,
     venue,
     fee,
     seatsTotal,
     seatsFilled,
+    isTeamEvent,
+    minMembers,
+    maxMembers,
+    extraMemberFee,
   } = props;
 
   const safeSeatsFilled = Number(seatsFilled ?? 0);
@@ -85,15 +91,15 @@ export default function EventCard(props: Partial<FullEvent>) {
               className="w-1.5 h-1.5 rounded-full bg-amber-400"
             />
             <span className="text-[10px] font-semibold text-amber-400 tracking-[1.5px] uppercase">
-              JnUITS National Fest 2025
+              {title}
             </span>
           </div>
           <div
             className="font-black text-[22px] text-white leading-tight tracking-tight"
             style={{ fontFamily: "'Orbitron', sans-serif" }}
           >
-            {title}
-            <br />
+            {/* {title} */}
+            {/* <br /> */}
             <span className="text-amber-400">{subtitle}</span>
           </div>
         </div>
@@ -106,20 +112,12 @@ export default function EventCard(props: Partial<FullEvent>) {
           <span className="inline-flex items-center gap-1.5 bg-blue-400/8 border border-blue-400/20 rounded-md px-2.5 py-1 text-[11px] font-semibold text-blue-300 tracking-[0.8px] uppercase mb-3">
             ◈ &nbsp;{type}
           </span>
-
-          <span className="inline-flex items-center gap-1.5 bg-emerald-400/8 border border-emerald-400/20 rounded-md px-2.5 py-1 text-[11px] font-semibold text-emerald-300 tracking-[0.8px] uppercase mb-3">
-            &nbsp;{type}
-          </span>
-
-          <span className="inline-flex items-center gap-1.5 bg-violet-400/8 border border-violet-400/20 rounded-md px-2.5 py-1 text-[11px] font-semibold text-violet-300 tracking-[0.8px] uppercase mb-3">
-            &nbsp;{type}
-          </span>
         </div>
 
         <div className="grid grid-cols-2 gap-2.5 mb-4">
           {[
-            { label: "Date", value: date, icon: <Calendar size={12} /> },
-            { label: "Time", value: time, icon: <Clock size={12} /> },
+            { label: "Date", value: formatDate(date), icon: <Calendar size={12} /> },
+            { label: "Time", value: formatTime(time), icon: <Clock size={12} /> },
             { label: "Venue", value: venue, icon: <MapPin size={12} /> },
             {
               label: "Entry Fee",
@@ -161,12 +159,17 @@ export default function EventCard(props: Partial<FullEvent>) {
 
         {/* Actions */}
         <div className="flex flex-col  gap-2.5">
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            className="flex-1 py-2.5 bg-amber-400 text-[#0a0f1e] text-[13px] font-bold rounded-[10px] hover:bg-amber-500 transition-colors"
-          >
-            Register Now →
-          </motion.button>
+          <RegistrationButton
+            minMembers={minMembers || undefined}
+            maxMembers={maxMembers || undefined}
+            extraMemberFee={extraMemberFee || undefined}
+            segmentId={String(id ?? "")}
+            segmentName={title || "Event"}
+            segmentCategory={type || "General"}
+            isTeamEvent={isTeamEvent || false}
+            baseFee={fee || 0}
+            segmentType={(type as SegmentType) || "DEFAULT"}
+          />
           <Link
             href={`/events/${id}`}
             className="flex-1 py-2.5 text-center bg-cyan-600 text-slate-200  font-bold rounded-[10px] hover:bg-linear-to-r hover:from-cyan-400 hover:to-violet-400 transition-colors"

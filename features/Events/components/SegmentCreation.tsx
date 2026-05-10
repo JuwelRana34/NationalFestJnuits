@@ -134,17 +134,27 @@ export default function CreateSegmentForm() {
                           <SelectValue placeholder="Select a segment type" />
                         </SelectTrigger>
                         <SelectContent className="bg-slate-700 border-slate-700 text-slate-100">
-                          <SelectItem value="Competition">
-                            Competition (Hackathons, Olympiads)
+                          <SelectItem value="HACKATHON">HACKATHON</SelectItem>
+                          <SelectItem value="APP_SHOWCASE">
+                            APP_SHOWCASE
                           </SelectItem>
-                          <SelectItem value="Exhibition">
-                            Exhibition (App Showcasing)
+                          <SelectItem value="AI_ADVENTURE">
+                            AI_ADVENTURE
                           </SelectItem>
-                          <SelectItem value="Gaming">
-                            Gaming (Esports)
+                          <SelectItem value="IT_OLYMPIAD">
+                            IT_OLYMPIAD
                           </SelectItem>
-                          <SelectItem value="General">
-                            General (Visitor, Tech Talk)
+                          <SelectItem value="TYPING_MASTER">
+                            TYPING_MASTER
+                          </SelectItem>
+                          <SelectItem value="ESPORTS">
+                            ESPORTS
+                          </SelectItem>
+                          <SelectItem value="VISITOR">
+                            VISITOR
+                          </SelectItem>
+                          <SelectItem value="DEFAULT">
+                            DEFAULT
                           </SelectItem>
                         </SelectContent>
                       </Select>

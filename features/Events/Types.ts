@@ -42,9 +42,21 @@ export const responsiblePersonSchema = z.object({
 export const segmentSchema = z.object({
   title: z.string().min(1, "Title is required"),
   subtitle: z.string().optional(),
-  type: z.enum(["Competition", "Exhibition", "Gaming", "General"] as const, {
-    message: "Please select a valid segment type",
-  }),
+  type: z.enum(
+    [
+      "HACKATHON",
+      "APP_SHOWCASE",
+      "AI_ADVENTURE",
+      "IT_OLYMPIAD",
+      "TYPING_MASTER",
+      "ESPORTS",
+      "VISITOR",
+      "DEFAULT",
+    ] as const,
+    {
+      message: "Please select a valid segment type",
+    },
+  ),
   extraMemberFee: z
     .number()
     .nonnegative("Extra member fee cannot be negative")

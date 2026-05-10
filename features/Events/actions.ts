@@ -72,7 +72,7 @@ export async function getSegmentById(id: string) {
     return { success: true, data: segmentData };
   } catch (error) {
     console.error("Segment retrieval failed:", error);
-    return { success: false, data: null, error: "Failed to retrieve segment" };
+    return { success: false, data: [], error: "Failed to retrieve segment" };
   }
 }
 

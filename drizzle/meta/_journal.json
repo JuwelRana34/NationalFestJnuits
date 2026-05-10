@@ -15,6 +15,20 @@
       "when": 1778336784334,
       "tag": "0001_hard_sharon_ventura",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1778389938996,
+      "tag": "0002_lame_catseye",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1778397721263,
+      "tag": "0003_puzzling_hairball",
+      "breakpoints": true
     }
   ]
 }

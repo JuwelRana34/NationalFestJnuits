@@ -138,27 +138,28 @@ export const team = sqliteTable("team", {
     .$defaultFn(() => new Date()),
 });
 
-// export const teamMember = sqliteTable("teamMember", {
-//   id: t.text("id").primaryKey(),
-//   teamId: t
-//     .text("teamId")
-//     .notNull()
-//     .references(() => team.id, { onDelete: "cascade" }),
-//   userId: t.text("userId").references(() => user.id, { onDelete: "set null" }),
+export const teamMember = sqliteTable("teamMember", {
+  id: t.text("id").primaryKey(),
+  teamId: t
+    .text("teamId")
+    .notNull()
+    .references(() => team.id, { onDelete: "cascade" }),
+  userId: t.text("userId").references(() => user.id, { onDelete: "set null" }),
 
-//   name: t.text("name").notNull(),
-//   institution: t.text("institution"),
-//   phone: t.text("phone").notNull(),
-//   department: t.text("department"),
-//   isLeader: t
-//     .integer("is_leader", { mode: "boolean" })
-//     .notNull()
-//     .default(false),
-//   createdAt: t
-//     .integer("created_at", { mode: "timestamp_ms" })
-//     .notNull()
-//     .$defaultFn(() => new Date()),
-// });
+  name: t.text("name").notNull(),
+  institution: t.text("institution"),
+  phone: t.text("phone").notNull(),
+  department: t.text("department"),
+  studentIdScan: t.text("studentIdScan").notNull(),
+  isLeader: t
+    .integer("is_leader", { mode: "boolean" })
+    .notNull()
+    .default(false),
+  createdAt: t
+    .integer("created_at", { mode: "timestamp_ms" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+});
 
 export const announcement = sqliteTable("announcement", {
   id: t.text("id").primaryKey(),
@@ -200,8 +201,8 @@ export const registration = sqliteTable("registration", {
     .text("segmentId")
     .notNull()
     .references(() => segment.id),
-  userId: t.text("userId").references(() => user.id), // For Individual Events
-  teamId: t.text("teamId").references(() => team.id), // For Team Events
+  userId: t.text("userId").references(() => user.id),
+  teamId: t.text("teamId").references(() => team.id),
 
   // Requirements Specific Fields
   category: t.text("category", { enum: ["UNIVERSITY", "SCHOOL_COLLEGE"] }),
@@ -293,7 +294,7 @@ export const userRelations = relations(user, ({ many }) => ({
   accounts: many(account),
   sessions: many(session),
   createdTeams: many(team),
-  // teamMembers: many(teamMember),
+  teamMembers: many(teamMember),
   registrations: many(registration),
   submissions: many(submitData),
 }));
@@ -327,21 +328,21 @@ export const teamsRelations = relations(team, ({ one, many }) => ({
     fields: [team.creatorId],
     references: [user.id],
   }),
-  // members: many(teamMember),
+  members: many(teamMember),
   registrations: many(registration),
   submissions: many(submitData),
 }));
 
-// export const teamMembersRelations = relations(teamMember, ({ one }) => ({
-//   team: one(team, {
-//     fields: [teamMember.teamId],
-//     references: [team.id],
-//   }),
-//   user: one(user, {
-//     fields: [teamMember.userId],
-//     references: [user.id],
-//   }),
-// }));
+export const teamMembersRelations = relations(teamMember, ({ one }) => ({
+  team: one(team, {
+    fields: [teamMember.teamId],
+    references: [team.id],
+  }),
+  user: one(user, {
+    fields: [teamMember.userId],
+    references: [user.id],
+  }),
+}));
 
 export const registrationsRelations = relations(
   registration,
