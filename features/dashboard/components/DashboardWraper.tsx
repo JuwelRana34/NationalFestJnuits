@@ -1,8 +1,6 @@
-import { DashboardClient } from "@/components/custom/DynamicMotion";
 import { getUserRegistrations } from "@/features/users/queries";
-import { getCurrentUser } from "@/lib/UserSession";
+import { connection } from "next/server";
 import EnhancedDashboard from "./DashboardClient";
-
 
 // --- MOCK DATA (Server-side — could be replaced with DB/API calls) ---
 
@@ -57,9 +55,10 @@ export const EVENTS = [
   },
 ];
 
-
 export const DashboardWraper = async () => {
-    const { data } = await getUserRegistrations();
+  await connection();
+
+  const { data } = await getUserRegistrations();
   console.log("Fetched Registrations:", data);
   return (
     <EnhancedDashboard

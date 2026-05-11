@@ -42,24 +42,22 @@ const nextConfig: NextConfig = {
     ],
     minimumCacheTTL: 604800,
   },
-
   cacheComponents: true,
-
-  // টার্বোপ্যাক এবং নেক্সট ১৬-এর জন্য সার্ভার সাইড অপ্টিমাইজেশন
-  serverExternalPackages: ["@vercel/og", "resvg", "yoga"],
-
   experimental: {
     optimizePackageImports: [
       "lucide-react",
       "date-fns",
-      "framer-motion",
       "@base-ui/react",
+      "three",
+      "@react-three/fiber",
+      "motion",
+      "zod",
+      "react-markdown",
+      "remark-gfm",
     ],
     serverMinification: true,
   },
-
 };
 
 initOpenNextCloudflareForDev();
-
 export default nextConfig;

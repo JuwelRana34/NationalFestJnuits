@@ -1,10 +1,12 @@
-import CouponForm from "@/features/coupon/_components/CouponCreateion";
-import CreateSegmentForm from "@/features/Events/components/SegmentCreation";
+import {
+  CouponForm,
+  CreateSegmentForm,
+  EventSchedule,
+  HeroSection,
+  Segments,
+  SpeakersJudges,
+} from "@/components/custom/DynamicMotion";
 import About from "@/features/home/components/AboutSection";
-import EventSchedule from "@/features/home/components/EventSchedule";
-import HeroSection from "@/features/home/components/HeroSection";
-import Segments from "@/features/home/components/Segments";
-import SpeakersJudges from "@/features/home/components/SpeakersJudges";
 
 export default function JnUITFestLanding() {
   return (
