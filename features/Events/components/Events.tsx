@@ -1,10 +1,10 @@
 "use client";
 
-import { FullEvent } from "@/app/(main)/events/page";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import EventCard from "@/features/Events/components/EventCard";
 import { useState } from "react";
+import { FullEvent } from "../schema";
 
 export default function Events({ eventsData }: { eventsData: FullEvent[] }) {
   const [activeTab, setActiveTab] = useState<string>("All");

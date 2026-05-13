@@ -1,11 +1,13 @@
 "use client";
-import { FullEvent } from "@/app/(main)/events/page";
+
 import RegistrationButton from "@/features/payments/Components/TestPayments";
 import { SegmentType } from "@/features/payments/types";
 import { formatDate, formatTime } from "@/lib/DateAndTimeFormater";
 import { Calendar, Clock, MapPin } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
+import { FullEvent } from "../schema";
+
 
 export default function EventCard(props: Partial<FullEvent>) {
   const {

@@ -30,9 +30,9 @@ const formatTime = (timeString?: string | null) => {
     // If it's just "HH:MM" (e.g., "20:20")
     const [hours, minutes] = timeString.split(":");
     const h = parseInt(hours, 10);
-    const ampm = h >= 12 ? "PM" : "AM";
+    // const ampm = h >= 12 ? "PM" : "AM";
     const formattedHour = h % 12 || 12; // Convert 0 to 12
-    return `${formattedHour}:${minutes} ${ampm}`;
+    return `${formattedHour}:${minutes} `;
   } catch (error) {
     return timeString; // fallback
   }

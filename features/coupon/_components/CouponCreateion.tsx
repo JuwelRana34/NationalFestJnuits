@@ -12,7 +12,6 @@ import {
   CheckCircle2,
   AlertCircle,
 } from "lucide-react";
-import { saveCoupon } from "../action";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -51,11 +50,12 @@ export default function CouponForm() {
       };
 
       // Call the server action
-      const result = await saveCoupon(payload);
-      console.log("Save Coupon Result:", result);
+      const result = {success: true}; 
+      //FIXME: Replace with actual API call to save the coupon
+      // console.log("Save Coupon Result:", result);
       if (result.success) {
         setStatus({ type: "success", message: "Coupon saved successfully!" });
-        // Optional: Reset form or redirect
+      //   // Optional: Reset form or redirect
         if (!code.includes("EDIT")) {
           setCode("");
           setDiscountPercentage("");
@@ -64,7 +64,7 @@ export default function CouponForm() {
           setIsActive(true);
         }
       } else {
-        setStatus({ type: "error", message: result.error ?? "Failed to save coupon." });
+        setStatus({ type: "error", message:"Failed to save coupon." });
       }
     } catch {
       setStatus({ type: "error", message: "An unexpected error occurred." });

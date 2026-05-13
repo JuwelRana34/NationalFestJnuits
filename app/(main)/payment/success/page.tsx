@@ -1,7 +1,4 @@
 import { Suspense } from "react";
-import { getDb } from "@/core/db/db";
-import { payments } from "@/core/db/schema";
-import { eq } from "drizzle-orm";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { CheckCircle2, ArrowRight, Download, AlertCircle } from "lucide-react";
@@ -18,34 +15,6 @@ async function PaymentDetails({
   if (!transactionId) {
     redirect("/");
   }
-
-//   const db = await getDb();
-//   const paymentRecord = await db.query.payments.findFirst({
-//     where: eq(payments.tranId, transactionId),
-//   });
-
-//   if (!paymentRecord || paymentRecord.status !== "Paid") {
-//     return (
-//       <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl p-10 text-center border border-red-50">
-//         <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
-//           <AlertCircle className="w-10 h-10 text-red-600" />
-//         </div>
-//         <h1 className="text-2xl font-bold text-gray-900 mb-2">
-//           পেমেন্ট পেন্ডিং বা ফেইল্ড
-//         </h1>
-//         <p className="text-gray-500 mb-8">
-//           আমরা আপনার পেমেন্টটি এখনও ভেরিফাই করতে পারিনি। ট্রানজেকশনটি সফল হয়ে
-//           থাকলে কিছুক্ষণ পর আবার চেক করুন।
-//         </p>
-//         <Link
-//           href="/"
-//           className="inline-flex items-center text-indigo-600 font-semibold hover:underline"
-//         >
-//           হোমপেজে ফিরে যান <ArrowRight className="ml-2 w-4 h-4" />
-//         </Link>
-//       </div>
-//     );
-//   }
 
   return (
     <div className="max-w-md w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(8,_112,_184,_0.07)] p-10 text-center border border-gray-100">

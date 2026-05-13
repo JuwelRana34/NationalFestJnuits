@@ -6,12 +6,10 @@ export interface SingleEventPageProps {
   params: Promise<{ id: string }>;
 }
 
-export default async function SingleEvent({ params }:SingleEventPageProps) {
-
-
+export default async function SingleEvent({ params }: SingleEventPageProps) {
   return (
     <main>
-      <Suspense fallback={<Loading/>}>
+      <Suspense fallback={<Loading />}>
         <SegmentDetailsPage params={params} />
       </Suspense>
     </main>

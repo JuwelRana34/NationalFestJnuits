@@ -1,16 +1,13 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Skeleton } from "@/components/ui/skeleton"; 
+import { Skeleton } from "@/components/ui/skeleton";
 
-const MarkdownRenderer = dynamic(
-  () => import("@/components/custom/MarkdownRenderer"),
-  {
-    ssr: false,
-    loading: () => <Skeleton className="w-full h-32" />,
-  },
-);
+const MarkdownWrapper = dynamic(() => import("./MarkdownRenderer"), {
+  loading: () => (
+    <Skeleton className="animate-pulse h-20 bg-slate-800 rounded-md "></Skeleton>
+  ),
+  ssr: false,
+});
 
-export default function MarkdownWrapper({ content }: { content: string }) {
-  return <MarkdownRenderer content={content} />;
-}
+export default MarkdownWrapper;

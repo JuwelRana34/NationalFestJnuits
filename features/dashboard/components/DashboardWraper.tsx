@@ -1,4 +1,4 @@
-import { getUserRegistrations } from "@/features/users/queries";
+
 import { connection } from "next/server";
 import EnhancedDashboard from "./DashboardClient";
 
@@ -57,13 +57,23 @@ export const EVENTS = [
 
 export const DashboardWraper = async () => {
   await connection();
+  // FIXME:Call api to fetch registrations (mocked here as a static string for demonstration)
 
-  const { data } = await getUserRegistrations();
+  const data = [{
+    id: 1,
+    eventId: 1,
+    teamName: "Code Warriors",
+    members: ["Alice", "Bob", "Charlie"],
+    registrationTime: "2026-10-01T12:00:00Z",
+  }]
   console.log("Fetched Registrations:", data);
   return (
-    <EnhancedDashboard
-      announcements={ANNOUNCEMENTS}
-      registrations={data || []}
-    />
+    // <EnhancedDashboard
+    //   announcements={ANNOUNCEMENTS}
+    //   registrations={data || []}
+    // />
+    <h1>
+       Hidden Title Text 
+    </h1>
   );
 };

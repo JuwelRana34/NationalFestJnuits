@@ -13,7 +13,7 @@ import {
 import { useAuth } from "@/hooks/useUserSession";
 import { Building2, Edit, Mail, MapPin, Phone } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getUserProfile } from "../queries";
+
 
 type DbUser = {
   id: string;
@@ -29,12 +29,22 @@ export default function UserInfoCard() {
 
   useEffect(() => {
     const fetchUserFromDB = async () => {
-      const response = await getUserProfile({ id: userId || "" });
+      //FIXME: const response = await getUserProfile({ id: userId || "" });
+    const response = {
+        success: true,
+        data: {
+          id: userId || "1",
+          festId: "JNUITS-XX-XXXX",
+          name: user?.name || "John Doe",
+          email: user?.email || "" , 
+          image: user?.image || null,
+        },
+      };
 
       if (response.success && response.data) {
         setUserData(response.data as DbUser);
       } else {
-        console.error("Error fetching user:", response.error);
+        console.error("Error fetching user:", response);
       }
     };
 

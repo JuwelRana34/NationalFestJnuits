@@ -52,3 +52,7 @@ export const CouponForm = dynamic(
   () => import("@/features/coupon/_components/CouponCreateion"),
   { ssr: false },
 );
+
+export const Navbar = dynamic(() => import("@/components/custom/navbar"), { ssr: false });
+
+export const Events = dynamic(() => import("@/features/Events/components/Events"), { ssr: false });

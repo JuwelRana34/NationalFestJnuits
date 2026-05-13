@@ -1,20 +1,33 @@
-import { getSegment } from "@/features/Events/actions";
-import Events from "@/features/Events/components/Events";
-import { CreateSegmentParams } from "@/features/Events/Types";
+import { Events } from "@/components/custom/DynamicMotion";
+import { EventsResponse, FullEvent } from "@/features/Events/schema";
+import { honoFetch } from "@/lib/hono-client";
+import { Suspense } from "react";
 
-export interface FullEvent extends CreateSegmentParams {
-  id: string | number;
-  createdAt: Date;
-  updatedAt: Date;
+export default function EventPage() {
+  return (
+    <>
+      <Suspense
+        fallback={
+          <div className="pt-20 flex min-h-screen justify-center items-center rounded">
+            Loading events...
+          </div>
+        }
+      >
+        <EventDataFetch />
+      </Suspense>
+    </>
+  );
 }
 
-export default async function EventPage() {
-  const { data } = await getSegment();
-
+async function EventDataFetch() {
+  const { data } = await honoFetch<EventsResponse>("/api/events");
+  console.log("Fetched events data:", data);
   return (
     <>
       {data.length === 0 ? (
-        <div className="pt-20 flex min-h-screen justify-center items-center rounded">No events found!</div>
+        <div className="pt-20 flex min-h-screen justify-center items-center rounded">
+          No events found!
+        </div>
       ) : (
         <Events eventsData={data as FullEvent[]} />
       )}

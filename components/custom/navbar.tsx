@@ -78,7 +78,7 @@ function DesktopLinks() {
 function MobileLinks({ closeMenu }: { closeMenu: () => void }) {
   const path = usePathname();
   const { user, isLoading } = useAuth();
-
+  
   return (
     <>
       {navLinks.map((link) => (

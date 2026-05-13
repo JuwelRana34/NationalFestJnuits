@@ -1,25 +1,16 @@
 import { createAuthClient } from "better-auth/react";
 
+const baseURL =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:8787"
+    : "https://festapi.rk370613.workers.dev";
+
+
 export const authClient = createAuthClient({
-  // baseURL: "https://jnu-it-fest.rk370613.workers.dev",
-  baseURL: "http://localhost:3000",
+  baseURL,
+  fetchOptions: {
+    credentials: "include",
+  },
 });
 
-declare module "better-auth/react" {
-  interface Session {
-    user: {
-      id: string;
-      email: string;
-      name: string;
-      image?: string | null;
-      emailVerified: boolean;
-      createdAt: Date;
-      updatedAt: Date;
-      phone?: string | null;
-      role?: string | null;
-      institution?: string | null;
-    };
-  }
-}
-
-export const { signIn, signUp, useSession } = createAuthClient();
+export const { signIn, signUp, useSession } = authClient;

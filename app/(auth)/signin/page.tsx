@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/core/auth/auth-client";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { Loader2, Lock, Mail } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -34,7 +35,11 @@ export default function LoginPage() {
     });
   };
   const handleGoogleLogin = async () => {
-    await authClient.signIn.social({ provider: "google" });
+    
+    await authClient.signIn.social({
+      provider: "google",
+      callbackURL: `${window.location.origin}/`,
+    });
   };
 
   return (

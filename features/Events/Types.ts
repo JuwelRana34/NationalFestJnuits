@@ -1,36 +1,6 @@
 import z from "zod";
 
-// --- Interfaces ---
-export interface ResponsiblePerson {
-  name: string;
-  role: string;
-  phone: string;
-  email: string;
-  socialLink?: string;
-}
-
-export interface CreateSegmentParams {
-  title: string;
-  subtitle?: string;
-  type: string;
-  description: string;
-  extraMemberFee?: number;
-  image?: string;
-  date: string;
-  time: string;
-  venue: string;
-  seatsTotal: number;
-  seatsFilled: number;
-  responsible: ResponsiblePerson[];
-  isTeamEvent: boolean;
-  minMembers?: number;
-  maxMembers?: number;
-  prizeMoney: number;
-  fee: number;
-}
-
 // --- Zod Schemas ---
-
 export const responsiblePersonSchema = z.object({
   name: z.string().min(1, "Name is required"),
   role: z.string().min(1, "Role is required"),

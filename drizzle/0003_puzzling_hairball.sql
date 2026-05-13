@@ -1,1 +1,0 @@
-ALTER TABLE `teamMember` ADD `studentIdScan` text NOT NULL;

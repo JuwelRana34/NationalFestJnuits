@@ -2,7 +2,6 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { getUserRegistrations } from "@/features/users/queries";
 import { useAuth } from "@/hooks/useUserSession";
 import {
   AlertCircle,
@@ -24,13 +23,42 @@ import {
   Users,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-type FetchedResponse = Awaited<ReturnType<typeof getUserRegistrations>>;
-export type Registration = NonNullable<FetchedResponse["data"]>[number];
+
 
 
 // ==========================================
 // 1. TYPES & INTERFACES (Mapped to your JSON)
 // ==========================================
+interface Registration {
+  registrationId: number;
+  event: {
+    id: number;
+    title: string;
+    date: string;
+    time: string;
+    venue: string;
+  };
+  team?: {
+    name: string;
+    members: string[];
+    code: string;
+  };
+  participant?: {
+    name: string;
+  };
+  finance: {
+    baseAmount: number;
+    discountPercentage?: number;
+    couponApplied?: string;
+    paidAmount: number;
+    paymentStatus: "PENDING" | "SUCCESS" | "FAILED";
+    paymentMethod?: string;
+    transactionId?: string;
+  };
+  status: "PENDING" | "SELECTED" | "REJECTED";
+  category?: "UNIVERSITY" | "GENERAL";
+  trackingNumber: string;
+}
 
 export type Announcement = {
   id: number;
@@ -44,66 +72,6 @@ export interface UserProfile {
   name: string;
   festPoints: number;
 }
-
-// export interface Registration {
-//   registrationId: string;
-//   trackingNumber: string;
-//   status: "PENDING" | "SELECTED" | "REJECTED" | string | null;
-//   category: "UNIVERSITY" | "SCHOOL_COLLEGE" | string | null;
-
-//   participant: {
-//     id: string;
-//     name: string;
-//     email: string;
-//     phone: string | null;
-//     institution: string | null;
-//   } | null;
-
-//   event: {
-//     id: string;
-//     title: string;
-//     date: string | null;
-//     time: string | null;
-//     venue: string | null;
-//     baseFee: number | null;
-//   };
-
-//   team: {
-//     id: string;
-//     name: string;
-//     code: string;
-//     teamLead: {
-//       id: string;
-//       name: string;
-//       email: string;
-//       phone: string | null;
-//       institution: string | null;
-//     } | null;
-//   };
-//   members: {
-//     id: string;
-//     name: string;
-//     phone: string;
-//     institution: string | null;
-//     department: string | null;
-//     createdAt: Date;
-//     userId: string | null;
-//     teamId: string;
-//     studentIdScan: string;
-//     isLeader: boolean;
-//   }[];
-
-//   finance: {
-//     paymentStatus: "SUCCESS" | "PENDING" | "FAILED" | string | null;
-//     paidAmount: number;
-//     baseAmount: number;
-//     paymentMethod: string | null;
-//     transactionId: string | null;
-//     couponApplied: string | null;
-//     discountPercentage: number;
-//   };
-// }
-
 
 
 export default function EnhancedDashboard({

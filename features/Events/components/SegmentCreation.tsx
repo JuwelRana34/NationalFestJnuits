@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { SegmentFormInput, SegmentFormOutput, segmentSchema } from "../Types";
-import { createSegment } from "../actions";
+
 
 // --- Main Form Component ---
 export default function CreateSegmentForm() {
@@ -58,8 +58,8 @@ export default function CreateSegmentForm() {
   const onSubmit = async (data: SegmentFormOutput) => {
     console.log("Validated Data Submitted:", data);
     alert("Form submitted successfully! Check console for payload.");
-    // seatsFilled is left exactly as requested
-    await createSegment({ ...data, seatsFilled: 0 });
+    //FIXME: Call the API to create the segment with the validated data
+    // await createSegment({ ...data, seatsFilled: 0 });
     reset();
   };
 

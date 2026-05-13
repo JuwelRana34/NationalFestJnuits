@@ -28,16 +28,19 @@ import MarkdownWrapper from "@/components/custom/MarkDownWraper";
 import RegistrationButton from "@/features/payments/Components/TestPayments";
 import { SegmentType } from "@/features/payments/types";
 import { formatDate, formatTime } from "@/lib/DateAndTimeFormater";
+import { honoFetch } from "@/lib/hono-client";
 import Image from "next/image";
 import Link from "next/link";
-import { getSegmentById } from "../actions";
+import { ResponsiblePerson, SingleEventResponse } from "../schema";
 
 export default async function SegmentDetailsPage({
   params,
 }: SingleEventPageProps) {
   const resolvedParams = await params;
   const id = resolvedParams.id;
-  const { data } = await getSegmentById(id);
+
+  const { data } = await honoFetch<SingleEventResponse>(`/api/events/${id}`);
+
   const segment = Array.isArray(data) ? null : data;
 
   const occupancyPercentage =
@@ -167,62 +170,64 @@ export default async function SegmentDetailsPage({
                         Organizers & Contacts
                       </h2>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {segment.responsible.map((person, index) => (
-                          <Card
-                            key={index}
-                            className="p-4 flex items-center gap-4 bg-slate-800 border-none"
-                          >
-                            <div className="w-10 h-10 rounded-full bg-slate-900 flex items-center justify-center text-secondary">
-                              <UserCircle className="w-6 h-6" />
-                            </div>
-                            <div>
-                              <p className="font-medium text-lg text-gradient pl-6">
-                                {person.name}
-                              </p>
-                              <p className="text-xs text-slate-300 flex items-center gap-1">
-                                <PhoneCall className=" h-5 w-5 mt-1" />{" "}
-                                {person.phone ? (
-                                  <a
-                                    href={`tel:${person.phone}`}
-                                    className="text-blue-400 hover:underline"
-                                  >
-                                    {person.phone}
-                                  </a>
-                                ) : null}
-                              </p>
-                              <p className="text-xs text-slate-300 flex items-center gap-1">
-                                {person.email ? (
-                                  <>
-                                    <MailIcon className="w-5 h-5 mt-1" />
+                        {segment.responsible.map(
+                          (person: ResponsiblePerson, index: number) => (
+                            <Card
+                              key={index}
+                              className="p-4 flex items-center gap-4 bg-slate-800 border-none"
+                            >
+                              <div className="w-10 h-10 rounded-full bg-slate-900 flex items-center justify-center text-secondary">
+                                <UserCircle className="w-6 h-6" />
+                              </div>
+                              <div>
+                                <p className="font-medium text-lg text-gradient pl-6">
+                                  {person.name}
+                                </p>
+                                <p className="text-xs text-slate-300 flex items-center gap-1">
+                                  <PhoneCall className=" h-5 w-5 mt-1" />{" "}
+                                  {person.phone ? (
                                     <a
-                                      href={`mailto:${person.email}`}
+                                      href={`tel:${person.phone}`}
                                       className="text-blue-400 hover:underline"
                                     >
-                                      {person.email}
-                                    </a>{" "}
-                                  </>
-                                ) : null}
-                              </p>
-                              {person.socialLink && (
-                                <p className="text-xs text-slate-300 flex items-center gap-1">
-                                  <Contact className="w-5 h-5 mt-1" />{" "}
-                                  <a
-                                    href={person.socialLink}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-blue-400 hover:underline"
-                                  >
-                                    Social Profile
-                                  </a>
+                                      {person.phone}
+                                    </a>
+                                  ) : null}
                                 </p>
-                              )}
-                              <p className="text-xs text-slate-300 flex items-center gap-1 mt-1">
-                                <User2Icon className="w-5 h-5" /> Role:{" "}
-                                {person.role}
-                              </p>
-                            </div>
-                          </Card>
-                        ))}
+                                <p className="text-xs text-slate-300 flex items-center gap-1">
+                                  {person.email ? (
+                                    <>
+                                      <MailIcon className="w-5 h-5 mt-1" />
+                                      <a
+                                        href={`mailto:${person.email}`}
+                                        className="text-blue-400 hover:underline"
+                                      >
+                                        {person.email}
+                                      </a>{" "}
+                                    </>
+                                  ) : null}
+                                </p>
+                                {person.socialLink && (
+                                  <p className="text-xs text-slate-300 flex items-center gap-1">
+                                    <Contact className="w-5 h-5 mt-1" />{" "}
+                                    <a
+                                      href={person.socialLink}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-blue-400 hover:underline"
+                                    >
+                                      Social Profile
+                                    </a>
+                                  </p>
+                                )}
+                                <p className="text-xs text-slate-300 flex items-center gap-1 mt-1">
+                                  <User2Icon className="w-5 h-5" /> Role:{" "}
+                                  {person.role}
+                                </p>
+                              </div>
+                            </Card>
+                          ),
+                        )}
                       </div>
                     </AnimatedItem>
                   )}

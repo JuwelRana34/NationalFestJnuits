@@ -1,20 +1,19 @@
 "use client";
 
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Mail, Phone, Send } from "lucide-react";
+import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { contactFormSchema, type ContactFormValues } from "../schema";
-import { submitContactForm } from "../actions";
-import { toast } from "sonner";
 import { useState } from "react";
+import { toast } from "sonner";
+import { contactFormSchema, type ContactFormValues } from "../schema";
 
 export function ContactForm() {
   const [isPending, setIsPending] = useState(false);
- 
+
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
     defaultValues: {
@@ -24,18 +23,19 @@ export function ContactForm() {
       message: "",
     },
   });
-  
+
   async function onSubmit(values: ContactFormValues) {
     setIsPending(true);
     try {
-      const response = await submitContactForm(values);
+      const response = { success: true, message: "Message sent successfully!" };
+      //FIXME: Replace with actual API call to submit the contact form
 
       if (response.success) {
         toast.success(response.message);
         form.reset();
-      } else if (response.errors) {
+      } else if (response) {
         // সার্ভার সাইড এরর হ্যান্ডলিং
-        Object.entries(response.errors).forEach(([key, value]) => {
+        Object.entries(response).forEach(([key, value]) => {
           form.setError(key as keyof ContactFormValues, {
             type: "manual",
             message: Array.isArray(value) ? value[0] : "Invalid input",

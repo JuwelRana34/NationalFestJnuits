@@ -36,7 +36,10 @@ export default function RegisterPage() {
   };
 
   const handleGoogleSignin = async () => {
-    await authClient.signIn.social({ provider: "google" });
+    await authClient.signIn.social({
+      provider: "google",
+      callbackURL: `${window.location.origin}/`,
+    });
   };
 
   return (

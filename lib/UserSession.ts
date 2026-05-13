@@ -1,13 +1,10 @@
-import { createAuth } from "@/core/auth/auth";
+
 import { headers } from "next/headers";
 import { connection } from "next/server";
 
 export const getCurrentUser = async () => {
   await connection();
-  const auth = createAuth();
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+const session = null; // FIXME: Implement session retrieval logic (e.g., from cookies or headers) 
 
-  return session?.user || null;
+  return session || null;
 };
