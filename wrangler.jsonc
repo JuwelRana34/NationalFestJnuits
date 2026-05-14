@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "main": ".open-next/worker.js",
-  "name": "jnu-it-fest",
+  "name": "itfest",
   "keep_names": false,
   "compatibility_date": "2026-04-22",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
@@ -12,7 +12,7 @@
   "services": [
     {
       "binding": "WORKER_SELF_REFERENCE",
-      "service": "jnu-it-fest",
+      "service": "itfest",
     },
     { "binding": "HONO_API", "service": "festapi" },
   ],
