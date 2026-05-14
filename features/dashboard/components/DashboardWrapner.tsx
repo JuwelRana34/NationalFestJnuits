@@ -5,14 +5,14 @@ import { cookies } from "next/headers";
 
 export default async function DashboardWrapner() {
   const cookieStore = await cookies();
-  const allCookies = cookieStore
-    .getAll()
-    .map((c) => `${c.name}=${c.value}`)
-    .join("; ");
 
-  const { data } = await honoFetch<DashboardResponse>("/api/users/dashboard", {
-    headers: { cookie: allCookies }, // ← "cookie" key দাও
-  });
-     console.log("Dashboard data:", allCookies);
+const cookie = cookieStore
+  .getAll()
+  .filter((c) => c.name.includes("better-auth")) 
+  .map((c) => `${c.name}=${c.value}`)
+  .join("; ");
+
+  const { data } = await honoFetch<DashboardResponse>("/api/users/dashboard");
+
     return <Dashboard DashboardData={data} />;
 }
