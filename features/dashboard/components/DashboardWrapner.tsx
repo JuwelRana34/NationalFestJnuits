@@ -12,7 +12,12 @@ const cookie = cookieStore
   .map((c) => `${c.name}=${c.value}`)
   .join("; ");
 
-  const { data } = await honoFetch<DashboardResponse>("/api/users/dashboard");
+   console.log("🚀 ~ before check :", cookie);
+  const { data } = await honoFetch<DashboardResponse>("/api/users/dashboard",{
+    headers: {
+      "cookie": cookie,
+    },
+  });
 
     return <Dashboard DashboardData={data} />;
 }
