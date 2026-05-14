@@ -52,8 +52,10 @@
 //   return response.json() as Promise<T>;
 // };
 
+
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { headers as nextHeaders } from "next/headers";
+import { cookies } from "next/headers"; // ← নতুন import
 
 export const honoFetch = async <T>(
   endpoint: string,
@@ -61,10 +63,20 @@ export const honoFetch = async <T>(
 ): Promise<T> => {
   const path = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
 
+  // কুকি দুইভাবে নেওয়ার চেষ্টা করো
   const reqHeaders = await nextHeaders();
-  const cookie = reqHeaders.get("cookie");
+  let cookie = reqHeaders.get("cookie");
 
-  // শুধু দরকারি headers forward করো, সব না
+  // যদি nextHeaders থেকে না পাও, cookies() দিয়ে manually বানাও
+  if (!cookie) {
+    const cookieStore = await cookies();
+    const allCookies = cookieStore.getAll();
+    cookie = allCookies.map((c) => `${c.name}=${c.value}`).join("; ");
+    console.log("🍪 Manually built cookie:", cookie);
+  } else {
+    console.log("🍪 Cookie from headers:", cookie);
+  }
+
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     ...(cookie ? { cookie } : {}),
