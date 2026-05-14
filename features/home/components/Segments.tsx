@@ -87,7 +87,6 @@ const itemVariants: Variants = {
 
 export default function App() {
   const {user} = useAuth();
-  console.log('🚀 ~ user:', user);
   return (
     <section className="min-h-screen w-full bg-slate-950 text-slate-300 py-24 px-6 md:px-12 font-sans relative overflow-hidden font-inter">
       {/* Background ambient glows using generic tokens */}

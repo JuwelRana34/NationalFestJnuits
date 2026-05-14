@@ -13,10 +13,6 @@ export const AnimatedItem = dynamic(
   { ssr: false },
 );
 
-export const DashboardClient = dynamic(
-  () => import("@/features/dashboard/components/DashboardClient"),
-  { ssr: false },
-);
 
 export const HeroSection = dynamic(
   () => import("@/features/home/components/HeroSection"),
