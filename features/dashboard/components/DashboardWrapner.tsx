@@ -4,18 +4,15 @@ import Dashboard from "./DashboardOverview";
 import { cookies } from "next/headers";
 
 export default async function DashboardWrapner() {
- const cookieStore = await cookies(); // ← কুকি নাও
- const allCookies = cookieStore
-   .getAll()
-   .map((c) => `${c.name}=${c.value}`)
-   .join("; ");
+  const cookieStore = await cookies();
+  const allCookies = cookieStore
+    .getAll()
+    .map((c) => `${c.name}=${c.value}`)
+    .join("; ");
 
-     const { data } = await honoFetch<DashboardResponse>(
-       "/api/users/dashboard",
-       {
-         headers: { allCookies },
-       },
-     );
-    //  console.log("Dashboard data:", data);
+  const { data } = await honoFetch<DashboardResponse>("/api/users/dashboard", {
+    headers: { cookie: allCookies }, // ← "cookie" key দাও
+  });
+     console.log("Dashboard data:", allCookies);
     return <Dashboard DashboardData={data} />;
 }
