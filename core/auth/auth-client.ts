@@ -3,7 +3,7 @@ import { createAuthClient } from "better-auth/react";
 const baseURL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:8787"
-    : "https://jnu-it-fest.rk370613.workers.dev";
+    : "https://festapi.jnuits.org.bd";
 
 
 export const authClient = createAuthClient({

@@ -19,7 +19,7 @@
   "kv_namespaces": [
     {
       "binding": "NEXT_INC_CACHE_KV",
-      "id": "bbc0052d7fa94e0f854f2f76c8b5c327",
+      "id": "2aebade286de4babb2e1c5c6c6cb17ab",
     },
   ],
   "durable_objects": {
@@ -39,12 +39,12 @@
   "d1_databases": [
     {
       "binding": "NEXT_TAG_CACHE_D1",
-      "database_id": "ce07170e-a866-4dde-8762-c65f88b76ab5",
+      "database_id": "bdc00575-c7bd-4c98-9651-2a5a6cb21aaa",
       "database_name": "itsociety",
     },
   ],
   "vars": {
-    "BETTER_AUTH_URL": "https://jnu-it-fest.rk370613.workers.dev",
+    "BETTER_AUTH_URL": "https://festapi.jnuits.org.bd",
     "CLOUDINARY_CLOUD_NAME": "dbwbwwteo",
     "CLOUDINARY_UPLOAD_PRESET": "itsociety",
   },
