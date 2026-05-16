@@ -21,15 +21,18 @@ export default function EventPage() {
 }
 
 async function EventDataFetch() {
-  const { data } = await honoFetch<EventsResponse>("/api/events");
+  const { response } = await honoFetch<EventsResponse>("/api/events",{
+    next: { revalidate: 3600, tags: [`events`] },
+  })
+  
   return (
     <>
-      {data.length === 0 ? (
+      {response?.data?.length === 0 ? (
         <div className="pt-20 flex min-h-screen justify-center items-center rounded">
           No events found!
         </div>
       ) : (
-        <Events eventsData={data as FullEvent[]} />
+        <Events eventsData={response?.data as FullEvent[]} />
       )}
     </>
   );

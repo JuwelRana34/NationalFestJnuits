@@ -46,7 +46,7 @@ export const segmentSchema = z.object({
     .positive("Minimum members must be at least 1")
     .optional(),
   maxMembers: z.number().int().positive().optional(),
-  prizeMoney: z.number().nonnegative("Prize money cannot be negative"),
+  prizeMoney: z.number().optional(),
   fee: z.number().nonnegative("Fee cannot be negative"),
 });
 

@@ -23,7 +23,7 @@ export interface CreateSegmentParams {
   isTeamEvent: boolean;
   minMembers?: number;
   maxMembers?: number;
-  prizeMoney: number;
+  prizeMoney?: number;
   fee: number;
 }
 

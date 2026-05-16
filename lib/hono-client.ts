@@ -51,60 +51,49 @@
 //   return response.json() as Promise<T>;
 // };
 
-
-
-
-
-
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { headers as nextHeaders } from "next/headers";
+
+// ১. রিটার্ন টাইপ ইন্টারফেস
+export interface FetchResult<T> {
+  status: number;
+  response: T | null; // হুবহু এপিআই রেসপন্স এখানে থাকবে
+}
 
 export const honoFetch = async <T>(
   endpoint: string,
   options: RequestInit = {},
-): Promise<T> => {
+): Promise<FetchResult<T>> => {
   const path = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
 
-  console.log("🚀 ~ Under check:", options.headers);
-  // ১. একটি স্ট্যান্ডার্ড Headers অবজেক্ট তৈরি করুন
   const fetchHeaders = new Headers();
   fetchHeaders.set("Content-Type", "application/json");
 
-  // ২. Next.js থেকে বর্তমান রিকোয়েস্টের হেডারগুলো নিন
   const reqHeaders = await nextHeaders();
-
-  // ৩. নিরাপদ হেডারগুলো কপি করুন (Service Binding এর জন্য Host বা Connection হেডার বাদ দেওয়া জরুরি)
   reqHeaders.forEach((value, key) => {
     const lowerKey = key.toLowerCase();
-    if (
-      lowerKey !== "host" &&
-      lowerKey !== "connection" &&
-      lowerKey !== "content-length"
-    ) {
+    if (!["host", "connection", "content-length"].includes(lowerKey)) {
       fetchHeaders.set(key, value);
     }
   });
 
-  // ৪. Options থেকে আসা হেডারগুলোকে (যেমন আপনার পাঠানো better-auth কুকি) সর্বোচ্চ অগ্রাধিকার দিন
   if (options.headers) {
     const customHeaders = new Headers(options.headers as HeadersInit);
     customHeaders.forEach((value, key) => {
-      fetchHeaders.set(key, value); // এটি Next.js এর ডিফল্ট কুকি/হেডারকে ওভাররাইট করবে
+      fetchHeaders.set(key, value);
     });
   }
 
-  let response: Response;
+  let fetchResponse: Response;
 
   if (process.env.NODE_ENV === "development") {
-    response = await fetch(`http://localhost:8787${path}`, {
+    fetchResponse = await fetch(`http://localhost:8787${path}`, {
       ...options,
       headers: fetchHeaders,
     });
   } else {
     const { env } = getCloudflareContext();
-
-    // ৫. Service Binding রিকোয়েস্ট
-    response = await env.HONO_API.fetch(
+    fetchResponse = await env.HONO_API.fetch(
       new Request(`https://hono-api${path}`, {
         ...options,
         headers: fetchHeaders,
@@ -112,10 +101,13 @@ export const honoFetch = async <T>(
     );
   }
 
-  if (!response.ok) {
-    const err = await response.text().catch(() => "Unknown error");
-    throw new Error(`API Error [${response.status}] ${path}: ${err}`);
+  // যদি বডি না থাকে (যেমন ৪01 বা ৫00 এরর যেখানে বডি নেই)
+  if (fetchResponse.status >= 400 && fetchResponse.status !== 401) {
+    // ৪0১ বাদে অন্য বড় এরর হলে null দিচ্ছি
+    return { status: fetchResponse.status, response: null };
   }
 
-  return response.json() as Promise<T>;
+  // সব ঠিক থাকলে বা ৪0১ হলেও বডি থাকলে (Hono sendError বডি পাঠায়)
+  const result = (await fetchResponse.json()) as T;
+  return { status: fetchResponse.status, response: result };
 };

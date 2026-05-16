@@ -8,15 +8,13 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Edit } from "lucide-react";
 import { useState } from "react";
 import { Profile } from "../Types";
-
-const API_URL = typeof window !== "undefined" ? window.location.origin :"http://localhost:8787";
+import { UpdateProfileAction } from "../action";
 
 interface ProfileEditDialogProps {
   profile: Profile;
@@ -49,19 +47,18 @@ export const ProfileEditDialog = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await fetch(`${API_URL}/api/users/update-profile`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify(formData),
-    });
-    if (res.ok) {
-      alert("Profile updated successfully!");
-      // Optionally, you can add logic here to refresh the profile data on the page
-    } else {
+
+    try {
+      const res = await UpdateProfileAction(formData);
+      if (res) {  
+      alert(`Profile updated successfully! ${res.message}`);
+      setIsOpen(false);
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
       alert("Failed to update profile. Please try again.");
+      setIsOpen(false);
     }
-    setIsOpen(false);
   };
 
   return (

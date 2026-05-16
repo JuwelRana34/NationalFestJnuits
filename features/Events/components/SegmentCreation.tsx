@@ -25,6 +25,8 @@ import {
 } from "lucide-react";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { SegmentFormInput, SegmentFormOutput, segmentSchema } from "../Types";
+import { honoFetch } from "@/lib/hono-client";
+import { createSegmentAction } from "../action";
 
 
 // --- Main Form Component ---
@@ -58,9 +60,12 @@ export default function CreateSegmentForm() {
   const onSubmit = async (data: SegmentFormOutput) => {
     console.log("Validated Data Submitted:", data);
     alert("Form submitted successfully! Check console for payload.");
+    console.log("Final Payload:", data)
+
     //FIXME: Call the API to create the segment with the validated data
-    // await createSegment({ ...data, seatsFilled: 0 });
-    reset();
+    const response = await createSegmentAction(data);
+    console.log("API Response:", response);
+    
   };
 
   return (

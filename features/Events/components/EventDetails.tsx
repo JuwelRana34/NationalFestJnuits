@@ -39,9 +39,21 @@ export default async function SegmentDetailsPage({
   const resolvedParams = await params;
   const id = resolvedParams.id;
 
-  const { data } = await honoFetch<SingleEventResponse>(`/api/events/${id}`);
+  const { status, response } = await honoFetch<SingleEventResponse>(
+    `/api/events/${id}`,
+    {
+      next: { revalidate: 3600 }, // ক্যাশ টাইম সেট করে দিন
+    },
+  );
 
-  const segment = Array.isArray(data) ? null : data;
+  if (status !== 200 || !response?.success) {
+    return (
+      <div className="pt-20 flex min-h-screen justify-center items-center rounded">
+        Event not found!
+      </div>
+    );
+  }
+  const segment = Array.isArray(response?.data) ? null : response?.data;
 
   const occupancyPercentage =
     !segment?.seatsTotal || segment.seatsTotal <= 0
