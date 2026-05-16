@@ -23,7 +23,9 @@ export const UpdateProfileAction = async (formData: {
       headers: { "Content-Type": "application/json" },
       credentials: "include",
       body: JSON.stringify(formData),
-    },
+      requireAuth: true,
+    }
+    
   );
 
   if (res.status !== 200) {

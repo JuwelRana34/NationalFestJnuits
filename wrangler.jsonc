@@ -21,10 +21,6 @@
       "binding": "NEXT_INC_CACHE_KV",
       "id": "2aebade286de4babb2e1c5c6c6cb17ab",
     },
-    {
-      "binding": "IMAGES",
-      "id": "2aebade286de4babb2e1c5c6c6cb17ab"
-    }
   ],
   "durable_objects": {
     "bindings": [

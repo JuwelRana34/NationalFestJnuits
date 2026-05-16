@@ -7,7 +7,7 @@ export default async function DashboardWrapper() {
   const { status, response } = await honoFetch<DashboardResponse>(
     "/api/users/dashboard",
     {
-      next: { revalidate: 86400, tags: ["dashboard-data"] },
+      requireAuth: true,
     },
   );
 

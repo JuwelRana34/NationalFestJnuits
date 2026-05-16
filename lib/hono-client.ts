@@ -1,84 +1,116 @@
 // import { getCloudflareContext } from "@opennextjs/cloudflare";
 // import { headers as nextHeaders } from "next/headers";
 
+// // ১. রিটার্ন টাইপ ইন্টারফেস
+// export interface FetchResult<T> {
+//   status: number;
+//   response: T | null;
+// }
+
+// // ২. কাস্টম অপশন ইন্টারফেস তৈরি (যাতে requireAuth পাস করা যায়)
+// export interface FetchOptions extends RequestInit {
+//   requireAuth?: boolean;
+// }
+
 // export const honoFetch = async <T>(
 //   endpoint: string,
-//   options: RequestInit = {},
-// ): Promise<T> => {
+//   options: FetchOptions = {},
+// ): Promise<FetchResult<T>> => {
 //   const path = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
 
-//   // ১. বর্তমান রিকোয়েস্টের হেডারগুলো নিন (যাতে কুকি থাকে)
-//   const reqHeaders = await nextHeaders();
-//   const cookie = reqHeaders.get("cookie");
-//  console.log('🚀 ~ variable:', cookie);
-//   // ২. হেডার মার্জ করুন
-//   const headers: Record<string, string> = {
-//     "Content-Type": "application/json",
-//     ...Object.fromEntries(reqHeaders.entries()), // সব হেডার পাস করুন
-//     ...(options.headers as Record<string, string>),
-//   };
+//   // requireAuth আলাদা করে নিচ্ছি, ডিফল্ট false রাখছি
+//   const { requireAuth = false, ...fetchOptions } = options;
 
-//   // যদি কুকি থাকে তবে সেটি নিশ্চিতভাবে সেট করুন
-//   if (cookie) {
-//     headers["cookie"] = cookie;
+//   const fetchHeaders = new Headers();
+//   fetchHeaders.set("Content-Type", "application/json");
+
+//   // ৩. ম্যাজিকটা এখানে: শুধুমাত্র requireAuth true হলেই headers() কল হবে!
+//   if (requireAuth) {
+//     const reqHeaders = await nextHeaders();
+//     reqHeaders.forEach((value, key) => {
+//       const lowerKey = key.toLowerCase();
+//       if (!["host", "connection", "content-length"].includes(lowerKey)) {
+//         fetchHeaders.set(key, value);
+//       }
+//     });
 //   }
 
-//   let response: Response;
+//   // কাস্টম হেডার থাকলে অ্যাড করা
+//   if (fetchOptions.headers) {
+//     const customHeaders = new Headers(fetchOptions.headers as HeadersInit);
+//     customHeaders.forEach((value, key) => {
+//       fetchHeaders.set(key, value);
+//     });
+//   }
 
+//   let fetchResponse: Response;
+
+//   // ৪. লোকাল এবং ক্লাউডফ্লেয়ার বাইন্ডিং হ্যান্ডেলিং
 //   if (process.env.NODE_ENV === "development") {
-//     response = await fetch(`http://localhost:8787${path}`, {
-//       ...options,
-//       headers,
+//     fetchResponse = await fetch(`http://localhost:8787${path}`, {
+//       ...fetchOptions,
+//       headers: fetchHeaders,
 //     });
 //   } else {
-//     const { env } =  getCloudflareContext();
-
-//     // ৩. Service Binding রিকোয়েস্টে হেডার পাস করা
-//     // এখানে https://hono-api একটি ডামি ডোমেইন, এটি শুধু বাইন্ডিং ট্রিগার করে
-//     response = await env.HONO_API.fetch(
+//     const { env } = getCloudflareContext();
+//     fetchResponse = await env.HONO_API.fetch(
 //       new Request(`https://hono-api${path}`, {
-//         ...options,
-//         headers,
+//         ...fetchOptions,
+//         headers: fetchHeaders, // OpenNext Service Binding
 //       }),
 //     );
 //   }
 
-//   if (!response.ok) {
-//     const err = await response.text().catch(() => "Unknown error");
-//     throw new Error(`API Error [${response.status}] ${path}: ${err}`);
+//   // ৫. এরর এবং রেসপন্স হ্যান্ডেলিং
+//   if (fetchResponse.status >= 400 && fetchResponse.status !== 401) {
+//     return { status: fetchResponse.status, response: null };
 //   }
 
-//   return response.json() as Promise<T>;
+//   try {
+//     // JSON parse error handle করার জন্য try-catch অ্যাড করা ভালো
+//     const result = (await fetchResponse.json()) as T;
+//     return { status: fetchResponse.status, response: result };
+//   } catch (error) {
+//     return { status: fetchResponse.status, response: null };
+//   }
 // };
 
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { headers as nextHeaders } from "next/headers";
 
-// ১. রিটার্ন টাইপ ইন্টারফেস
 export interface FetchResult<T> {
   status: number;
-  response: T | null; // হুবহু এপিআই রেসপন্স এখানে থাকবে
+  response: T | null;
+}
+
+export interface FetchOptions extends RequestInit {
+  requireAuth?: boolean;
 }
 
 export const honoFetch = async <T>(
   endpoint: string,
-  options: RequestInit = {},
+  options: FetchOptions = {},
 ): Promise<FetchResult<T>> => {
   const path = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+
+  const { requireAuth = false, ...fetchOptions } = options;
 
   const fetchHeaders = new Headers();
   fetchHeaders.set("Content-Type", "application/json");
 
-  const reqHeaders = await nextHeaders();
-  reqHeaders.forEach((value, key) => {
-    const lowerKey = key.toLowerCase();
-    if (!["host", "connection", "content-length"].includes(lowerKey)) {
-      fetchHeaders.set(key, value);
-    }
-  });
+  // শুধুমাত্র অথেনটিকেশন দরকার হলেই headers() কল হবে
+  if (requireAuth) {
+    const reqHeaders = await nextHeaders();
+    reqHeaders.forEach((value, key) => {
+      const lowerKey = key.toLowerCase();
+      if (!["host", "connection", "content-length"].includes(lowerKey)) {
+        fetchHeaders.set(key, value);
+      }
+    });
+  }
 
-  if (options.headers) {
-    const customHeaders = new Headers(options.headers as HeadersInit);
+  if (fetchOptions.headers) {
+    const customHeaders = new Headers(fetchOptions.headers as HeadersInit);
     customHeaders.forEach((value, key) => {
       fetchHeaders.set(key, value);
     });
@@ -88,26 +120,49 @@ export const honoFetch = async <T>(
 
   if (process.env.NODE_ENV === "development") {
     fetchResponse = await fetch(`http://localhost:8787${path}`, {
-      ...options,
+      ...fetchOptions,
       headers: fetchHeaders,
     });
   } else {
-    const { env } = getCloudflareContext();
-    fetchResponse = await env.HONO_API.fetch(
-      new Request(`https://hono-api${path}`, {
-        ...options,
+    // 🎯 ম্যাজিক লজিক: আমরা কি Cloudflare-এর রিয়েল রানটাইমে আছি নাকি Next.js বিল্ড টাইমে?
+    const isCloudflareWorker =
+      typeof navigator !== "undefined" &&
+      navigator.userAgent === "Cloudflare-Workers";
+
+    if (isCloudflareWorker) {
+      try {
+        const { env } = await getCloudflareContext({ async: true });
+        fetchResponse = await env.HONO_API.fetch(
+          new Request(`https://hono-api${path}`, {
+            ...fetchOptions,
+            headers: fetchHeaders,
+          }),
+        );
+      } catch (error) {
+        // বাইন্ডিং কোনো কারণে কাজ না করলে ফলব্যাক
+        fetchResponse = await fetch(`https://festapi.jnuits.org.bd${path}`, {
+          ...fetchOptions,
+          headers: fetchHeaders,
+        });
+      }
+    } else {
+      // 🛑 Next.js Build Time: এখানে Cloudflare বাইন্ডিং থাকে না।
+      // তাই getCloudflareContext কল না করে সরাসরি পাবলিক API-তে fetch করা হচ্ছে যাতে বিল্ড ক্র্যাশ না করে।
+      fetchResponse = await fetch(`https://festapi.jnuits.org.bd${path}`, {
+        ...fetchOptions,
         headers: fetchHeaders,
-      }),
-    );
+      });
+    }
   }
 
-  // যদি বডি না থাকে (যেমন ৪01 বা ৫00 এরর যেখানে বডি নেই)
   if (fetchResponse.status >= 400 && fetchResponse.status !== 401) {
-    // ৪0১ বাদে অন্য বড় এরর হলে null দিচ্ছি
     return { status: fetchResponse.status, response: null };
   }
 
-  // সব ঠিক থাকলে বা ৪0১ হলেও বডি থাকলে (Hono sendError বডি পাঠায়)
-  const result = (await fetchResponse.json()) as T;
-  return { status: fetchResponse.status, response: result };
+  try {
+    const result = (await fetchResponse.json()) as T;
+    return { status: fetchResponse.status, response: result };
+  } catch (error) {
+    return { status: fetchResponse.status, response: null };
+  }
 };

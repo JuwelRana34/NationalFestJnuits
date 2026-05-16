@@ -71,30 +71,11 @@ export default function Events({ eventsData }: { eventsData: FullEvent[] }) {
             {/* Cards Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 justify-items-center w-full">
               {filteredEvents.map((event) => (
-               
                 <div
                   key={event.id}
                   className="w-full max-w-90 flex justify-center"
                 >
-                  <EventCard
-                    id={event.id}
-                    title={event.title}
-                    subtitle={event.subtitle}
-                    type={event.type}
-                    description={event.description}
-                    date={event.date}
-                    time={event.time}
-                    venue={event.venue}
-                    fee={event.fee}
-                    seatsTotal={event.seatsTotal}
-                    seatsFilled={event.seatsFilled}
-                    image={event.image}
-                    createdAt={event.createdAt}
-                    updatedAt={event.updatedAt}
-                    prizeMoney={event.prizeMoney}
-                    isTeamEvent={event.isTeamEvent}
-                    responsible={event.responsible}
-                  />
+                  <EventCard {...event} />
                 </div>
               ))}
             </div>

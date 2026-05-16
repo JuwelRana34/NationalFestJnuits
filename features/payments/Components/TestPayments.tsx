@@ -36,12 +36,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/useUserSession";
 import { uploadStudentId } from "@/lib/uploadStudentId";
+import { submitPaymentAction, verifyCouponAction } from "../action";
 import {
   createFormSchema,
   FormValues,
   PaymentPayload,
   SegmentType,
 } from "../types";
+import { redirect } from "next/navigation";
 
 export interface RegistrationButtonProps {
   segmentId: string;
@@ -55,6 +57,9 @@ export interface RegistrationButtonProps {
   segmentType?: SegmentType;
 }
 
+interface typedDiscountResponse {
+  discountPercentage?: number | undefined;
+}
 export default function RegistrationButton({
   segmentId,
   segmentName,
@@ -207,16 +212,18 @@ export default function RegistrationButton({
     setDiscountPercent(0);
 
     try {
-      // FIXME: The actual verifyCouponAction should be called here, but since it's not implemented yet, we'll mock the response for demonstration. 
+      const { success, data, message } =
+        await verifyCouponAction(currentCoupon);
+      console.log("Coupon verification result:", data);
 
-      const response = {success: true, message: "Coupon applied!", discountPercentage: 20};
-      if (response.success) {
-        setCouponStatus({ type: "success", message: response.message });
-        if (response.discountPercentage) {
-          setDiscountPercent(response.discountPercentage);
-        }
+      if (success) {
+        // handleSelibrationSparkel();
+        setCouponStatus({ type: "success", message: message });
+        const discount = data as typedDiscountResponse;
+        setDiscountPercent(discount.discountPercentage ?? 0);
       } else {
-        setCouponStatus({ type: "error", message: response.message });
+        const err = data as { message?: string } | undefined;
+        setCouponStatus({ type: "error", message: err?.message || message });
       }
     } catch {
       setCouponStatus({ type: "error", message: "Something went wrong." });
@@ -226,7 +233,7 @@ export default function RegistrationButton({
   };
 
   const onSubmit = async (data: FormValues) => {
-    console.log("✅ onSubmit fired", data);
+
     setIsLoading(true);
     try {
       const payload: PaymentPayload = {
@@ -242,13 +249,16 @@ export default function RegistrationButton({
 
         payload.teamMembers = [...data.members];
       }
-      
-      // FIXME: The actual payment processing action should be called here, but since it's not implemented yet, we'll mock the response for demonstration.
-      
-      const res = [{ success: true, message: "Payment processed successfully." }];
 
-      console.log("Payment response:", res);
-      handleClose();
+          console.log("✅ onSubmit fired", payload);
+
+     const { PayUrl, success } = await submitPaymentAction(payload);
+      
+       if (success) {
+        console.log("Payment submission successful in clientSide:", PayUrl);
+        window.location.assign(PayUrl || "");
+        handleClose();
+       }
     } catch (error) {
       console.error("Payment error:", error);
     } finally {
@@ -1037,7 +1047,7 @@ export default function RegistrationButton({
                         variant="secondary"
                         onClick={handleVerifyCoupon}
                         disabled={!field.value || isVerifyingCoupon}
-                        className="w-[100px] shrink-0"
+                        className="w-25 shrink-0 text-white"
                       >
                         {isVerifyingCoupon ? (
                           <Loader2 className="w-4 h-4 animate-spin" />

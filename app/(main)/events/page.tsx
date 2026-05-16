@@ -1,3 +1,4 @@
+// /events
 import { Events } from "@/components/custom/DynamicMotion";
 import { EventsResponse, FullEvent } from "@/features/Events/schema";
 import { honoFetch } from "@/lib/hono-client";
@@ -22,7 +23,7 @@ export default function EventPage() {
 
 async function EventDataFetch() {
   const { response } = await honoFetch<EventsResponse>("/api/events",{
-    next: { revalidate: 3600, tags: [`events`] },
+    // next: { revalidate: 86000, tags: [`events`] },
   })
   
   return (

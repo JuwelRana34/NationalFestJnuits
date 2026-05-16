@@ -2,6 +2,7 @@
 
 import { honoFetch } from "@/lib/hono-client";
 import { SegmentFormOutput } from "./Types";
+import { revalidateTag } from "next/cache";
 
 export async function createSegmentAction(data: SegmentFormOutput) {
   try {
@@ -22,6 +23,7 @@ export async function createSegmentAction(data: SegmentFormOutput) {
       };
     }
 
+     revalidateTag("events", "max");
     // সব ঠিক থাকলে success রিটার্ন করুন
     return { success: true, data: parsedResponse.data };
   } catch (error: unknown) {

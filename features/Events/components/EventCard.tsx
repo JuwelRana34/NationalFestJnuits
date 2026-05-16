@@ -9,7 +9,7 @@ import Link from "next/link";
 import { FullEvent } from "../schema";
 
 
-export default function EventCard(props: Partial<FullEvent>) {
+export default function EventCard(events: Partial<FullEvent>) {
   const {
     id,
     title,
@@ -25,7 +25,7 @@ export default function EventCard(props: Partial<FullEvent>) {
     minMembers,
     maxMembers,
     extraMemberFee,
-  } = props;
+  } = events;
 
   const safeSeatsFilled = Number(seatsFilled ?? 0);
   const safeSeatsTotal = Number(seatsTotal ?? 0);
@@ -35,6 +35,7 @@ export default function EventCard(props: Partial<FullEvent>) {
       : 0;
   const seatsLeft = Math.max(0, safeSeatsTotal - safeSeatsFilled);
 
+  console.log("EventCard Props:", minMembers, maxMembers);
   return (
     <motion.div
       whileHover={{ y: -6 }}
@@ -172,7 +173,9 @@ export default function EventCard(props: Partial<FullEvent>) {
             baseFee={fee || 0}
             segmentType={(type as SegmentType) || "DEFAULT"}
           />
+
           <Link
+            prefetch={false}
             href={`/events/${id}`}
             className="flex-1 py-2.5 text-center bg-cyan-600 text-slate-200  font-bold rounded-[10px] hover:bg-linear-to-r hover:from-cyan-400 hover:to-violet-400 transition-colors"
           >

@@ -42,7 +42,7 @@ export default async function SegmentDetailsPage({
   const { status, response } = await honoFetch<SingleEventResponse>(
     `/api/events/${id}`,
     {
-      next: { revalidate: 3600 }, // ক্যাশ টাইম সেট করে দিন
+      next: { revalidate: 3600 }, 
     },
   );
 
@@ -262,14 +262,24 @@ export default async function SegmentDetailsPage({
                             </span>
                           </div>
                         </div>
-                        {segment?.prizeMoney && (
+                        {(segment?.prizeMoney ?? 0) > 0 ? (
                           <div className="text-right">
-                            <p className="text-xs font-medium text-slate-300 mb-1 flex items-center justify-end gap-1">
-                              <Trophy className="w-3 h-3 text-secondary" />{" "}
+                            <p className="text-md font-medium text-slate-300 mb-1 flex items-center justify-end gap-1">
+                              {" "}
                               Prize Pool
                             </p>
                             <span className="text-lg font-bold text-gradient">
-                              ${segment?.prizeMoney?.toLocaleString()}
+                              $ {segment?.prizeMoney?.toLocaleString()}
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="text-right">
+                            <p className="text-xs font-medium text-slate-300 mb-1 flex items-center justify-end gap-1">
+                              <Trophy className="w-8 h-8 text-secondary" />{" "}
+                              Prize Pool
+                            </p>
+                            <span className="text-lg font-bold text-rose-400">
+                              Not Announced!
                             </span>
                           </div>
                         )}
@@ -283,7 +293,7 @@ export default async function SegmentDetailsPage({
                           <Calendar className="w-5 h-5 text-secondary mt-0.5" />
                           <div>
                             <p className="font-medium text-sm text-slate-300">
-                              Date
+                              Registration Deadline
                             </p>
                             <p className="text-sm text-slate-300">
                               {formatDate(segment?.date)}
@@ -297,7 +307,9 @@ export default async function SegmentDetailsPage({
                               Time
                             </p>
                             <p className="text-sm text-slate-300">
-                              {formatTime(segment?.time)}
+                              {formatTime(
+                                segment?.time
+                                )}
                             </p>
                           </div>
                         </div>

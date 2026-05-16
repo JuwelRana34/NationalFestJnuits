@@ -10,11 +10,19 @@ export const memberSchema = z.object({
 
 // ২. Segment-specific metadata schemas
 export const hackathonMetaSchema = z.object({
-  githubLink: z.string().url({ message: "Valid GitHub URL required." }),
+  githubLink: z
+    .string()
+    .optional()
+    .refine((val) => !val || z.string().url().safeParse(val).success, {
+      message: "Valid GitHub URL required.",
+    }),
+
   portfolioLink: z
     .string()
-    .url({ message: "Valid portfolio URL required." })
-    .optional(),
+    .optional()
+    .refine((val) => !val || z.string().url().safeParse(val).success, {
+      message: "Valid portfolio URL required.",
+    }),
 });
 
 export const appShowcaseMetaSchema = z.object({
@@ -32,8 +40,10 @@ export const aiAdventureMetaSchema = z.object({
   }),
   previousWorkLink: z
     .string()
-    .url({ message: "Valid link required." })
-    .optional(),
+    .optional()
+    .refine((val) => !val || z.string().url().safeParse(val).success, {
+      message: "Valid link required.",
+    }),
 });
 
 export const typingMasterMetaSchema = z.object({
@@ -94,8 +104,8 @@ export const createFormSchema = (
       isTeamEvent: z.literal(false),
       coupon: z.string().optional(), // 👈 কুপন অ্যাড করা হলো
       category: z.enum(["UNIVERSITY", "SCHOOL_COLLEGE"]),
-      studentIdScan: z.string().optional(),
-      segmentMeta: extraFields.passthrough(), // 👈 Segment-specific metadata
+      studentIdScan: z.string().min(1, { message: "Student ID is required." }),
+      segmentMeta: extraFields.passthrough().optional(), // 👈 Segment-specific metadata
     }),
 
     // কন্ডিশন ২: Team Event
@@ -106,7 +116,7 @@ export const createFormSchema = (
         .min(2, { message: "Team name must be at least 2 characters." }),
       coupon: z.string().optional(), // 👈 কুপন অ্যাড করা হলো
       category: z.enum(["UNIVERSITY", "SCHOOL_COLLEGE"]),
-      studentIdScan: z.string().optional(),
+      studentIdScan: z.string().min(1, { message: "Team leader's Student ID is required." }),
       segmentMeta: extraFields.passthrough(), // 👈 Segment-specific metadata
       members: z
         .array(memberSchema)
