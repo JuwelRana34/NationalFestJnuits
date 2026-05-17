@@ -50,16 +50,16 @@
 }
 
 :root {
-  --background: oklch(20.8% 0.042 265.755);
-  --foreground: oklch(82.8% 0.189 84.429);
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.556 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(82.8% 0.189 84.429);
-  --primary-foreground: oklch(0.145 0 0);
-  --secondary: oklch(0.7 0.1 200);
-  --secondary-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.3284 0.1041 298.66);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.5095 0.1891 357.2);
+  --secondary-foreground: oklch(1 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
   --accent: oklch(0.97 0 0);
@@ -67,7 +67,7 @@
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --ring: oklch(0.3284 0.1041 298.66);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -135,6 +135,10 @@
 
 @layer utilities {
   .text-gradient {
-    @apply tracking-tight text-transparent bg-clip-text bg-linear-to-r from-violet-400 to-cyan-400;
+    @apply tracking-tight text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary;
+  }
+
+  .bg-gradient {
+    @apply bg-linear-to-r from-primary to-secondary text-slate-200 hover:bg-linear-to-r hover:from-primary/80 hover:to-secondary/80;
   }
 }

@@ -151,15 +151,15 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-950 font-sans pt-36 pb-12">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden font-sans pt-32 pb-12">
       {/* 1. Custom Canvas Background (Water Bubbles) */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 z-0 pointer-events-none opacity-30"
+        className="absolute inset-0 z-0 pointer-events-none opacity-70"
       />
 
       {/* 2. Fallback Background Grid */}
-      <div className="absolute inset-0 z-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-size-[3rem_3rem] opacity-30 pointer-events-none" />
+      <div className="absolute inset-0 z-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-size-[3rem_3rem] opacity-10 pointer-events-none" />
 
       {/* 3. Gradient Overlay for Depth */}
       <div className="absolute inset-0 z-0 pointer-events-none bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-slate-900/40 via-slate-950/80 to-slate-950" />
@@ -175,12 +175,12 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="inline-flex items-center p-1 pr-4 bg-slate-900/50 border border-slate-800 rounded-full backdrop-blur-md mb-8 hover:bg-slate-800/50 transition-colors"
+          className="inline-flex items-center p-1 pr-4 bg-secondary/10  rounded-full backdrop-blur-md mb-8 hover:bg-primary transition-colors group"
         >
-          <span className="px-3 py-1 bg-linear-to-r from-cyan-500 to-violet-600 text-slate-100 text-xs font-bold rounded-full mr-3 uppercase tracking-wider flex items-center gap-1">
+          <span className="px-3 py-1 bg-linear-to-r from-primary to-secondary text-slate-100 text-xs font-bold rounded-full mr-3 uppercase tracking-wider flex items-center gap-1">
             <Zap size={12} fill="currentColor" /> Live
           </span>
-          <span className="text-sm font-medium text-slate-300">
+          <span className="text-sm font-medium text-secondary group-hover:text-slate-200 transition-colors">
             Registration is officially open
           </span>
         </motion.div>
@@ -192,11 +192,11 @@ export default function HeroSection() {
           transition={{ duration: 0.7, delay: 0.3, type: "spring" }}
           className="max-w-5xl"
         >
-          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight text-slate-200 mb-6 leading-[1.1]">
+          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight  mb-6 leading-[1.1]">
             National AI & IT <br />
             <span className="relative">
-              <span className="absolute -inset-1 block bg-linear-to-r from-amber-500/20 to-cyan-500/20 blur-2xl animate-pulse"></span>
-              <span className="relative text-transparent bg-clip-text bg-linear-to-r from-amber-400 via-amber-200 to-cyan-400">
+              <span className="absolute -inset-1 block bg-linear-to-r from-pink-500/30 to-violet-500/30 blur-2xl animate-pulse"></span>
+              <span className="relative text-transparent bg-clip-text bg-linear-to-r from-primary  to-secondary">
                 Summit 2026
               </span>
             </span>
@@ -222,7 +222,7 @@ export default function HeroSection() {
           className="flex flex-col sm:flex-row items-center justify-center gap-5 w-full sm:w-auto mb-16"
         >
           {/* Primary Amber Button */}
-          <button className="w-full sm:w-auto px-8 py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-base transition-all transform hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(245,158,11,0.4)] flex items-center justify-center gap-2 group active:scale-95">
+          <button className="w-full sm:w-auto px-8 py-4 bg-gradient  font-bold rounded-xl text-base transition-all transform hover:-translate-y-1 rgba(178, 30, 103, 0.5) flex items-center justify-center gap-2 group active:scale-95">
             <Terminal
               size={20}
               className="group-hover:-rotate-12 transition-transform"
@@ -231,7 +231,7 @@ export default function HeroSection() {
           </button>
 
           {/* Secondary Cyan Outline Button */}
-          <button className="w-full sm:w-auto px-8 py-4 bg-slate-900/50 border-2 border-cyan-500/30 hover:border-cyan-400 text-cyan-400 hover:bg-cyan-500/10 hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] font-bold rounded-xl text-base transition-all backdrop-blur-sm flex items-center justify-center gap-2 group active:scale-95">
+          <button className="w-full sm:w-auto px-8 py-4 border-2  border-cyan-400 text-cyan-400 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.2)] font-bold rounded-xl text-base transition-all backdrop-blur-sm flex items-center justify-center gap-2 group active:scale-95">
             <Code2 size={20} />
             View Tracks
             <ChevronRight
@@ -246,17 +246,17 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.9 }}
-          className="w-full max-w-4xl mx-auto flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12 bg-slate-900/40 border border-slate-800/60 backdrop-blur-xl rounded-3xl p-6 lg:p-8"
+          className="w-full max-w-4xl mx-auto flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12 bg-gradient  backdrop-blur-xl rounded-3xl p-6 lg:p-8"
         >
           {/* Live Countdown */}
           <div className="flex flex-col items-center">
-            <div className="flex items-center gap-2 text-cyan-400 mb-3">
+            <div className="flex items-center gap-2 text-slate-200 mb-3">
               <Timer size={18} className="animate-pulse" />
               <span className="text-sm font-semibold uppercase tracking-widest">
                 Fest Starts In
               </span>
             </div>
-            <div className="flex items-center gap-3 sm:gap-6 text-slate-300">
+            <div className="flex items-center gap-3 sm:gap-6 text-slate-200">
               {[
                 { label: "Days", value: timeLeft.days },
                 { label: "Hours", value: timeLeft.hours },
@@ -270,7 +270,7 @@ export default function HeroSection() {
                   <span className="text-3xl sm:text-4xl font-bold font-mono tracking-tight">
                     {time.value.toString().padStart(2, "0")}
                   </span>
-                  <span className="text-xs sm:text-sm text-slate-500 mt-1 uppercase">
+                  <span className="text-xs sm:text-sm text-slate-300 mt-1 uppercase">
                     {time.label}
                   </span>
                 </div>
@@ -279,18 +279,18 @@ export default function HeroSection() {
           </div>
 
           {/* Divider */}
-          <div className="w-full h-px lg:w-px lg:h-20 bg-slate-800"></div>
+          <div className="w-full h-px lg:w-px lg:h-20 bg-slate-400"></div>
 
           {/* Core Stats */}
-          <div className="flex items-center justify-center gap-8 sm:gap-12 text-sm font-medium text-slate-500">
+          <div className="flex items-center justify-center gap-8 sm:gap-12 text-sm font-medium text-slate-200">
             <div className="flex flex-col items-center gap-1 group cursor-default">
-              <span className="text-slate-300 text-3xl sm:text-4xl font-bold group-hover:scale-105 transition-transform">
+              <span className="text-slate-200 text-3xl sm:text-4xl font-bold group-hover:scale-105 transition-transform">
                 500k+
               </span>
               Prize Pool
             </div>
             <div className="flex flex-col items-center gap-1 group cursor-default">
-              <span className="text-cyan-400 text-3xl sm:text-4xl font-bold group-hover:scale-105 transition-transform">
+              <span className="text-amber-400 text-3xl sm:text-4xl font-bold group-hover:scale-105 transition-transform">
                 100+
               </span>
               Universities

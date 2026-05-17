@@ -9,16 +9,15 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/hooks/useUserSession";
 import { Menu } from "lucide-react";
-import { motion } from "motion/react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import * as React from "react";
 import { Suspense, useState } from "react";
-import UserMenu from "./userInfo";
-import { useAuth } from "@/hooks/useUserSession";
 import LogoutButton from "./logout";
-import Image from "next/image";
+import UserMenu from "./userInfo";
 
 interface NavLink {
   title: string;
@@ -28,7 +27,7 @@ interface NavLink {
 const navLinks: NavLink[] = [
   { title: "Home", href: "/" },
   { title: "About", href: "#about" },
-  { title: "Segments", href: "#segments" },
+  { title: "Admin-Dashboard", href: "/admin" },
   { title: "Events", href: "/events" },
   { title: "Contact", href: "/contact" },
 ];
@@ -44,7 +43,7 @@ function UserMenuFallback() {
 // ------------------------------------------------------------------
 
 function DesktopLinks() {
-  const path = usePathname(); // ডাইনামিক হুক এখন শুধু এই ছোট কম্পোনেন্টের ভেতর বন্দি!
+  const path = usePathname();
 
   return (
     <>
@@ -55,20 +54,10 @@ function DesktopLinks() {
           className={`text-md font-medium relative py-1 transition-colors ${
             path === link.href
               ? "text-secondary"
-              : "text-slate-300 hover:text-white"
+              : "text-slate-800 hover:text-secondary"
           }`}
         >
           {link.title}
-          {path === link.href && (
-            <motion.span
-              layoutId="underline"
-              className="absolute bottom-0 left-0 w-full h-0.5 bg-secondary shadow-[0_0_8px_rgba(251,191,36,0.8)]"
-              initial={{ scaleX: 0, opacity: 0 }}
-              animate={{ scaleX: 1, opacity: 1 }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
-              style={{ originX: 0 }}
-            />
-          )}
         </Link>
       ))}
     </>
@@ -78,7 +67,7 @@ function DesktopLinks() {
 function MobileLinks({ closeMenu }: { closeMenu: () => void }) {
   const path = usePathname();
   const { user, isLoading } = useAuth();
-  
+
   return (
     <>
       {navLinks.map((link) => (
@@ -95,26 +84,29 @@ function MobileLinks({ closeMenu }: { closeMenu: () => void }) {
           {link.title}
         </Link>
       ))}
-      {isLoading?( <>
-        <Skeleton className="h-8 w-full bg-slate-800" />
-       </> ): user && (
-        <div className="flex flex-col justify-center items-center gap-2">
-        <Link
-          href={`/dashboard`}
-          onClick={closeMenu}
-          className={`text-lg font-medium ${
-            path === "/dashboard"
-              ? "text-white bg-secondary px-4 py-2 rounded"
-              : "text-slate-300"
-          } transition-colors`}
-        >
-          Profile
-        </Link>
+      {isLoading ? (
+        <>
+          <Skeleton className="h-8 w-full bg-slate-800" />
+        </>
+      ) : (
+        user && (
+          <div className="flex flex-col justify-center items-center gap-2">
+            <Link
+              href={`/dashboard`}
+              onClick={closeMenu}
+              className={`text-lg font-medium ${
+                path === "/dashboard"
+                  ? "text-white bg-secondary px-4 py-2 rounded"
+                  : "text-slate-300"
+              } transition-colors`}
+            >
+              Profile
+            </Link>
 
-        <LogoutButton />
-      </div>
+            <LogoutButton />
+          </div>
+        )
       )}
-      
     </>
   );
 }
@@ -138,12 +130,12 @@ export default function Navbar() {
     <nav
       className={`fixed top-0 z-50 w-full transition-all duration-300 ${
         isScrolled
-          ? "bg-slate-900 shadow-md backdrop-blur py-2"
+          ? "bg-white/80 shadow-md backdrop-blur py-2"
           : "border-transparent bg-transparent py-4"
       }`}
     >
       {isScrolled && (
-        <div className="bg-linear-to-r from-transparent via-cyan-400 to-transparent absolute bottom-0 left-0 h-px w-full" />
+        <div className="bg-linear-to-r from-transparent via-cyan-500 to-transparent absolute bottom-0 left-0 h-0.5 w-full" />
       )}
 
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-8">
@@ -186,7 +178,7 @@ export default function Navbar() {
 
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger>
-              <div className="hover:bg-slate-800 flex h-10 w-10 cursor-pointer items-center justify-center rounded-md text-white transition-colors">
+              <div className=" flex h-10 w-10 cursor-pointer items-center justify-center rounded-md text-primary transition-colors">
                 <Menu className="h-6 w-6" />
                 <span className="sr-only">Toggle menu</span>
               </div>
@@ -196,7 +188,7 @@ export default function Navbar() {
               className="w-[80vw] border-slate-800 bg-slate-900 text-white sm:w-87.5"
             >
               <SheetHeader className="text-left">
-                <SheetTitle className="font-serif text-amber-400">
+                <SheetTitle className="font-serif text-primary">
                   JnUITS Menu
                 </SheetTitle>
               </SheetHeader>

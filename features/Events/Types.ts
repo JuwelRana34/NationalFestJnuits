@@ -30,7 +30,8 @@ export const segmentSchema = z.object({
   extraMemberFee: z
     .number()
     .nonnegative("Extra member fee cannot be negative")
-    .optional(),
+    .optional()
+    .nullable(),
   description: z.string().min(1, "Description is required"),
   image: z.string().optional(),
   date: z.string().min(1, "Date is required"),
@@ -44,9 +45,10 @@ export const segmentSchema = z.object({
     .number()
     .int()
     .positive("Minimum members must be at least 1")
-    .optional(),
-  maxMembers: z.number().int().positive().optional(),
-  prizeMoney: z.number().optional(),
+    .optional()
+    .nullable(),
+  maxMembers: z.number().int().positive().optional().nullable(),
+  prizeMoney: z.number().optional().nullable(),
   fee: z.number().nonnegative("Fee cannot be negative"),
 });
 

@@ -1,15 +1,40 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, MoreHorizontal, Calendar } from "lucide-react";
+import { Calendar, Plus, Search } from "lucide-react";
+import Link from "next/link";
 
 const events = [
-  { id: 1, name: "Summer Fest 2026", date: "2026-06-15", attendees: 250, status: "Upcoming" },
-  { id: 2, name: "Spring Hackathon", date: "2026-05-20", attendees: 180, status: "Upcoming" },
-  { id: 3, name: "Tech Talk Series", date: "2026-04-10", attendees: 95, status: "Completed" },
-  { id: 4, name: "Web Dev Workshop", date: "2026-05-05", attendees: 120, status: "Ongoing" },
+  {
+    id: "eeafba18-e023-45b2-a841-6c0ed09e9ddf",
+    name: "Summer Fest 2026",
+    date: "2026-06-15",
+    attendees: 250,
+    status: "Upcoming",
+  },
+  {
+    id: 2,
+    name: "Spring Hackathon",
+    date: "2026-05-20",
+    attendees: 180,
+    status: "Upcoming",
+  },
+  {
+    id: 3,
+    name: "Tech Talk Series",
+    date: "2026-04-10",
+    attendees: 95,
+    status: "Completed",
+  },
+  {
+    id: 4,
+    name: "Web Dev Workshop",
+    date: "2026-05-05",
+    attendees: 120,
+    status: "Ongoing",
+  },
 ];
 
 export default function EventsPage() {
@@ -18,7 +43,9 @@ export default function EventsPage() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold">Events</h1>
-          <p className="text-muted-foreground mt-1">Manage all events and registrations</p>
+          <p className="text-muted-foreground mt-1">
+            Manage all events and registrations
+          </p>
         </div>
         <Button className="w-full md:w-auto">
           <Plus size={18} className="mr-2" />
@@ -29,11 +56,11 @@ export default function EventsPage() {
       <Card className="p-4 md:p-6">
         <div className="mb-6">
           <div className="relative">
-            <Search className="absolute left-3 top-3 text-muted-foreground" size={18} />
-            <Input
-              placeholder="Search events..."
-              className="pl-10"
+            <Search
+              className="absolute left-3 top-3 text-muted-foreground"
+              size={18}
             />
+            <Input placeholder="Search events..." className="pl-10" />
           </div>
         </div>
 
@@ -45,10 +72,17 @@ export default function EventsPage() {
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
-                  <h3 className="font-semibold text-sm md:text-base">{event.name}</h3>
+                  <h3 className="font-semibold text-sm md:text-base">
+                    {event.name}
+                  </h3>
                 </div>
-                <Button variant="ghost" size="icon" className="h-8 w-8 -mt-1 -mr-1">
-                  <MoreHorizontal size={16} />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="shrink-0"
+                 
+                >
+                  <Link prefetch={false} href={`/admin/events/${event.id}/edit`}>Edit</Link>
                 </Button>
               </div>
               <div className="space-y-2 text-sm">
@@ -61,13 +95,15 @@ export default function EventsPage() {
                   <span className="font-semibold">{event.attendees}</span>
                 </div>
                 <div>
-                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                    event.status === "Upcoming"
-                      ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
-                      : event.status === "Ongoing"
-                      ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                      : "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
-                  }`}>
+                  <span
+                    className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                      event.status === "Upcoming"
+                        ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                        : event.status === "Ongoing"
+                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                          : "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
+                    }`}
+                  >
                     {event.status}
                   </span>
                 </div>
