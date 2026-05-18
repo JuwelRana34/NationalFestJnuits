@@ -12,12 +12,18 @@ import {
   XCircle,
 } from "lucide-react";
 import { PaymentStatus, Registration } from "../Types";
+import { formatDate, formatTime } from "@/lib/DateAndTimeFormater";
+import { Button } from "@/components/ui/button";
+import RetryPayment from "@/features/payments/Components/retryPayment";
 
 export const RegistrationsView = ({
   registrations,
 }: {
   registrations: Registration[];
 }) => {
+
+  console.log("Received registrations:", registrations);
+
   const getStatusIcon = (status: PaymentStatus) => {
     switch (status) {
       case "SUCCESS":
@@ -53,7 +59,7 @@ export const RegistrationsView = ({
             <div className="p-6 flex-1 border-b md:border-b-0 md:border-r border-slate-100">
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <Badge variant="outline" className="mb-2 bg-slate-50">
+                  <Badge  className="mb-2 bg-gradient p-2 shadow-2xs">
                     {reg.category}
                   </Badge>
                   <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
@@ -75,10 +81,10 @@ export const RegistrationsView = ({
                   <MapPin className="h-4 w-4" /> {reg.segment.venue}
                 </div>
                 <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4" /> {reg.segment.date}
+                  <Calendar className="h-4 w-4" /> { formatDate(reg.segment.date)}
                 </div>
                 <div className="flex items-center gap-2">
-                  <Clock className="h-4 w-4" /> {reg.segment.time}
+                  <Clock className="h-4 w-4" /> { formatTime(reg.segment.time)}
                 </div>
                 <div className="flex items-center gap-2">
                   <Hash className="h-4 w-4" /> {reg.trackingNumber}
@@ -88,15 +94,17 @@ export const RegistrationsView = ({
 
             {/* Right side: Payment & Team Info */}
             <div className="p-6 md:w-80 bg-slate-50 flex flex-col justify-center space-y-4">
-              <div>
+            {reg.team ?   <div>
                 <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
                   Team Details
                 </p>
                 <p className="font-medium text-slate-900">
-                  {reg.team.teamName}
+                  {reg.team?.teamName}
                 </p>
-                <p className="text-sm text-slate-500">{reg.team.teamCode}</p>
-              </div>
+                <p className="text-sm text-slate-500">{reg.team?.teamCode}</p>
+              </div> : <p className=" text-primary">
+                 individual participant, no team details
+                </p>}
 
               <div>
                 <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
@@ -122,9 +130,14 @@ export const RegistrationsView = ({
                           {getStatusIcon(payment.status)}
                           {payment.status}
                         </Badge>
+                        {payment.status === "FAILED" || payment.status === "PENDING" ? (
+                         <RetryPayment eventId={reg.id} title={reg.segment.title} />
+                        ) : null}
                       </div>
                       <p className="text-xs text-slate-500">
-                        Method: {payment.paymentMethod} • TxID:{" "}
+                        Method: {payment.paymentMethod}
+                         <br />
+                         TxID:{" "}
                         {payment.transactionId}
                       </p>
                     </div>

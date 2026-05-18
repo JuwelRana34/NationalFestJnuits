@@ -44,6 +44,7 @@ import {
   SegmentType,
 } from "../types";
 import { redirect } from "next/navigation";
+import { toast } from "sonner";
 
 export interface RegistrationButtonProps {
   segmentId: string;
@@ -250,15 +251,17 @@ export default function RegistrationButton({
         payload.teamMembers = [...data.members];
       }
 
-          console.log("✅ onSubmit fired", payload);
+      
 
-     const { PayUrl, success } = await submitPaymentAction(payload);
+     const { PayUrl, success, message } = await submitPaymentAction(payload);
       
        if (success) {
         console.log("Payment submission successful in clientSide:", PayUrl);
         window.location.assign(PayUrl || "");
         handleClose();
-       }
+       } else {
+        toast.error(message || "Payment failed. Please try again.");
+      }
     } catch (error) {
       console.error("Payment error:", error);
     } finally {
@@ -268,7 +271,7 @@ export default function RegistrationButton({
 
   if (!user) {
     return (
-      <Button disabled className="px-6 py-3 w-full h-auto">
+      <Button disabled  className="px-6 py-3 w-full h-auto bg-primary border border-white/85 cursor-not-allowed">
         <Ticket className="w-full h-4 mr-2" />
         Login to Register
       </Button>

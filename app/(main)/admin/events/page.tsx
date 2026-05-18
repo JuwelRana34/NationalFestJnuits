@@ -1,117 +1,94 @@
-"use client";
+import { Suspense } from "react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Calendar, Plus, Search } from "lucide-react";
-import Link from "next/link";
+import { CalendarDays, CheckCircle2, Users } from "lucide-react";
 
-const events = [
-  {
-    id: "eeafba18-e023-45b2-a841-6c0ed09e9ddf",
-    name: "Summer Fest 2026",
-    date: "2026-06-15",
-    attendees: 250,
-    status: "Upcoming",
-  },
-  {
-    id: 2,
-    name: "Spring Hackathon",
-    date: "2026-05-20",
-    attendees: 180,
-    status: "Upcoming",
-  },
-  {
-    id: 3,
-    name: "Tech Talk Series",
-    date: "2026-04-10",
-    attendees: 95,
-    status: "Completed",
-  },
-  {
-    id: 4,
-    name: "Web Dev Workshop",
-    date: "2026-05-05",
-    attendees: 120,
-    status: "Ongoing",
-  },
-];
+import AdminEventsDataSection from "./_components/AdminEventsDataSection";
+import AdminEventsRefreshButton from "./_components/AdminEventsRefreshButton";
 
 export default function EventsPage() {
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold">Events</h1>
-          <p className="text-muted-foreground mt-1">
-            Manage all events and registrations
-          </p>
-        </div>
-        <Button className="w-full md:w-auto">
-          <Plus size={18} className="mr-2" />
-          Create Event
-        </Button>
-      </div>
+    <div className="space-y-8">
+      <section className="relative overflow-hidden rounded-3xl border bg-linear-to-br from-slate-950 via-slate-900 to-slate-950 p-6 md:p-8">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(56,189,248,0.12),transparent_35%),radial-gradient(circle_at_bottom_left,rgba(34,197,94,0.08),transparent_30%)]" />
+        <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-2xl space-y-3">
+            <Badge
+              variant="outline"
+              className="w-fit border-sky-500/30 text-sky-300"
+            >
+              Admin events
+            </Badge>
+            <div className="space-y-2">
+              <h1 className="text-3xl font-semibold tracking-tight text-white md:text-4xl">
+                Events dashboard
+              </h1>
+              <p className="max-w-xl text-sm text-slate-300 md:text-base">
+                Review published events, check registration totals, and open the
+                edit flow from one server-rendered page.
+              </p>
+            </div>
+          </div>
 
-      <Card className="p-4 md:p-6">
-        <div className="mb-6">
-          <div className="relative">
-            <Search
-              className="absolute left-3 top-3 text-muted-foreground"
-              size={18}
-            />
-            <Input placeholder="Search events..." className="pl-10" />
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <AdminEventsRefreshButton />
+            <Button disabled className="bg-sky-500 text-slate-950 opacity-90">
+              Create flow not added yet
+            </Button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {events.map((event) => (
-            <div
-              key={event.id}
-              className="border rounded-lg p-4 hover:shadow-md transition-shadow"
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex-1">
-                  <h3 className="font-semibold text-sm md:text-base">
-                    {event.name}
-                  </h3>
-                </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="shrink-0"
-                 
-                >
-                  <Link prefetch={false} href={`/admin/events/${event.id}/edit`}>Edit</Link>
-                </Button>
-              </div>
-              <div className="space-y-2 text-sm">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Calendar size={16} />
-                  {event.date}
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Attendees:</span>
-                  <span className="font-semibold">{event.attendees}</span>
-                </div>
-                <div>
-                  <span
-                    className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                      event.status === "Upcoming"
-                        ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
-                        : event.status === "Ongoing"
-                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                          : "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
-                    }`}
-                  >
-                    {event.status}
-                  </span>
-                </div>
-              </div>
+        <div className="relative mt-8 grid gap-4 sm:grid-cols-3">
+          <Card className="border-white/10 bg-white/5 p-4">
+            <div className="flex items-center gap-3 text-sm text-slate-300">
+              <CalendarDays className="h-4 w-4 text-sky-300" />
+              Published events
             </div>
-          ))}
+            <p className="mt-3 text-2xl font-semibold text-white">Live list</p>
+          </Card>
+          <Card className="border-white/10 bg-white/5 p-4">
+            <div className="flex items-center gap-3 text-sm text-slate-300">
+              <Users className="h-4 w-4 text-emerald-300" />
+              Registration tracking
+            </div>
+            <p className="mt-3 text-2xl font-semibold text-white">SSR data</p>
+          </Card>
+          <Card className="border-white/10 bg-white/5 p-4">
+            <div className="flex items-center gap-3 text-sm text-slate-300">
+              <CheckCircle2 className="h-4 w-4 text-amber-300" />
+              Actions
+            </div>
+            <p className="mt-3 text-2xl font-semibold text-white">Edit links</p>
+          </Card>
         </div>
-      </Card>
+      </section>
+
+      <Suspense fallback={<AdminEventsLoadingState />}>
+        <AdminEventsDataSection />
+      </Suspense>
     </div>
+  );
+}
+
+function AdminEventsLoadingState() {
+  return (
+    <Card className="border-white/10 bg-slate-950/80 p-6 md:p-8">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {[1, 2, 3].map((index) => (
+          <div
+            key={index}
+            className="rounded-2xl border border-white/10 bg-white/5 p-5"
+          >
+            <div className="h-4 w-24 rounded bg-white/10" />
+            <div className="mt-4 h-6 w-3/4 rounded bg-white/10" />
+            <div className="mt-3 h-4 w-full rounded bg-white/10" />
+            <div className="mt-2 h-4 w-5/6 rounded bg-white/10" />
+            <div className="mt-6 h-9 w-full rounded bg-white/10" />
+          </div>
+        ))}
+      </div>
+    </Card>
   );
 }

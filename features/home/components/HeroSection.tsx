@@ -60,7 +60,7 @@ export default function HeroSection() {
     class Bubble {
       x: number = 0;
       y: number = 0;
-      size: number = 2;
+      size: number = 3;
       speedY: number = 0;
       color: string = "rgba(255, 255, 255, 0.5)";
       angle: number = 0;
@@ -68,7 +68,7 @@ export default function HeroSection() {
 
       constructor() {
         if (!canvas) return;
-        this.size = Math.random() * 4 + 1; // Size of bubble
+        this.size = Math.random() * 5 + 1; // Size of bubble
         this.x = Math.random() * canvas.width;
         // Start from below the screen
         this.y = canvas.height + Math.random() * canvas.height;
@@ -155,11 +155,11 @@ export default function HeroSection() {
       {/* 1. Custom Canvas Background (Water Bubbles) */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 z-0 pointer-events-none opacity-70"
+        className="absolute inset-0 z-0 pointer-events-none opacity-60"
       />
 
       {/* 2. Fallback Background Grid */}
-      <div className="absolute inset-0 z-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-size-[3rem_3rem] opacity-10 pointer-events-none" />
+      <div className="absolute inset-0 z-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-size-[1.5rem_1.5rem] opacity-8 pointer-events-none" />
 
       {/* 3. Gradient Overlay for Depth */}
       <div className="absolute inset-0 z-0 pointer-events-none bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-slate-900/40 via-slate-950/80 to-slate-950" />

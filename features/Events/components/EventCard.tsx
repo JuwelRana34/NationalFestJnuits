@@ -40,14 +40,14 @@ export default function EventCard(events: Partial<FullEvent>) {
     <motion.div
       whileHover={{ y: -6 }}
       transition={{ duration: 0.3 }}
-      className="relative w-90 rounded-[20px] overflow-hidden border border-amber-400/20 bg-[#0a0f1e]"
+      className="relative w-90 rounded-[20px] overflow-hidden border border-primary"
       style={{
         boxShadow:
           "0 0 40px rgba(251,191,36,0.08), 0 20px 60px rgba(0,0,0,0.6)",
       }}
     >
       {/* Bottom glow line */}
-      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-linear-to-r from-transparent via-amber-400 to-transparent opacity-60" />
+      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-linear-to-r from-transparent via-primary to-transparent opacity-60" />
 
       {/* Corner accent */}
       <div className="absolute top-0 right-0 w-16 h-16 overflow-hidden z-10">
@@ -109,7 +109,7 @@ export default function EventCard(events: Partial<FullEvent>) {
       </div>
 
       {/* Body */}
-      <div className="px-5 pt-5 pb-6 bg-[#0c1220]">
+      <div className="px-5 pt-5 pb-6 bg-gradient  ">
         <div className="h-px bg-linear-to-r from-transparent via-amber-400/40 to-transparent mb-4 " />
         <div className="space-x-1.5">
           <span className="inline-flex items-center gap-1.5 bg-blue-400/8 border border-blue-400/20 rounded-md px-2.5 py-1 text-[11px] font-semibold text-blue-300 tracking-[0.8px] uppercase mb-3">
@@ -177,7 +177,7 @@ export default function EventCard(events: Partial<FullEvent>) {
           <Link
             prefetch={false}
             href={`/events/${id}`}
-            className="flex-1 py-2.5 text-center bg-cyan-600 text-slate-200  font-bold rounded-[10px] hover:bg-linear-to-r hover:from-cyan-400 hover:to-violet-400 transition-colors"
+            className="flex-1 py-2.5 text-center bg-yellow-600 text-slate-200  font-bold rounded-[10px] hover:bg-linear-to-r hover:from-cyan-400 hover:to-violet-400 transition-colors"
           >
             Details
           </Link>
