@@ -6,28 +6,8 @@ import Link from "next/link";
 
 import { EventsResponse, FullEvent } from "@/features/Events/schema";
 import { honoFetch } from "@/lib/hono-client";
+import { formatDate, formatTime } from "@/lib/DateAndTimeFormater";
 
-function formatEventDate(dateValue: string | Date) {
-  const date = new Date(dateValue);
-
-  if (Number.isNaN(date.getTime())) {
-    return "Date unavailable";
-  }
-
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-}
-
-function formatEventTime(timeValue: string) {
-  if (!timeValue) {
-    return "Time unavailable";
-  }
-
-  return timeValue;
-}
 
 function getFillPercentage(event: FullEvent) {
   if (!event.seatsTotal || event.seatsTotal <= 0) {
@@ -66,7 +46,7 @@ export default async function AdminEventsDataSection() {
 
   if (events.length === 0) {
     return (
-      <Card className="border-dashed border-slate-700 bg-slate-950/80 p-8 text-center">
+      <Card className="border-dashed border-slate-700 bg-blue-950/80 p-8 text-center">
         <p className="text-lg font-medium text-white">No events found</p>
         <p className="mt-2 text-sm text-slate-400">
           Events will appear here once they are created in the backend.
@@ -84,7 +64,7 @@ export default async function AdminEventsDataSection() {
             Rendered on the server and refreshed from the API.
           </p>
         </div>
-        <Badge variant="outline" className="border-white/10 text-slate-300">
+        <Badge variant="outline" className="border-white/10 text-slate-500">
           {events.length} total
         </Badge>
       </div>
@@ -96,38 +76,38 @@ export default async function AdminEventsDataSection() {
           return (
             <Card
               key={event.id}
-              className="flex h-full flex-col justify-between border-white/10 bg-slate-950/80 p-5 shadow-lg shadow-slate-950/20"
+              className="flex h-full flex-col justify-between border-white/10 bg-white-950/80 p-5 shadow-lg shadow-slate-950/20"
             >
               <div className="space-y-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="space-y-1">
                     <Badge
                       variant="secondary"
-                      className="w-fit bg-sky-500/10 text-sky-200 hover:bg-sky-500/10"
+                      className="w-fit bg-sky-500/20 text-sky-500 hover:bg-sky-500/10"
                     >
                       {event.type}
                     </Badge>
-                    <h3 className="text-lg font-semibold text-white">
+                    <h3 className="text-lg font-semibold text-gradient">
                       {event.title}
                     </h3>
                   </div>
-                  <Badge className="bg-emerald-500/10 text-emerald-200 hover:bg-emerald-500/10">
+                  <Badge className="bg-emerald-500/20 text-emerald-500 hover:bg-emerald-500/10">
                     {getStatusLabel(event)}
                   </Badge>
                 </div>
 
                 {event.subtitle ? (
-                  <p className="text-sm text-slate-400">{event.subtitle}</p>
+                  <p className="text-sm text-slate-500">{event.subtitle}</p>
                 ) : null}
 
-                <div className="space-y-2 text-sm text-slate-300">
+                <div className="space-y-2 text-sm text-slate-500">
                   <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-slate-400" />
-                    <span>{formatEventDate(event.date)}</span>
+                    <Calendar className="h-4 w-4 text-slate-500" />
+                    <span>{formatDate(event.date)}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Clock3 className="h-4 w-4 text-slate-400" />
-                    <span>{formatEventTime(event.time)}</span>
+                    <span>{formatTime(event.time)}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <MapPin className="h-4 w-4 text-slate-400" />
@@ -142,13 +122,13 @@ export default async function AdminEventsDataSection() {
                 </div>
 
                 <div>
-                  <div className="mb-1 flex items-center justify-between text-xs text-slate-400">
+                  <div className="mb-1 flex items-center justify-between text-xs text-slate-500">
                     <span>Occupancy</span>
                     <span>{fillPercentage}%</span>
                   </div>
-                  <div className="h-2 overflow-hidden rounded-full bg-white/10">
+                  <div className="h-2 overflow-hidden rounded-full bg-emerald-500/20">
                     <div
-                      className="h-full rounded-full bg-gradient-to-r from-sky-400 via-cyan-400 to-emerald-400"
+                      className="h-full rounded-full bg-linear-to-r from-sky-400 via-cyan-400 to-emerald-400"
                       style={{ width: `${fillPercentage}%` }}
                     />
                   </div>
@@ -159,7 +139,9 @@ export default async function AdminEventsDataSection() {
                 <Button
                 
                   variant="outline"
-                  className="flex-1 border-white/10 bg-white/5 text-white hover:bg-white/10"
+                  className="flex-1 border-white/10 bg-gradient text-slate-200 
+                   hover:text-white
+                  "
                 >
                   <Link
                     prefetch={false}

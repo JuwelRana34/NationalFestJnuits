@@ -1,6 +1,4 @@
 import {
-  CouponForm,
-  CreateSegmentForm,
   EventSchedule,
   HeroSection,
   Segments,
@@ -18,8 +16,6 @@ export default function JnUITFestLanding() {
       <Segments />
       <EventSchedule />
       <SpeakersJudges />
-      <CreateSegmentForm />
-      <CouponForm />
       {/* Footer */}
       <footer className="bg-slate-900 text-slate-300 py-12 px-6 md:px-12 border-t border-slate-700">
         <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">

@@ -1,23 +1,20 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import {
-  Ticket,
-  Percent,
-  Hash,
-  Calendar,
-  Save,
-  Loader2,
-  CheckCircle2,
-  AlertCircle,
-} from "lucide-react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-
-
+import {
+  AlertCircle,
+  CheckCircle2,
+  Hash,
+  Loader2,
+  Percent,
+  Save,
+  Ticket,
+} from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import React, { useState } from "react";
 
 export default function CouponForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,7 +29,6 @@ export default function CouponForm() {
   const [isActive, setIsActive] = useState(true);
   const [maxUses, setMaxUses] = useState<number | "">("");
   const [expiresAt, setExpiresAt] = useState("");
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,12 +46,12 @@ export default function CouponForm() {
       };
 
       // Call the server action
-      const result = {success: true}; 
+      const result = { success: true };
       //FIXME: Replace with actual API call to save the coupon
       // console.log("Save Coupon Result:", result);
       if (result.success) {
         setStatus({ type: "success", message: "Coupon saved successfully!" });
-      //   // Optional: Reset form or redirect
+        //   // Optional: Reset form or redirect
         if (!code.includes("EDIT")) {
           setCode("");
           setDiscountPercentage("");
@@ -64,7 +60,7 @@ export default function CouponForm() {
           setIsActive(true);
         }
       } else {
-        setStatus({ type: "error", message:"Failed to save coupon." });
+        setStatus({ type: "error", message: "Failed to save coupon." });
       }
     } catch {
       setStatus({ type: "error", message: "An unexpected error occurred." });
@@ -81,12 +77,12 @@ export default function CouponForm() {
         transition={{ duration: 0.4, ease: "easeOut" }}
         className="w-full max-w-2xl bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden"
       >
-        <div className="border-b border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50 px-6 py-5">
+        <div className="border-b bg-gradient p-2">
           <h2 className="text-xl font-semibold tracking-tight flex items-center gap-2">
-            <Ticket className="w-5 h-5 text-blue-600 dark:text-blue-500" />
+            <Ticket className="w-5 h-5 text-amber-600 " />
             Create New Coupon
           </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-sm text-gray-200 mt-1">
             Configure discount rules, usage limits, and expiration dates.
           </p>
         </div>

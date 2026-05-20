@@ -107,7 +107,7 @@ export default function EventForm({
   });
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 py-8 text-slate-100 sm:px-6 lg:px-8">
+    <div className="min-h-screen border rounded-lg px-4 py-8 text-slate-100 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl">
         <div className="mb-8 space-y-3">
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-cyan-400">
