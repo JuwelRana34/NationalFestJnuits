@@ -143,7 +143,7 @@ export default function EventSchedule() {
         {/* Timeline Content */}
         <div className="relative">
           {/* Vertical timeline line */}
-          <div className="absolute left-6.75 md:left-9.75 top-4 bottom-4 w-px bg-border/60 hidden sm:block" />
+          <div className="absolute left-29.75 md:left-29.75 top-4 bottom-4 w-px bg-border/60 hidden sm:block" />
 
           <AnimatePresence mode="wait">
             <motion.div
@@ -183,7 +183,7 @@ function TimelineItem({ event, index }: { event: EventItem; index: number }) {
         <div className="w-20 text-right mr-4 text-md font-semibold text-secondary">
           {event.time}
         </div>
-        <div className="absolute left-20 top-0.5 w-10 h-10 bg-slate-800 border-2 border-slate-600 rounded-full flex items-center justify-center group-hover:border-cyan-500 transition-colors duration-300 shadow-sm">
+        <div className="absolute left-25 top-0.5 w-10 h-10 bg-slate-800 border-2 border-slate-600 rounded-full flex items-center justify-center group-hover:border-cyan-500 transition-colors duration-300 shadow-sm">
           <Icon className="w-4 h-4 text-slate-400 group-hover:text-cyan-500 transition-colors duration-300" />
         </div>
       </div>
@@ -191,7 +191,7 @@ function TimelineItem({ event, index }: { event: EventItem; index: number }) {
       {/* Card Content */}
       <div className="flex-1 w-full sm:ml-11">
         {/* Mobile Time Header */}
-        <div className="flex sm:hidden items-center gap-2 mb-3 text-sm font-semibold text-primary">
+        <div className="flex sm:hidden items-center gap-2 mb-3 text-md font-semibold text-secondary">
           <Clock className="w-4 h-4" />
           {event.time}
         </div>

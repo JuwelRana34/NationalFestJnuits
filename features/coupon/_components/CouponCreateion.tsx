@@ -77,7 +77,7 @@ export default function CouponForm() {
         transition={{ duration: 0.4, ease: "easeOut" }}
         className="w-full max-w-2xl bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden"
       >
-        <div className="border-b bg-gradient p-2">
+        <div className="border-b bg-gradient p-3 pl-4">
           <h2 className="text-xl font-semibold tracking-tight flex items-center gap-2">
             <Ticket className="w-5 h-5 text-amber-600 " />
             Create New Coupon

@@ -49,11 +49,9 @@ export default function SpeakersJudges() {
           {speakers.map((speaker) => (
             <div
               key={speaker.id}
-              className="relative overflow-hidden bg-slate-800 border border-cyan-800/50 rounded-md p-8 flex flex-col items-center text-center transition-all duration-300 hover:-translate-y-2 hover:bg-cyan-800 hover:shadow-xl hover:shadow-black/20 group"
+              className="relative overflow-hidden bg-slate-800 border border-cyan-800/50 rounded-md p-8 flex flex-col items-center text-center transition-all duration-300 hover:-translate-y-2 hover:bg-cyan-800 hover:[&_.designation]:text-violet-400 hover:shadow-xl hover:shadow-black/20 group"
             >
-              <div
-               className="hidden transition-all group-hover:block  absolute z-0 h-20 w-20 blur-3xl bg-linear-to-tr from-lime-500 to-emerald-500"
-              />
+              <div className="hidden transition-all group-hover:block  absolute z-0 h-20 w-20 blur-3xl bg-linear-to-tr from-lime-500 to-emerald-500" />
               {/* Circular Avatar Placeholder */}
               <div className="relative z-10 w-24 h-24 rounded-full overflow-hidden mb-5 border-2 border-slate-800">
                 <Image
@@ -69,7 +67,7 @@ export default function SpeakersJudges() {
               <h3 className="text-xl font-semibold text-slate-300 mb-1">
                 {speaker.name}
               </h3>
-              <p className="text-sm text-secondary mb-6 grow">
+              <p className="designation text-sm text-secondary transition-colors duration-300 mb-6 grow">
                 {speaker.designation}
               </p>
 
