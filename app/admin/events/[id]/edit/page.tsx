@@ -62,7 +62,6 @@
 
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { cacheLife, cacheTag } from "next/cache";
 
 import { SingleEventResponse } from "@/features/Events/schema";
 import { honoFetch } from "@/lib/hono-client";

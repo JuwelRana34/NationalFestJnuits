@@ -24,6 +24,7 @@ export default function EventPage() {
 async function EventDataFetch() {
   const { response } = await honoFetch<EventsResponse>("/api/events")
   
+  console.log("Fetched Events Data:", response?.data);
   return (
     <>
       {response?.data?.length === 0 ? (
