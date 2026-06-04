@@ -24,6 +24,7 @@ export default function EventPage() {
 async function EventDataFetch() {
   const { response } = await honoFetch<EventsResponse>("/api/events",{
     next: { revalidate: 86000, tags: [`events`] },
+    requireAuth: false,
   })
   
   return (
