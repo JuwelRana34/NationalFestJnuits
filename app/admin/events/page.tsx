@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CalendarDays, CheckCircle2, Users } from "lucide-react";
 
-import { CreateSegmentForm } from "@/components/custom/DynamicMotion";
+import CreateSegmentForm from "@/features/Events/components/SegmentCreation";
 import AdminEventsDataSection from "./_components/AdminEventsDataSection";
 import AdminEventsRefreshButton from "./_components/AdminEventsRefreshButton";
 

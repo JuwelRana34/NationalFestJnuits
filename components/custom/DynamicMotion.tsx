@@ -2,7 +2,6 @@
 
 import dynamic from "next/dynamic";
 
-
 export const AnimatedContainer = dynamic(
   () => import("./AnimatedWrappers").then((mod) => mod.AnimatedContainer),
   { ssr: false },
@@ -12,7 +11,6 @@ export const AnimatedItem = dynamic(
   () => import("./AnimatedWrappers").then((mod) => mod.AnimatedItem),
   { ssr: false },
 );
-
 
 export const HeroSection = dynamic(
   () => import("@/features/home/components/HeroSection"),
@@ -39,16 +37,16 @@ export const SpeakersJudges = dynamic(
   { ssr: false },
 );
 
-export const CreateSegmentForm = dynamic(
-  () => import("@/features/Events/components/SegmentCreation"),
-  { ssr: false },
-);
-
 export const CouponForm = dynamic(
   () => import("@/features/coupon/_components/CouponCreateion"),
   { ssr: false },
 );
 
-export const Navbar = dynamic(() => import("@/components/custom/navbar"), { ssr: false });
+export const Navbar = dynamic(() => import("@/components/custom/navbar"), {
+  ssr: false,
+});
 
-export const Events = dynamic(() => import("@/features/Events/components/Events"), { ssr: false });
+export const Events = dynamic(
+  () => import("@/features/Events/components/Events"),
+  { ssr: false },
+);
