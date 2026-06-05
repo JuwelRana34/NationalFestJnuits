@@ -5,9 +5,8 @@ import { Calendar, Clock3, MapPin, Ticket } from "lucide-react";
 import Link from "next/link";
 
 import { EventsResponse, FullEvent } from "@/features/Events/schema";
-import { honoFetch } from "@/lib/hono-client";
 import { formatDate, formatTime } from "@/lib/DateAndTimeFormater";
-
+import { honoFetch } from "@/lib/hono-client";
 
 function getFillPercentage(event: FullEvent) {
   if (!event.seatsTotal || event.seatsTotal <= 0) {
@@ -136,20 +135,14 @@ export default async function AdminEventsDataSection() {
               </div>
 
               <div className="mt-5 flex items-center gap-3">
-                <Button
-                
-                  variant="outline"
-                  className="flex-1 border-white/10 bg-gradient text-slate-200 
-                   hover:text-white
-                  "
-                >
-                  <Link
-                    prefetch={false}
-                    href={`/admin/events/${event.id}/edit`}
+                <Link prefetch={false} href={`/admin/events/${event.id}/edit`}>
+                  <Button
+                    variant="outline"
+                    className="flex-1 border-white/10 bg-gradient text-slate-200 hover:text-white"
                   >
                     Edit event
-                  </Link>
-                </Button>
+                  </Button>
+                </Link>
               </div>
             </Card>
           );
