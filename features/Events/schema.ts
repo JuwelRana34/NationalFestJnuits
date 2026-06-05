@@ -45,3 +45,22 @@ export interface SingleEventResponse {
   message: string;
   data: FullEvent;
 }
+
+
+export type EventCardItem = Pick<
+  FullEvent,
+  | "id"
+  | "title"
+  | "subtitle"
+  | "type"
+  | "date"
+  | "time"
+  | "venue"
+  | "fee"
+  | "seatsTotal"
+  | "seatsFilled"
+  | "isTeamEvent"
+  | "minMembers"
+  | "maxMembers"
+  | "extraMemberFee"
+>;

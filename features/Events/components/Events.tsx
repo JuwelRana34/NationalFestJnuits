@@ -4,9 +4,13 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import EventCard from "@/features/Events/components/EventCard";
 import { useState } from "react";
-import { FullEvent } from "../schema";
+import { EventCardItem } from "../schema";
 
-export default function Events({ eventsData }: { eventsData: FullEvent[] }) {
+export default function Events({
+  eventsData,
+}: {
+  eventsData: EventCardItem[];
+}) {
   const [activeTab, setActiveTab] = useState<string>("All");
   // Extract unique categories for the Tabs
   const categories = [
