@@ -29,6 +29,7 @@ const navLinks: NavLink[] = [
   { title: "About", href: "#about" },
   { title: "Admin-Dashboard", href: "/admin" },
   { title: "Events", href: "/events" },
+  { title: "Track Event", href: "/event-tracker" },
   { title: "Contact", href: "/contact" },
 ];
 
