@@ -60,37 +60,17 @@
 //   );
 // }
 
-import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-import { SingleEventResponse } from "@/features/Events/schema";
-import { honoFetch } from "@/lib/hono-client";
 import EventEditClient from "./EventEditClient";
 
-// 1. The cached content component expects a resolved string 'id'
-async function EventEditContent({ id }: { id: string }) {
-  const { status, response } = await honoFetch<SingleEventResponse>(
-    `/api/events/${id}`,
-    {
-      next: { revalidate: 60 },
-    },
-  );
-
-  if (status !== 200 || !response?.success || !response.data) {
-    notFound();
-  }
-
-  return <EventEditClient event={response.data} />;
-}
-
-// 2. A wrapper component to resolve the Promise INSIDE the Suspense boundary
 async function EventEditWrapper({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  return <EventEditContent id={id} />;
+  return <EventEditClient eventId={id} />;
 }
 
 function LoadingFallback() {
@@ -116,11 +96,9 @@ interface AdminEventEditPageProps {
   params: Promise<{ id: string }>;
 }
 
-// 3. The main page component acts purely as a Suspense provider
 export default function AdminEventEditPage({
   params,
 }: AdminEventEditPageProps) {
-    
   return (
     <Suspense fallback={<LoadingFallback />}>
       <EventEditWrapper params={params} />

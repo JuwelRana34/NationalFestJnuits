@@ -1,11 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { updateSegmentAction } from "@/features/Events/action";
 import EventForm from "@/features/Events/components/EventForm";
-import { FullEvent } from "@/features/Events/schema";
+import { FullEvent, SingleEventResponse } from "@/features/Events/schema";
+import { honoFetch } from "@/lib/hono-client";
 
 function mapEventToFormValues(event: FullEvent) {
   return {
@@ -37,11 +39,55 @@ function mapEventToFormValues(event: FullEvent) {
 }
 
 interface EventEditClientProps {
-  event: FullEvent;
+  eventId: string;
 }
 
-export default function EventEditClient({ event }: EventEditClientProps) {
+export default function EventEditClient({ eventId }: EventEditClientProps) {
   const router = useRouter();
+  const [event, setEvent] = useState<FullEvent | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadEvent() {
+      setLoading(true);
+
+      try {
+        const { status, response } = await honoFetch<SingleEventResponse>(
+          `/api/events/${eventId}`,
+        );
+
+        if (status === 200 && response?.success && response.data) {
+          if (active) {
+            setEvent(response.data);
+          }
+          return;
+        }
+
+        toast.error("Event not found or failed to load");
+        router.push("/admin/events");
+      } catch (error) {
+        console.error("Failed to load event:", error);
+        toast.error("Failed to load event");
+        router.push("/admin/events");
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadEvent();
+
+    return () => {
+      active = false;
+    };
+  }, [eventId, router]);
+
+  if (loading || !event) {
+    return <div className="p-6 text-slate-200">Loading event...</div>;
+  }
 
   return (
     <EventForm
