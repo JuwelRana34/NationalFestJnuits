@@ -7,6 +7,8 @@ import Link from "next/link";
 import { EventsResponse, FullEvent } from "@/features/Events/schema";
 import { formatDate, formatTime } from "@/lib/DateAndTimeFormater";
 import { honoFetch } from "@/lib/hono-client";
+import { cacheLife } from "next/dist/server/use-cache/cache-life";
+import { cacheTag } from "next/cache";
 
 function getFillPercentage(event: FullEvent) {
   if (!event.seatsTotal || event.seatsTotal <= 0) {
@@ -34,10 +36,12 @@ function getStatusLabel(event: FullEvent) {
 }
 
 export default async function AdminEventsDataSection() {
-  const { status, response } = await honoFetch<EventsResponse>("/api/events", {
-    next: { revalidate: 3600, tags: ["events"] },
-  });
+   "use cache";
+   cacheLife("hours");
+   cacheTag("admin-events-data");
+  const { status, response } = await honoFetch<EventsResponse>("/api/events");
 
+  
   const events =
     status === 200 && response?.success && Array.isArray(response.data)
       ? response.data

@@ -44,6 +44,8 @@ export async function updateSegmentAction(id: string, data: SegmentFormOutput) {
     });
 
     revalidateTag("events", "max");
+    revalidateTag("admin-events-data", "max");
+     
      console.log("Update Response:", { status, response });
     const parsedResponse =
       typeof response === "object" && response !== null
