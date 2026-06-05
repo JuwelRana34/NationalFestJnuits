@@ -1,6 +1,7 @@
 "use server";
 import { honoFetch } from "@/lib/hono-client";
 import { PaymentPayload } from "./types";
+import { headers } from "next/dist/server/request/headers";
 
 export async function verifyCouponAction(couponCode: string) {
   try {
@@ -42,13 +43,14 @@ interface RetryPaymentResponse {
 }
 
 export async function retryPaymentAction(payload: RetryPaymentPayload) {
+  const header = await headers();
   try {
     const { status, response } = await honoFetch<RetryPaymentResponse>(
       "/api/registrations/payment/retry",
       {
         method: "POST",
         body: JSON.stringify(payload),
-        requireAuth: true,
+        headers: header,
       },
     );
 
@@ -77,13 +79,14 @@ export async function retryPaymentAction(payload: RetryPaymentPayload) {
 }
 
 export async function submitPaymentAction(payload: PaymentPayload) {
+  const header = await headers();
   try {
     const { status, response } = await honoFetch<SubmitPaymentResult>(
       `/api/registrations/init`,
       {
         method: "POST",
         body: JSON.stringify(payload),
-        requireAuth: true,
+        headers: header,
       },
     );
     console.log("Raw response from honoFetch:", response?.message);

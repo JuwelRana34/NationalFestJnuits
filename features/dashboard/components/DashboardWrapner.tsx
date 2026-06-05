@@ -2,12 +2,14 @@ import { honoFetch } from "@/lib/hono-client";
 import { redirect } from "next/navigation";
 import { DashboardResponse } from "../Types";
 import Dashboard from "./DashboardOverview";
+import { headers } from "next/headers";
 
 export default async function DashboardWrapper() {
+    const header = await headers();
   const { status, response } = await honoFetch<DashboardResponse>(
     "/api/users/dashboard",
     {
-      requireAuth: true,
+      headers: header,
     },
   );
 

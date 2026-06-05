@@ -33,7 +33,7 @@ const speakers = [
 
 export default function SpeakersJudges() {
   return (
-    <section className="w-full py-24 px-6 md:px-12 bg-background text-foreground font-sans">
+    <section className="w-full py-24 px-6 md:px-12 font-sans">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
