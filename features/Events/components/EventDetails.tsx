@@ -32,6 +32,7 @@ import { honoFetch } from "@/lib/hono-client";
 import Image from "next/image";
 import Link from "next/link";
 import { ResponsiblePerson, SingleEventResponse } from "../schema";
+import RegistrationButtonHiger from "@/features/payments/Components/RegistrationManager";
 
 export default async function SegmentDetailsPage({
   params,
@@ -307,9 +308,7 @@ export default async function SegmentDetailsPage({
                               Time
                             </p>
                             <p className="text-sm text-slate-300">
-                              {formatTime(
-                                segment?.time
-                                )}
+                              {formatTime(segment?.time)}
                             </p>
                           </div>
                         </div>
@@ -360,13 +359,7 @@ export default async function SegmentDetailsPage({
                       </div>
 
                       {/* Call to Action */}
-                      {/* <Button
-                    className="w-full py-6 text-base shadow-md"
-                    disabled={occupancyPercentage >= 100}
-                  >
-                    {occupancyPercentage >= 100 ? "Sold Out" : "Register Now"}
-                  </Button> */}
-                      <RegistrationButton
+                      {/* <RegistrationButton
                         minMembers={segment?.minMembers || undefined}
                         maxMembers={segment?.maxMembers || undefined}
                         extraMemberFee={segment?.extraMemberFee || undefined}
@@ -378,6 +371,20 @@ export default async function SegmentDetailsPage({
                         segmentType={
                           (segment?.type as SegmentType) || "DEFAULT"
                         }
+                      /> */}
+                      <RegistrationButtonHiger
+                        minMembers={segment?.minMembers || undefined}
+                        maxMembers={segment?.maxMembers || undefined}
+                        extraMemberFee={segment?.extraMemberFee || undefined}
+                        segmentId={segment?.id || ""}
+                        segmentName={segment?.title || "Event"}
+                        // segmentCategory={segment?.type || "General"}
+                        isTeamEvent={segment?.isTeamEvent || false}
+                        baseFee={segment?.fee || 0}
+                        segmentType={
+                          (segment?.type as SegmentType) || "DEFAULT"
+                        }
+                        
                       />
                     </div>
                   </Card>

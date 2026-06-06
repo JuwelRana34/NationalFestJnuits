@@ -45,6 +45,7 @@ import {
 } from "../types";
 import { redirect } from "next/navigation";
 import { toast } from "sonner";
+import RegistrationButtonHiger from "./RegistrationManager";
 
 export interface RegistrationButtonProps {
   segmentId: string;
@@ -291,8 +292,17 @@ console.log("User profile scan:", user);
         <Ticket className="w-full h-4 mr-2" />
         Register Now
       </Button>
+      {/* <RegistrationButtonHiger
+        segmentId={segmentId}
+        segmentName={segmentName}
+        isTeamEvent={isTeamEvent}
+        baseFee={baseFee}
+        minMembers={minMembers}
+        maxMembers={maxMembers}
+        extraMemberFee={extraMemberFee}
+        segmentType={segmentType ?? "DEFAULT"}
+      /> */}
       {/* </DialogTrigger> */}
-
       <DialogContent className="max-w-2xl p-0 overflow-hidden bg-white rounded-xl max-h-[95vh] flex flex-col border-none shadow-2xl">
         <DialogHeader className="px-6 py-4 border-b bg-white shrink-0">
           <div className="flex items-center justify-between">
