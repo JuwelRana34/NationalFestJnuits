@@ -2,6 +2,8 @@
 import { Events } from "@/components/custom/DynamicMotion";
 import { EventCardItem, EventsResponse } from "@/features/Events/schema";
 import { honoFetch } from "@/lib/hono-client";
+import { cacheLife } from "next/dist/server/use-cache/cache-life";
+import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { Suspense } from "react";
 
 
@@ -23,6 +25,10 @@ export default function EventPage() {
 }
 
 async function EventDataFetch() {
+  "use cache";
+  cacheLife("days");
+  cacheTag("events", "max");
+  
   const { status, response } = await honoFetch<EventsResponse>("/api/events");
 
   const events =

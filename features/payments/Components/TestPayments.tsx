@@ -84,7 +84,7 @@ export default function RegistrationButton({
   const minExtra = Math.max(0, minMembers - 1);
   const maxExtra = Math.max(0, maxMembers - 1);
   const { user } = useAuth();
-
+console.log("User profile scan:", user);
   const [uploadingFields, setUploadingFields] = useState<
     Record<string, boolean>
   >({});

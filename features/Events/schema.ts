@@ -64,3 +64,31 @@ export type EventCardItem = Pick<
   | "maxMembers"
   | "extraMemberFee"
 >;
+
+// API রেসপন্সের জন্য TypeScript Type
+
+ export interface trackingSchema{
+  id: string;
+  trackingNumber: string;
+  category: string;
+  selectionStatus: "PENDING" | "SELECTED" | "REJECTED";
+  segment: {
+    title: string;
+    date: string;
+    time: string;
+    venue: string;
+    image: string;
+    type: string;
+  };
+  user: {
+    name: string;
+    email: string;
+    phone: string;
+  };
+ }
+export interface TrackingResult {
+  success: boolean;
+  message: string;
+  data: trackingSchema;
+
+}
