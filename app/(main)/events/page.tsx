@@ -1,67 +1,92 @@
-// /events
-import { Events } from "@/components/custom/DynamicMotion";
-import { EventCardItem, EventsResponse } from "@/features/Events/schema";
-import { honoFetch } from "@/lib/hono-client";
-import { cacheLife } from "next/dist/server/use-cache/cache-life";
-import { cacheTag } from "next/dist/server/use-cache/cache-tag";
-import { Suspense } from "react";
+import { demoEvents } from "@/app/constant/data";
+import Link from "next/link";
 
 
+export default function HomePage() {
+  const featuredEvents = demoEvents;
 
-export default function EventPage() {
   return (
-    <>
-      <Suspense
-        fallback={
-          <div className="pt-20 flex min-h-screen justify-center items-center rounded">
-            Loading events...
+    <main>
+      {/* Hero */}
+      <section className="bg-linear-to-b from-primary/10 to-background">
+        <div className="container mx-auto px-6 py-24 text-center">
+          <span className="rounded-full border px-4 py-2 text-sm">
+            🎉 Event Registration Platform
+          </span>
+
+          <h1 className="mt-6 text-5xl font-bold leading-tight">
+            Discover Amazing <br />
+            Events Around You
+          </h1>
+
+          <p className="mx-auto mt-6 max-w-2xl text-muted-foreground">
+            Join workshops, competitions, seminars and hackathons. Register
+            online, manage your participation and never miss an opportunity.
+          </p>
+
+          <div className="mt-10 flex justify-center gap-4">
+            <Link
+              href="/events"
+              className="rounded-lg bg-primary px-6 py-3 text-primary-foreground"
+            >
+              Browse Events
+            </Link>
+
+            <Link href="/dashboard" className="rounded-lg border px-6 py-3">
+              Dashboard
+            </Link>
           </div>
-        }
-      >
-        <EventDataFetch />
-      </Suspense>
-    </>
-  );
-}
-
-async function EventDataFetch() {
-  "use cache";
-  cacheLife("days");
-  cacheTag("events", "max");
-  
-  const { status, response } = await honoFetch<EventsResponse>("/api/events");
-
-  const events =
-    status === 200 && response?.success && Array.isArray(response.data)
-      ? response.data.map(
-          (event): EventCardItem => ({
-            id: event.id,
-            title: event.title,
-            subtitle: event.subtitle,
-            type: event.type,
-            date: event.date,
-            time: event.time,
-            venue: event.venue,
-            fee: event.fee,
-            seatsTotal: event.seatsTotal,
-            seatsFilled: event.seatsFilled,
-            isTeamEvent: event.isTeamEvent,
-            minMembers: event.minMembers,
-            maxMembers: event.maxMembers,
-            extraMemberFee: event.extraMemberFee,
-          }),
-        )
-      : [];
-
-  return (
-    <>
-      {events.length === 0 ? (
-        <div className="pt-20 flex min-h-screen justify-center items-center rounded">
-          No events found!
         </div>
-      ) : (
-        <Events eventsData={events} />
-      )}
-    </>
+      </section>
+
+      {/* Featured Events */}
+      <section className="container mx-auto px-6 py-20">
+        <div className="mb-10 flex items-center justify-between">
+          <div>
+            <h2 className="text-3xl font-bold">Featured Events</h2>
+
+            <p className="text-muted-foreground">
+              Explore our upcoming events.
+            </p>
+          </div>
+
+          <Link href="/events" className="font-medium text-primary">
+            View All →
+          </Link>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {featuredEvents.map((event) => (
+            <div
+              key={event.id}
+              className="rounded-xl border p-6 transition hover:shadow-lg"
+            >
+              <span className="rounded-full bg-primary/10 px-3 py-1 text-sm">
+                {event.eventType}
+              </span>
+
+              <h3 className="mt-4 text-xl font-semibold">{event.title}</h3>
+
+              <p className="mt-3 line-clamp-3 text-muted-foreground">
+                {event.description}
+              </p>
+
+              <div className="mt-5 space-y-2 text-sm">
+                <p>📅 {event.eventDate}</p>
+                <p>📍 {event.venue}</p>
+                <p>💰 {event.fee === 0 ? "Free" : `৳${event.fee}`}</p>
+              </div>
+
+              <Link
+                href={`/events/${event.slug}`}
+                className="mt-6 inline-block font-medium text-primary"
+              >
+                View Details →
+              </Link>
+            </div>
+          ))}
+        </div>
+      </section>
+    </main>
   );
 }

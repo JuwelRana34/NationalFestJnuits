@@ -1,5 +1,4 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import DashboardWrapner from "@/features/dashboard/components/DashboardWrapner";
 import { Sparkles } from "lucide-react";
 import { Suspense } from "react";
 
@@ -22,9 +21,7 @@ export default function Page() {
             </p>
           </div>
         }
-      >
-        <DashboardWrapner />
-      </Suspense>
+      ></Suspense>
     </div>
   );
 }

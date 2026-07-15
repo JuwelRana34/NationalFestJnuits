@@ -34,13 +34,13 @@ export default function LoginPage() {
       router.push("/dashboard");
     });
   };
-  const handleGoogleLogin = async () => {
+  // const handleGoogleLogin = async () => {
     
-    await authClient.signIn.social({
-      provider: "google",
-      callbackURL: `${window.location.origin}/`,
-    });
-  };
+  //   await authClient.signIn.social({
+  //     provider: "google",
+  //     callbackURL: `${window.location.origin}/`,
+  //   });
+  // };
 
   return (
     <div className="min-h-screen w-full  relative">
@@ -129,45 +129,8 @@ export default function LoginPage() {
                   "Sign In"
                 )}
               </Button>
-            </form>
+            </form>      
 
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-zinc-300 dark:border-zinc-800" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 py-1 bg-secondary text-white rounded-full">
-                  Or continue with
-                </span>
-              </div>
-            </div>
-
-            <button
-              onClick={handleGoogleLogin}
-              type="button"
-              className="w-full flex justify-center items-center py-2.5 px-4 border border-zinc-300 dark:border-zinc-800 rounded-lg shadow-sm bg-white dark:bg-zinc-900 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
-            >
-              <Image
-                src={"https://cdn-icons-png.flaticon.com/128/281/281764.png"}
-                alt="Logo-google"
-                width={100}
-                height={100}
-                className="h-5 w-5 mr-2"
-                unoptimized
-              />
-              Google
-            </button>
-
-            <p className="text-center text-sm t">
-              Don&apos;t have an account?{" "}
-              <Link
-                prefetch={false}
-                href="/registration"
-                className="font-medium text-primary underline"
-              >
-                Sign up
-              </Link>
-            </p>
           </div>
         </div>
 

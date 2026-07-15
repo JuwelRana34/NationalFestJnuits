@@ -18,20 +18,14 @@ import * as React from "react";
 import { Suspense, useState } from "react";
 import LogoutButton from "./logout";
 import UserMenu from "./userInfo";
+import { NaveItems } from "@/app/constant/data";
 
 interface NavLink {
   title: string;
   href: string;
 }
 
-const navLinks: NavLink[] = [
-  { title: "Home", href: "/" },
-  { title: "About", href: "#about" },
-  { title: "Admin-Dashboard", href: "/admin" },
-  { title: "Events", href: "/events" },
-  { title: "Track Event", href: "/event-tracker" },
-  { title: "Contact", href: "/contact" },
-];
+
 
 function UserMenuFallback() {
   return (
@@ -48,12 +42,12 @@ function DesktopLinks() {
 
   return (
     <>
-      {navLinks.map((link) => (
+      {NaveItems.map((link) => (
         <Link
           key={link.title}
-          href={link.href}
+          href={link.Path}
           className={`text-md font-medium relative py-1 transition-colors ${
-            path === link.href
+            path === link.Path
               ? "text-secondary"
               : "text-slate-800 hover:text-secondary"
           }`}
@@ -71,13 +65,13 @@ function MobileLinks({ closeMenu }: { closeMenu: () => void }) {
 
   return (
     <>
-      {navLinks.map((link) => (
+      {NaveItems.map((link) => (
         <Link
           key={link.title}
-          href={link.href}
+          href={link.Path}
           onClick={closeMenu}
           className={`text-lg font-medium ${
-            path === link.href
+            path === link.Path
               ? "text-white bg-secondary px-4 py-2 rounded"
               : "text-slate-300"
           } transition-colors`}

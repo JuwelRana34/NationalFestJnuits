@@ -46,7 +46,7 @@ export const Navbar = dynamic(() => import("@/components/custom/navbar"), {
   ssr: false,
 });
 
-export const Events = dynamic(
-  () => import("@/features/Events/components/Events"),
-  { ssr: false },
-);
+// export const Events = dynamic(
+//   () => import("@/features/Events/components/Events"),
+//   { ssr: false },
+// );
