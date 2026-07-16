@@ -157,7 +157,7 @@ export const demoEvents: GetEventValues[] = [
     deadline: "2026-7-01",
     eventDate: "2026-10-08",
     venue: "Innovation Hub",
-    isActive: true,
+    isActive: false,
     schemaFields: [
       {
         id: "teamName",

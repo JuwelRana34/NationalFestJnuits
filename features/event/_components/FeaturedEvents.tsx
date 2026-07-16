@@ -3,6 +3,7 @@ import { demoEvents } from "@/app/constant/data";
 import Link from "next/link";
 import Image from "next/image";
 import { Calendar, MapPin, ArrowRight, Clock } from "lucide-react";
+import { formatDate } from "@/lib/DateAndTimeFormater";
 
 const ACCENTS = [
   {
@@ -133,7 +134,7 @@ export async function FeaturedEvents() {
               <div className="mt-4 flex flex-col gap-2 text-sm text-foreground/80">
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 shrink-0 text-muted-foreground" />
-                  <span>{event.eventDate}</span>
+                  <span>{formatDate(event.eventDate)}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <MapPin className="h-4 w-4 shrink-0 text-muted-foreground" />
@@ -148,7 +149,7 @@ export async function FeaturedEvents() {
                   </p>
                   {event.deadline && (
                     <p className="text-xs text-muted-foreground">
-                      Register by {event.deadline}
+                      Register by {formatDate(event.deadline)}
                     </p>
                   )}
                 </div>
