@@ -1,16 +1,17 @@
-import { demoEvents } from "@/app/constant/data";
 import DynamicRegistrationForm from "@/features/event/_components/DynamicRegistrationForm";
+import { Calendar, Clock, Info, MapPin, Wallet } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Calendar, Clock, MapPin, Wallet, Info } from "lucide-react";
 
 // Assuming you have these shadcn/ui components installed.
 // If not, run: npx shadcn-ui@latest add card badge separator skeleton
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDate } from "@/lib/DateAndTimeFormater";
+import { honoFetch } from "@/lib/hono-client";
+import { GetEventValues } from "../types";
 
 type Props = {
   params: Promise<{
@@ -75,7 +76,15 @@ function countdownLabel(daysLeft: number) {
 
 export async function EventDetailsContent({ params }: Props) {
   const { slug } = await params;
-  const event = demoEvents.find((item) => item.slug === slug);
+  const { status, response } = await honoFetch<{
+    success: boolean;
+    data: GetEventValues;
+  }>(`/api/events/${slug}`);
+
+  if (status === 200 && response) {
+    console.log("get data");
+  }
+  const event = response?.data ?? null;
 
   if (!event) {
     notFound();
@@ -93,7 +102,11 @@ export async function EventDetailsContent({ params }: Props) {
       label: "Registration Fee",
       value: event.fee === 0 ? "Free" : `৳${event.fee}`,
     },
-    { icon: Clock, label: "Registration Deadline", value:  formatDate(event.deadline) },
+    {
+      icon: Clock,
+      label: "Registration Deadline",
+      value: formatDate(event.deadline),
+    },
     { icon: Calendar, label: "Event Date", value: formatDate(event.eventDate) },
     { icon: MapPin, label: "Venue", value: event.venue },
   ];
@@ -102,7 +115,7 @@ export async function EventDetailsContent({ params }: Props) {
     <div className="container mx-auto max-w-6xl pb-16">
       {/* Hero Section */}
       <div className="relative mt-8 overflow-hidden rounded-3xl border bg-background shadow-lg sm:mt-10">
-        <div className="relative aspect-[16/9] w-full sm:aspect-[21/9]">
+        <div className="relative aspect-video w-full sm:aspect-21/9">
           {event.coverImage ? (
             <Image
               src={event.coverImage}
@@ -238,7 +251,7 @@ export async function EventDetailsContent({ params }: Props) {
               ) : (
                 <DynamicRegistrationForm
                   eventId={event.id}
-                  schema={event.schemaFields}
+                  schema={event.registrationSchema}
                   fee={event.fee}
                   eventType={event.eventType}
                   baseTeamSize={event.baseTeamSize}

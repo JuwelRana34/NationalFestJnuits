@@ -2,11 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { DeleteIcon, MailIcon } from "lucide-react";
 import { useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 
-type FormValues = {
+// টাইপ ডেফিনেশন
+export type FormValues = {
   title: string;
   eventType: string;
   description: string;
@@ -18,13 +18,16 @@ type FormValues = {
   deadline: string;
   eventDate: string;
   venue: string;
-  coverImage: FileList;
-  responsible: {
-    name: string;
-    phone: string;
-    email: string;
-  }[];
+  coverImage?: FileList; // Update এর সময় ছবি না-ও দিতে পারে, তাই অপশনাল
+  responsible: { name: string; phone: string }[];
   schemaFields: {
+    label: string;
+    type: "text" | "number" | "url" | "select" | "file";
+    required: boolean;
+    options: string;
+  }[];
+  isSubmissionRequired: boolean;
+  submissionSchema: {
     label: string;
     type: "text" | "number" | "url" | "select" | "file";
     required: boolean;
@@ -32,12 +35,23 @@ type FormValues = {
   }[];
 };
 
-export default function CreateEventForm() {
+// Props: এডিট করার সময় initialData আসবে, ক্রিয়েট করার সময় ফাঁকা থাকবে
+interface EventFormProps {
+  initialData?: FormValues & { id: string; coverImageUrl?: string };
+}
+
+export default function EventForm({ initialData }: EventFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  // যদি এডিট মোড হয় এবং আগের ছবি থাকে, সেটা প্রিভিউ হিসেবে দেখাবে
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    initialData?.coverImageUrl || null,
+  );
+
+  const isEditing = !!initialData; // initialData থাকলে এটি Update Mode
 
   const { register, control, handleSubmit, watch } = useForm<FormValues>({
-    defaultValues: {
+    defaultValues: initialData || {
       title: "",
       isActive: true,
       eventType: "solo",
@@ -51,6 +65,8 @@ export default function CreateEventForm() {
       schemaFields: [
         { label: "Full Name", type: "text", required: true, options: "" },
       ],
+      isSubmissionRequired: false,
+      submissionSchema: [],
     },
   });
 
@@ -58,24 +74,28 @@ export default function CreateEventForm() {
     fields: schemaFieldsList,
     append: appendSchema,
     remove: removeSchema,
-  } = useFieldArray({
-    control,
-    name: "schemaFields",
-  });
-
+  } = useFieldArray({ control, name: "schemaFields" });
   const {
     fields: responsibleFields,
     append: appendResponsible,
     remove: removeResponsible,
-  } = useFieldArray({
-    control,
-    name: "responsible",
-  });
+  } = useFieldArray({ control, name: "responsible" });
+  const {
+    fields: submissionFieldsList,
+    append: appendSubmission,
+    remove: removeSubmission,
+  } = useFieldArray({ control, name: "submissionSchema" });
 
   const selectedEventType = watch("eventType");
+  const isSubmissionRequired = watch("isSubmissionRequired");
   const watchCoverImage = watch("coverImage");
 
-  if (watchCoverImage && watchCoverImage.length > 0 && !imagePreview) {
+  // নতুন ছবি সিলেক্ট করলে প্রিভিউ আপডেট হবে
+  if (
+    watchCoverImage &&
+    watchCoverImage.length > 0 &&
+    imagePreview !== URL.createObjectURL(watchCoverImage[0])
+  ) {
     setImagePreview(URL.createObjectURL(watchCoverImage[0]));
   }
 
@@ -95,7 +115,26 @@ export default function CreateEventForm() {
       }),
     }));
 
+    const formattedSubmissionSchema = data.isSubmissionRequired
+      ? data.submissionSchema.map((field) => ({
+          id: field.label.toLowerCase().replace(/[\s_-]+/g, "_"),
+          label: field.label,
+          type: field.type,
+          required: field.required,
+          ...(field.type === "select" && {
+            options: field.options
+              .split(",")
+              .map((opt) => opt.trim())
+              .filter(Boolean),
+          }),
+        }))
+      : [];
+
     const formData = new FormData();
+    if (isEditing && initialData?.id) {
+      formData.append("id", initialData.id); // আপডেটের জন্য ID পাঠানো হচ্ছে
+    }
+
     formData.append("title", data.title);
     formData.append("eventType", data.eventType);
     formData.append("description", data.description);
@@ -106,6 +145,11 @@ export default function CreateEventForm() {
     formData.append("isActive", String(data.isActive));
     formData.append("registrationSchema", JSON.stringify(formattedSchema));
     formData.append("responsible", JSON.stringify(data.responsible));
+    formData.append("isSubmissionRequired", String(data.isSubmissionRequired));
+    formData.append(
+      "submissionSchema",
+      JSON.stringify(formattedSubmissionSchema),
+    );
 
     if (data.eventType === "team") {
       formData.append("baseTeamSize", data.baseTeamSize.toString());
@@ -118,11 +162,21 @@ export default function CreateEventForm() {
     }
 
     try {
-      console.log("FormData ready to be sent!");
-      for (const [key, value] of formData.entries()) {
-        console.log(`${key}:`, value);
-      }
-      alert("Event created successfully!");
+      console.log(
+        `Sending ${isEditing ? "PUT" : "POST"} request with:`,
+        Object.fromEntries(formData),
+      );
+
+      // API Call logic Example:
+      // const endpoint = isEditing ? `/api/events/${initialData.id}` : `/api/events`;
+      // const method = isEditing ? "PATCH" : "POST";
+      // await fetch(endpoint, { method, body: formData });
+
+      alert(
+        isEditing
+          ? "Event updated successfully!"
+          : "Event created successfully!",
+      );
     } catch (error) {
       console.error(error);
     } finally {
@@ -131,13 +185,16 @@ export default function CreateEventForm() {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto border rounded p-2 bg-white my-10">
+    <div className="w-full max-w-7xl mx-auto border rounded p-2 md:p-6 bg-white my-10 shadow-sm">
       <h2 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-4">
-        Create New Event
+        {isEditing ? "Edit Event" : "Create New Event"}
       </h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-        <div className="bg-gray-50 p-2 md:p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* =====================
+            1. Basic Information 
+        ====================== */}
+        <div className="bg-gray-50 p-4 md:p-6 rounded-lg border border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Event Cover Image (Optional)
@@ -171,7 +228,11 @@ export default function CreateEventForm() {
                     htmlFor="file-upload"
                     className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none"
                   >
-                    <span>Upload a file</span>
+                    <span>
+                      {isEditing && imagePreview
+                        ? "Change file"
+                        : "Upload a file"}
+                    </span>
                     <input
                       id="file-upload"
                       type="file"
@@ -224,6 +285,7 @@ export default function CreateEventForm() {
             />
           </div>
 
+          {/* Conditional Team Settings */}
           {selectedEventType === "team" && (
             <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4 bg-blue-50 border border-blue-100 p-4 rounded-lg mt-2">
               <div>
@@ -236,9 +298,6 @@ export default function CreateEventForm() {
                   className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                   placeholder="e.g. 5"
                 />
-                <p className="text-xs text-blue-600 mt-1">
-                  Included in base fee
-                </p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-blue-800 mb-1">
@@ -250,9 +309,6 @@ export default function CreateEventForm() {
                   className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                   placeholder="e.g. 2"
                 />
-                <p className="text-xs text-blue-600 mt-1">
-                  Allowed additional members
-                </p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-blue-800 mb-1">
@@ -264,9 +320,6 @@ export default function CreateEventForm() {
                   className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                   placeholder="e.g. 200"
                 />
-                <p className="text-xs text-blue-600 mt-1">
-                  Fee per extra member
-                </p>
               </div>
             </div>
           )}
@@ -317,35 +370,33 @@ export default function CreateEventForm() {
             />
           </div>
 
-          <div className="md:col-span-2 space-y-4">
-            <div className="md:col-span-2">
-              <h4 className="text-sm font-medium text-orange-500 mb-2">
-                Event Status!
-              </h4>
-              <Controller
-                name="isActive"
-                control={control}
-                render={({ field }) => (
-                  <div
-                    className={`flex items-center justify-between ${field.value ? "bg-green-100" : "bg-red-100"} rounded-md border p-4`}
-                  >
-                    <div>
-                      <p className="text-sm text-gray-700 font-medium">
-                        {field.value ? "Event is Active" : "Event is Inactive"}
-                      </p>
-                    </div>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </div>
-                )}
-              />
-            </div>
+          <div className="md:col-span-2">
+            <h4 className="text-sm font-medium text-orange-500 mb-2">
+              Event Status
+            </h4>
+            <Controller
+              name="isActive"
+              control={control}
+              render={({ field }) => (
+                <div
+                  className={`flex items-center justify-between ${field.value ? "bg-green-100" : "bg-red-100"} rounded-md border p-4`}
+                >
+                  <p className="text-sm text-gray-700 font-medium">
+                    {field.value ? "Event is Active" : "Event is Inactive"}
+                  </p>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </div>
+              )}
+            />
           </div>
         </div>
 
-        {/* === RESPONSIBLE PERSONS (Optional) === */}
+        {/* =====================
+            2. Responsible / Organizers
+        ====================== */}
         <div className="bg-orange-50 p-6 rounded-lg border border-orange-100">
           <div className="flex justify-between items-center mb-4">
             <div>
@@ -358,7 +409,7 @@ export default function CreateEventForm() {
             </div>
             <Button
               type="button"
-              onClick={() => appendResponsible({ name: "", phone: "" , email: "" })}
+              onClick={() => appendResponsible({ name: "", phone: "" })}
               variant="outline"
               className="border-orange-300 text-orange-700 hover:bg-orange-100"
             >
@@ -370,54 +421,42 @@ export default function CreateEventForm() {
             {responsibleFields.map((item, index) => (
               <div
                 key={item.id}
-                className="flex gap-4 items-center bg-white p-3 rounded-lg border border-orange-200"
+                className="flex flex-wrap sm:flex-nowrap gap-4 items-center bg-white p-3 rounded-lg border border-orange-200"
               >
-                <div className="flex-1">
-                  <input
-                    {...register(`responsible.${index}.name`, {
-                      required: true,
-                    })}
-                    placeholder="Name (e.g. Md. Juwel)"
-                    className="w-full px-3 py-2 border rounded-md outline-none focus:ring-2 focus:ring-orange-400"
-                  />
-                </div>
-                <div className="flex-1">
-                  <input
-                    {...register(`responsible.${index}.phone`, {
-                      required: true,
-                    })}
-                    placeholder="Phone (e.g. 017XXXXXXXX)"
-                    className="w-full px-3 py-2 border rounded-md outline-none focus:ring-2 focus:ring-orange-400"
-                  />
-                </div>
-                <div className="flex-1">
-                  <input
-                    {...register(`responsible.${index}.email`, {
-                      required: true,
-                    })}
-                    placeholder="Email (e.g. juwel@example.com)"
-                    className="w-full px-3 py-2 border rounded-md outline-none focus:ring-2 focus:ring-orange-400"
-                  />
-                </div>
+                <input
+                  {...register(`responsible.${index}.name`, { required: true })}
+                  placeholder="Name (e.g. Md. Juwel)"
+                  className="flex-1 min-w-[200px] px-3 py-2 border rounded-md outline-none focus:ring-2 focus:ring-orange-400"
+                />
+                <input
+                  {...register(`responsible.${index}.phone`, {
+                    required: true,
+                  })}
+                  placeholder="Phone (e.g. 017XXXXXXXX)"
+                  className="flex-1 min-w-[200px] px-3 py-2 border rounded-md outline-none focus:ring-2 focus:ring-orange-400"
+                />
                 <button
                   type="button"
                   onClick={() => removeResponsible(index)}
-                  className="text-red-500 hover:text-red-700 p-2"
-                  title="Remove Organizer"
+                  className="text-red-500 hover:text-red-700 p-2 ml-auto"
                 >
-                 <DeleteIcon/>
+                  ✕
                 </button>
               </div>
             ))}
           </div>
         </div>
 
-        {/* ডায়নামিক ফর্ম বিল্ডার সেকশন */}
+        {/* =====================
+            3. Registration Form Builder 
+        ====================== */}
         <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold text-gray-800">
-              Registration Form Builder
-            </h3>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800">
+                Registration Form Builder
+              </h3>
+            </div>
             <Button
               type="button"
               onClick={() =>
@@ -428,7 +467,7 @@ export default function CreateEventForm() {
                   options: "",
                 })
               }
-              className="px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+              className="px-4 py-2 text-sm font-medium rounded-lg"
             >
               + Add Field
             </Button>
@@ -437,7 +476,6 @@ export default function CreateEventForm() {
           <div className="space-y-4">
             {schemaFieldsList.map((item, index) => {
               const currentType = watch(`schemaFields.${index}.type`);
-
               return (
                 <div
                   key={item.id}
@@ -451,7 +489,7 @@ export default function CreateEventForm() {
                       {...register(`schemaFields.${index}.label`, {
                         required: true,
                       })}
-                      placeholder="e.g. Student ID Card"
+                      placeholder="e.g. University Name"
                       className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm outline-none focus:border-blue-500"
                     />
                   </div>
@@ -493,32 +531,16 @@ export default function CreateEventForm() {
                         type="checkbox"
                         {...register(`schemaFields.${index}.required`)}
                         className="mr-2 h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                      />
+                      />{" "}
                       Required
                     </label>
-
                     {schemaFieldsList.length > 1 && (
                       <button
                         type="button"
                         onClick={() => removeSchema(index)}
                         className="text-red-500 hover:text-red-700 p-2"
-                        title="Remove Field"
                       >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="20"
-                          height="20"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M3 6h18" />
-                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                        </svg>
+                        ✕
                       </button>
                     )}
                   </div>
@@ -528,12 +550,126 @@ export default function CreateEventForm() {
           </div>
         </div>
 
+        {/* =====================
+            4. Submission Form Builder 
+        ====================== */}
+        <div className="bg-indigo-50 p-6 rounded-lg border border-indigo-100">
+          <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-4 gap-4">
+            <div>
+              <h3 className="text-lg font-semibold text-indigo-900">
+                Project Submission Builder
+              </h3>
+              <p className="text-sm text-indigo-700">
+                Set up what participants need to submit later.
+              </p>
+            </div>
+            <Controller
+              name="isSubmissionRequired"
+              control={control}
+              render={({ field }) => (
+                <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-lg border shadow-sm">
+                  <span className="text-sm font-medium text-gray-700">
+                    Require Submission?
+                  </span>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </div>
+              )}
+            />
+          </div>
+
+          {isSubmissionRequired && (
+            <div className="mt-6 space-y-4 animate-in fade-in slide-in-from-top-4 duration-300">
+              <div className="flex justify-end">
+                <Button
+                  type="button"
+                  onClick={() =>
+                    appendSubmission({
+                      label: "",
+                      type: "url",
+                      required: true,
+                      options: "",
+                    })
+                  }
+                  className="px-4 py-2 text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg"
+                >
+                  + Add Submission Field
+                </Button>
+              </div>
+
+              {submissionFieldsList.length === 0 && (
+                <div className="text-center py-6 bg-white border border-dashed border-indigo-200 rounded-lg text-indigo-400">
+                  Click &quot;+ Add Submission Field&quot; to configure requirements.
+                </div>
+              )}
+
+              {submissionFieldsList.map((item, index) => {
+                return (
+                  <div
+                    key={item.id}
+                    className="flex flex-wrap md:flex-nowrap gap-4 bg-white p-4 rounded-lg border border-indigo-200 shadow-sm items-start"
+                  >
+                    <div className="w-full md:w-1/3">
+                      <label className="block text-xs font-medium text-gray-500 mb-1">
+                        Requirement Label
+                      </label>
+                      <input
+                        {...register(`submissionSchema.${index}.label`, {
+                          required: true,
+                        })}
+                        placeholder="e.g. GitHub Repository Link"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm outline-none focus:border-indigo-500"
+                      />
+                    </div>
+                    <div className="w-full md:w-1/4">
+                      <label className="block text-xs font-medium text-gray-500 mb-1">
+                        Expected Type
+                      </label>
+                      <select
+                        {...register(`submissionSchema.${index}.type`)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm outline-none focus:border-indigo-500"
+                      >
+                        <option value="url">Link / URL</option>
+                        <option value="file">File Upload (PDF/ZIP)</option>
+                        <option value="text">Short Text</option>
+                      </select>
+                    </div>
+                    <div className="w-full md:w-auto flex items-center mt-6 gap-4">
+                      <label className="flex items-center text-sm text-gray-700 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          {...register(`submissionSchema.${index}.required`)}
+                          className="mr-2 h-4 w-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"
+                        />{" "}
+                        Required
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => removeSubmission(index)}
+                        className="text-red-500 hover:text-red-700 p-2"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-semibold rounded-lg transition-colors"
+          className="w-full py-4 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold rounded-lg transition-colors shadow-lg shadow-blue-200"
         >
-          {isSubmitting ? "Saving Event..." : "Save & Publish Event"}
+          {isSubmitting
+            ? "Saving..."
+            : isEditing
+              ? "Update Event"
+              : "Save & Publish Event"}
         </button>
       </form>
     </div>

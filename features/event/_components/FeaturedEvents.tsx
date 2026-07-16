@@ -4,6 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { Calendar, MapPin, ArrowRight, Clock } from "lucide-react";
 import { formatDate } from "@/lib/DateAndTimeFormater";
+import { honoFetch } from "@/lib/hono-client";
+import { GetEventValues } from "../types";
 
 const ACCENTS = [
   {
@@ -60,8 +62,16 @@ function countdownLabel(daysLeft: number) {
 
 export async function FeaturedEvents() {
   await connection(); // explicitly opts this subtree into request-time rendering
+const { status, response } = await honoFetch<{
+  success: boolean;
+  data: GetEventValues[];
+}>("/api/events");
 
-  const featuredEvents = demoEvents;
+if (status === 200 && response) {
+  console.log(response.data);
+}
+
+  const featuredEvents = response?.data || [];
 
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

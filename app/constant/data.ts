@@ -1,4 +1,4 @@
-import { GetEventValues } from "@/features/event/types";
+import { FormField, GetEventValues } from "@/features/event/types";
 
 export const HeroSection = {
   title: "National AI & IT Summit 2026",
@@ -18,7 +18,7 @@ export const NaveItems = [
   },
   {
     title: "Track Event",
-    Path: "/track-event",
+    Path: "/event-tracker",
   },
   {
     title: "events",
@@ -37,22 +37,23 @@ export const DashboardNavItems = [
   },
   {
     title: "Event Management",
-    Path: "/admin/event-management",
+    Path: "/admin/events",
   },
+  // {
+  //   title: "Payment Management",
+  //   Path: "/admin/payment-management",
+  // },
   {
-    title: "Payment Management",
-    Path: "/admin/payment-management",
-  },
-  {
-    title: "Create Event",
-    Path: "/admin/create-event",
+    title: "Registration Management",
+    Path: "/admin/registrations",
   },
 ];
 
 export const demoEvents: GetEventValues[] = [
   {
     id: "evt_001",
-    coverImage: "/images/event1.jpg",
+    coverImage:
+      "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     slug: "national-programming-contest-2026",
     title: "National Programming Contest 2026",
     eventType: "team",
@@ -60,7 +61,7 @@ export const demoEvents: GetEventValues[] = [
     fee: 500, // বেস টিমের ফি
     baseTeamSize: 3, // অটোমেটিক ৩ জনের নাম, ইমেইল, ফোন চাইবে
     maxExtraMembers: 1, // ১ জন এক্সট্রা নেওয়া যাবে
-    extraMemberFee: 200, 
+    extraMemberFee: 200,
     deadline: "2026-08-10",
     eventDate: "2026-08-15",
     venue: "Jagannath University",
@@ -97,10 +98,11 @@ export const demoEvents: GetEventValues[] = [
 
   {
     id: "evt_002",
-    coverImage: "/images/event2.jpg",
+    coverImage:
+      "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     slug: "ui-ux-design-workshop",
     title: "UI/UX Design Workshop",
-    eventType: "seminar", 
+    eventType: "seminar",
     description: "Learn modern UI/UX design using Figma.",
     fee: 100,
     baseTeamSize: 0, // সেমিনারে টিম মেম্বার সেকশন রেন্ডার হবে না
@@ -182,5 +184,34 @@ export const demoEvents: GetEventValues[] = [
         required: false,
       },
     ],
+  },
+];
+
+
+
+export const demoSubmissionSchema: FormField[] = [
+  {
+    id: "github_repo",
+    label: "GitHub Repository Link",
+    type: "url",
+    required: true,
+  },
+  {
+    id: "live_demo",
+    label: "Live Demo URL (If deployed)",
+    type: "url",
+    required: false,
+  },
+  {
+    id: "pitch_deck",
+    label: "Pitch Deck (PDF)",
+    type: "file",
+    required: true,
+  },
+  {
+    id: "project_desc",
+    label: "Short Description of Project",
+    type: "text",
+    required: true,
   },
 ];

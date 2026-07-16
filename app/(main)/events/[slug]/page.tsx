@@ -1,8 +1,10 @@
-import { Suspense } from "react";
-import Link from "next/link";
+import {
+  EventDetailsContent,
+  EventDetailsSkeleton,
+} from "@/features/event/_components/EventDetailsContent";
 import { ArrowLeft } from "lucide-react";
-import { EventDetailsContent, EventDetailsSkeleton } from "@/features/event/_components/EventDetailsContent";
-
+import Link from "next/link";
+import { Suspense } from "react";
 
 type Props = {
   params: Promise<{
@@ -10,7 +12,7 @@ type Props = {
   }>;
 };
 
-export default function EventDetailsPage({ params }: Props) {
+export default async function EventDetailsPage({ params }: Props) {
   return (
     <main className="container mx-auto max-w-5xl px-6 py-10 mt-16">
       <Link

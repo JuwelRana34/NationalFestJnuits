@@ -32,11 +32,11 @@ export type GetEventValues = {
   deadline: string;
   eventDate: string;
   venue: string;
-  schemaFields: FormField[];
+  registrationSchema: FormField[];
 };
 
 // ফর্মের জন্য টাইপ
 export type FormValues = Omit<GetEventValues, "id" | "slug" | "coverImage"> & {
   coverImage: FileList | null; // ফর্মে যেহেতু ফাইল আপলোড হবে, তাই টাইপ FileList করা হলো
-  schemaFields: FormFieldInput[];
+  registrationSchema: FormFieldInput[];
 };

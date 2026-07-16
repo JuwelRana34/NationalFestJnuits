@@ -1,7 +1,6 @@
 import CreateEventForm from "@/features/event/_components/CreateEventForm";
 import { Suspense } from "react";
 
-
 export default function CreateEventPage() {
   return (
     <Suspense fallback={<CreateEventFormSkeleton />}>

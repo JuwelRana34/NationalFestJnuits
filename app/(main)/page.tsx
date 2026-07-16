@@ -11,6 +11,7 @@ export default function JnUITFestLanding() {
     <div className=" min-h-screen bg-slate-50 font-sans text-slate-900">
       <HeroSection />
       {/* About Section */}
+
       <About />
       {/* Segments Section */}
       <Segments />
