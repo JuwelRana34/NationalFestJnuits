@@ -240,6 +240,10 @@ export async function EventDetailsContent({ params }: Props) {
                   eventId={event.id}
                   schema={event.schemaFields}
                   fee={event.fee}
+                  eventType={event.eventType}
+                  baseTeamSize={event.baseTeamSize}
+                  maxExtraMembers={event.maxExtraMembers}
+                  extraMemberFee={event.extraMemberFee}
                 />
               )}
             </CardContent>

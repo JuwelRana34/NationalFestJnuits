@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { DeleteIcon, MailIcon } from "lucide-react";
 import { useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 
@@ -11,10 +12,18 @@ type FormValues = {
   description: string;
   isActive: boolean;
   fee: number;
+  baseTeamSize: number;
+  maxExtraMembers: number;
+  extraMemberFee: number;
   deadline: string;
   eventDate: string;
   venue: string;
   coverImage: FileList;
+  responsible: {
+    name: string;
+    phone: string;
+    email: string;
+  }[];
   schemaFields: {
     label: string;
     type: "text" | "number" | "url" | "select" | "file";
@@ -34,20 +43,38 @@ export default function CreateEventForm() {
       eventType: "solo",
       description: "",
       fee: 0,
+      baseTeamSize: 0,
+      maxExtraMembers: 0,
+      extraMemberFee: 0,
       venue: "",
+      responsible: [],
       schemaFields: [
         { label: "Full Name", type: "text", required: true, options: "" },
       ],
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const {
+    fields: schemaFieldsList,
+    append: appendSchema,
+    remove: removeSchema,
+  } = useFieldArray({
     control,
     name: "schemaFields",
   });
 
-  // ছবি সিলেক্ট করলে প্রিভিউ দেখানোর জন্য
+  const {
+    fields: responsibleFields,
+    append: appendResponsible,
+    remove: removeResponsible,
+  } = useFieldArray({
+    control,
+    name: "responsible",
+  });
+
+  const selectedEventType = watch("eventType");
   const watchCoverImage = watch("coverImage");
+
   if (watchCoverImage && watchCoverImage.length > 0 && !imagePreview) {
     setImagePreview(URL.createObjectURL(watchCoverImage[0]));
   }
@@ -68,7 +95,6 @@ export default function CreateEventForm() {
       }),
     }));
 
-    // FormData তৈরি করা হচ্ছে
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("eventType", data.eventType);
@@ -77,23 +103,25 @@ export default function CreateEventForm() {
     formData.append("deadline", data.deadline);
     formData.append("eventDate", data.eventDate);
     formData.append("venue", data.venue);
-    formData.append("registrationSchema", JSON.stringify(formattedSchema));
-
     formData.append("isActive", String(data.isActive));
+    formData.append("registrationSchema", JSON.stringify(formattedSchema));
+    formData.append("responsible", JSON.stringify(data.responsible));
+
+    if (data.eventType === "team") {
+      formData.append("baseTeamSize", data.baseTeamSize.toString());
+      formData.append("maxExtraMembers", data.maxExtraMembers.toString());
+      formData.append("extraMemberFee", data.extraMemberFee.toString());
+    }
 
     if (data.coverImage && data.coverImage.length > 0) {
       formData.append("coverImage", data.coverImage[0]);
     }
 
     try {
-      // API Call:
-      // await fetch('/api/events', { method: 'POST', body: formData })
-
       console.log("FormData ready to be sent!");
       for (const [key, value] of formData.entries()) {
         console.log(`${key}:`, value);
       }
-
       alert("Event created successfully!");
     } catch (error) {
       console.error(error);
@@ -109,9 +137,7 @@ export default function CreateEventForm() {
       </h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-        {/* ইভেন্টের বেসিক তথ্য */}
-        <div className="bg-gray-50 p-2 md:p-6  grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* ব্যানার ইমেজ আপলোড সেকশন */}
+        <div className="bg-gray-50 p-2 md:p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Event Cover Image (Optional)
@@ -131,7 +157,6 @@ export default function CreateEventForm() {
                     stroke="currentColor"
                     fill="none"
                     viewBox="0 0 48 48"
-                    aria-hidden="true"
                   >
                     <path
                       d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
@@ -189,15 +214,62 @@ export default function CreateEventForm() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Registration Fee (৳)
+              Base Registration Fee (৳)
             </label>
             <input
               type="number"
               {...register("fee", { valueAsNumber: true })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-              placeholder="e.g. 500 (Keep 0 for free)"
+              placeholder="e.g. 500"
             />
           </div>
+
+          {selectedEventType === "team" && (
+            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4 bg-blue-50 border border-blue-100 p-4 rounded-lg mt-2">
+              <div>
+                <label className="block text-sm font-medium text-blue-800 mb-1">
+                  Base Team Size
+                </label>
+                <input
+                  type="number"
+                  {...register("baseTeamSize", { valueAsNumber: true })}
+                  className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  placeholder="e.g. 5"
+                />
+                <p className="text-xs text-blue-600 mt-1">
+                  Included in base fee
+                </p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-blue-800 mb-1">
+                  Max Extra Members
+                </label>
+                <input
+                  type="number"
+                  {...register("maxExtraMembers", { valueAsNumber: true })}
+                  className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  placeholder="e.g. 2"
+                />
+                <p className="text-xs text-blue-600 mt-1">
+                  Allowed additional members
+                </p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-blue-800 mb-1">
+                  Extra Member Fee (৳)
+                </label>
+                <input
+                  type="number"
+                  {...register("extraMemberFee", { valueAsNumber: true })}
+                  className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  placeholder="e.g. 200"
+                />
+                <p className="text-xs text-blue-600 mt-1">
+                  Fee per extra member
+                </p>
+              </div>
+            </div>
+          )}
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -247,7 +319,7 @@ export default function CreateEventForm() {
 
           <div className="md:col-span-2 space-y-4">
             <div className="md:col-span-2">
-              <h4 className="text-sm font-medium text-orange-500">
+              <h4 className="text-sm font-medium text-orange-500 mb-2">
                 Event Status!
               </h4>
               <Controller
@@ -255,14 +327,13 @@ export default function CreateEventForm() {
                 control={control}
                 render={({ field }) => (
                   <div
-                    className={`flex items-center justify-between ${field.value ? "bg-green-100 " : "bg-red-100"} rounded-md border p-4`}
+                    className={`flex items-center justify-between ${field.value ? "bg-green-100" : "bg-red-100"} rounded-md border p-4`}
                   >
                     <div>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-gray-700 font-medium">
                         {field.value ? "Event is Active" : "Event is Inactive"}
                       </p>
                     </div>
-
                     <Switch
                       checked={field.value}
                       onCheckedChange={field.onChange}
@@ -271,6 +342,73 @@ export default function CreateEventForm() {
                 )}
               />
             </div>
+          </div>
+        </div>
+
+        {/* === RESPONSIBLE PERSONS (Optional) === */}
+        <div className="bg-orange-50 p-6 rounded-lg border border-orange-100">
+          <div className="flex justify-between items-center mb-4">
+            <div>
+              <h3 className="text-lg font-semibold text-orange-900">
+                Responsible / Organizers (Optional)
+              </h3>
+              <p className="text-sm text-orange-700">
+                Add contact info for event coordinators
+              </p>
+            </div>
+            <Button
+              type="button"
+              onClick={() => appendResponsible({ name: "", phone: "" , email: "" })}
+              variant="outline"
+              className="border-orange-300 text-orange-700 hover:bg-orange-100"
+            >
+              + Add Organizer
+            </Button>
+          </div>
+
+          <div className="space-y-4">
+            {responsibleFields.map((item, index) => (
+              <div
+                key={item.id}
+                className="flex gap-4 items-center bg-white p-3 rounded-lg border border-orange-200"
+              >
+                <div className="flex-1">
+                  <input
+                    {...register(`responsible.${index}.name`, {
+                      required: true,
+                    })}
+                    placeholder="Name (e.g. Md. Juwel)"
+                    className="w-full px-3 py-2 border rounded-md outline-none focus:ring-2 focus:ring-orange-400"
+                  />
+                </div>
+                <div className="flex-1">
+                  <input
+                    {...register(`responsible.${index}.phone`, {
+                      required: true,
+                    })}
+                    placeholder="Phone (e.g. 017XXXXXXXX)"
+                    className="w-full px-3 py-2 border rounded-md outline-none focus:ring-2 focus:ring-orange-400"
+                  />
+                </div>
+                <div className="flex-1">
+                  <input
+                    {...register(`responsible.${index}.email`, {
+                      required: true,
+                    })}
+                    placeholder="Email (e.g. juwel@example.com)"
+                    className="w-full px-3 py-2 border rounded-md outline-none focus:ring-2 focus:ring-orange-400"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => removeResponsible(index)}
+                  className="text-red-500 hover:text-red-700 p-2"
+                  title="Remove Organizer"
+                >
+                 <DeleteIcon/>
+                </button>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -283,21 +421,21 @@ export default function CreateEventForm() {
             <Button
               type="button"
               onClick={() =>
-                append({
+                appendSchema({
                   label: "",
                   type: "text",
                   required: false,
                   options: "",
                 })
               }
-              className="px-4 py-2 text-sm font-medium rounded-lg  transition-colors"
+              className="px-4 py-2 text-sm font-medium rounded-lg transition-colors"
             >
               + Add Field
             </Button>
           </div>
 
           <div className="space-y-4">
-            {fields.map((item, index) => {
+            {schemaFieldsList.map((item, index) => {
               const currentType = watch(`schemaFields.${index}.type`);
 
               return (
@@ -359,10 +497,10 @@ export default function CreateEventForm() {
                       Required
                     </label>
 
-                    {fields.length > 1 && (
+                    {schemaFieldsList.length > 1 && (
                       <button
                         type="button"
-                        onClick={() => remove(index)}
+                        onClick={() => removeSchema(index)}
                         className="text-red-500 hover:text-red-700 p-2"
                         title="Remove Field"
                       >
