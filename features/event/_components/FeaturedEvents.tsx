@@ -1,5 +1,4 @@
 import { connection } from "next/server";
-import { demoEvents } from "@/app/constant/data";
 import Link from "next/link";
 import Image from "next/image";
 import { Calendar, MapPin, ArrowRight, Clock } from "lucide-react";
