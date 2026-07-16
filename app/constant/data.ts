@@ -66,7 +66,7 @@ export const demoEvents: GetEventValues[] = [
     eventDate: "2026-08-15",
     venue: "Jagannath University",
     isActive: true,
-    schemaFields: [
+    registrationSchema: [
       // এখানে মেম্বারদের ব্যক্তিগত তথ্য বাদ দিয়ে শুধু টিমের কমন ফিল্ডগুলো রাখা হলো
       {
         id: "teamName",
@@ -112,7 +112,7 @@ export const demoEvents: GetEventValues[] = [
     eventDate: "2026-08-25",
     venue: "JNU IT Society Lab",
     isActive: true,
-    schemaFields: [
+    registrationSchema: [
       // যেহেতু এটি সেমিনার, তাই ফর্ম বিল্ডার থেকেই Name এবং Email নিতে হবে
       {
         id: "fullname",
@@ -157,7 +157,7 @@ export const demoEvents: GetEventValues[] = [
     eventDate: "2026-10-08",
     venue: "Innovation Hub",
     isActive: false,
-    schemaFields: [
+    registrationSchema: [
       {
         id: "startupName",
         label: "Startup Name",
