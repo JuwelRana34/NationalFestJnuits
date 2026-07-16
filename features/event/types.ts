@@ -14,6 +14,7 @@ export type FormFieldInput = Omit<FormField, "id">;
 export type GetEventValues = {
   id: string;
   coverImage: string;
+  isActive: boolean;
   slug: string;
   title: string;
   eventType: string;

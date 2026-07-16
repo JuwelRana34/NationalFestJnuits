@@ -63,7 +63,7 @@ export const demoEvents: GetEventValues[] = [
     deadline: "2026-08-10",
     eventDate: "2026-08-15",
     venue: "Jagannath University",
-
+    isActive: true,
     schemaFields: [
       {
         id: "university",
@@ -113,10 +113,10 @@ export const demoEvents: GetEventValues[] = [
     eventType: "Workshop",
     description: "Learn modern UI/UX design using Figma.",
     fee: 100,
-    deadline: "2026-08-20",
+    deadline: "2026-07-20",
     eventDate: "2026-08-25",
     venue: "JNU IT Society Lab",
-
+    isActive: true,
     schemaFields: [
       {
         id: "fullname",
@@ -147,17 +147,17 @@ export const demoEvents: GetEventValues[] = [
   },
 
   {
-    coverImage: "/images/event3.jpg",
+    coverImage: "",
     id: "evt_003",
     slug: "startup-pitch-fest",
     title: "Startup Pitch Fest",
     eventType: "Hackathon",
     description: "Pitch your startup idea to judges.",
     fee: 300,
-    deadline: "2026-10-01",
+    deadline: "2026-7-01",
     eventDate: "2026-10-08",
     venue: "Innovation Hub",
-
+    isActive: true,
     schemaFields: [
       {
         id: "teamName",

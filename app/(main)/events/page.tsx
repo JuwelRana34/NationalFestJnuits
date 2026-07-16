@@ -1,91 +1,48 @@
-import { demoEvents } from "@/app/constant/data";
+import { FeaturedEvents, FeaturedEventsSkeleton } from "@/features/event/_components/FeaturedEvents";
 import Link from "next/link";
-
+import { Suspense } from "react";
 
 export default function HomePage() {
-  const featuredEvents = demoEvents;
-
   return (
     <main>
-      {/* Hero */}
-      <section className="bg-linear-to-b from-primary/10 to-background">
-        <div className="container mx-auto px-6 py-24 text-center">
-          <span className="rounded-full border px-4 py-2 text-sm">
-            🎉 Event Registration Platform
-          </span>
-
-          <h1 className="mt-6 text-5xl font-bold leading-tight">
-            Discover Amazing <br />
-            Events Around You
+      {/* Hero — pure static, prerenders fine */}
+      <section className="border-b bg-muted/30">
+        <div className="container mx-auto px-6 py-16 text-center sm:py-24">
+          <h1 className="mx-auto max-w-2xl text-3xl font-bold tracking-tight sm:text-5xl">
+            Find events worth your time
           </h1>
-
-          <p className="mx-auto mt-6 max-w-2xl text-muted-foreground">
-            Join workshops, competitions, seminars and hackathons. Register
-            online, manage your participation and never miss an opportunity.
+          <p className="mx-auto mt-4 max-w-xl text-muted-foreground sm:text-lg">
+            Discover workshops, meetups, and shows happening near you.
           </p>
-
-          <div className="mt-10 flex justify-center gap-4">
-            <Link
-              href="/events"
-              className="rounded-lg bg-primary px-6 py-3 text-primary-foreground"
-            >
-              Browse Events
-            </Link>
-
-            <Link href="/dashboard" className="rounded-lg border px-6 py-3">
-              Dashboard
-            </Link>
-          </div>
+          <Link
+            href="/events"
+            className="mt-8 inline-block rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
+          >
+            Browse All Events
+          </Link>
         </div>
       </section>
 
-      {/* Featured Events */}
-      <section className="container mx-auto px-6 py-20">
+      {/* Featured Events — dynamic (uses Date.now via getDaysLeft) */}
+      <section className="container mx-auto px-6 py-16 sm:py-20">
         <div className="mb-10 flex items-center justify-between">
           <div>
-            <h2 className="text-3xl font-bold">Featured Events</h2>
-
-            <p className="text-muted-foreground">
+            <h2 className="text-2xl font-bold sm:text-3xl">Featured Events</h2>
+            <p className="mt-1 text-muted-foreground">
               Explore our upcoming events.
             </p>
           </div>
-
-          <Link href="/events" className="font-medium text-primary">
+          <Link
+            href="/events"
+            className="text-sm font-medium text-primary hover:underline"
+          >
             View All →
           </Link>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {featuredEvents.map((event) => (
-            <div
-              key={event.id}
-              className="rounded-xl border p-6 transition hover:shadow-lg"
-            >
-              <span className="rounded-full bg-primary/10 px-3 py-1 text-sm">
-                {event.eventType}
-              </span>
-
-              <h3 className="mt-4 text-xl font-semibold">{event.title}</h3>
-
-              <p className="mt-3 line-clamp-3 text-muted-foreground">
-                {event.description}
-              </p>
-
-              <div className="mt-5 space-y-2 text-sm">
-                <p>📅 {event.eventDate}</p>
-                <p>📍 {event.venue}</p>
-                <p>💰 {event.fee === 0 ? "Free" : `৳${event.fee}`}</p>
-              </div>
-
-              <Link
-                href={`/events/${event.slug}`}
-                className="mt-6 inline-block font-medium text-primary"
-              >
-                View Details →
-              </Link>
-            </div>
-          ))}
-        </div>
+        <Suspense fallback={<FeaturedEventsSkeleton />}>
+          <FeaturedEvents />
+        </Suspense>
       </section>
     </main>
   );
