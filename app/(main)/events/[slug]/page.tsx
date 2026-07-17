@@ -2,8 +2,10 @@ import {
   EventDetailsContent,
   EventDetailsSkeleton,
 } from "@/features/event/_components/EventDetailsContent";
+import { GetEventValues } from "@/features/event/types";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 type Props = {
@@ -13,6 +15,30 @@ type Props = {
 };
 
 export default async function EventDetailsPage({ params }: Props) {
+const { slug } = await params;
+
+  const res = await fetch(`https://festapi.jnuits.org.bd/api/events/${slug}`, {
+    next: { revalidate: 3600 },
+  });
+
+  if (!res.ok) {
+    return notFound();
+  }
+
+  const { data } = (await res.json()) as {
+    success: boolean;
+    data: GetEventValues;
+  };
+
+  if (!data) {
+    return notFound();
+  }
+  
+  const event = data ?? null;
+
+  if (!event) {
+    notFound();
+  }
 
   return (
     <main className="container mx-auto max-w-5xl px-6 py-10 mt-16">
@@ -24,9 +50,7 @@ export default async function EventDetailsPage({ params }: Props) {
         Back to Events
       </Link>
 
-      <Suspense fallback={<EventDetailsSkeleton />}>
-        <EventDetailsContent params={params} />
-      </Suspense>
+      <EventDetailsContent event={data} />
     </main>
   );
 }

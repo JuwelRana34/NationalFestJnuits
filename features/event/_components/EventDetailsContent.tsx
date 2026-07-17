@@ -75,32 +75,8 @@ function countdownLabel(daysLeft: number) {
   return `${daysLeft} days left to register`;
 }
 
-export async function EventDetailsContent({ params }: Props) {
-  const { slug } = await params;
-
-  const res = await fetch(`https://festapi.jnuits.org.bd/api/events/${slug}`, {
-    next: { revalidate: 3600 },
-  });
-
-  if (!res.ok) {
-    return notFound();
-  }
-
-  const { data } = (await res.json()) as {
-    success: boolean;
-    data: GetEventValues;
-  };
-
-  if (!data) {
-    return notFound();
-  }
+export async function EventDetailsContent({event}:{event: GetEventValues}) {
   
-  const event = data ?? null;
-
-  if (!event) {
-    notFound();
-  }
-
   const accent = getAccent(event.slug ?? event.title);
   const daysLeft = event.deadline ? getDaysLeft(event.deadline) : null;
   const showCountdown = event.isActive && daysLeft !== null && daysLeft >= 0;
