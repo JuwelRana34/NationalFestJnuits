@@ -6,7 +6,6 @@ import { GetEventValues } from "@/features/event/types";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 
 type Props = {
   params: Promise<{

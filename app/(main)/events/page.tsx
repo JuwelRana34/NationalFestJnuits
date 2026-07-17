@@ -1,13 +1,14 @@
 import { FeaturedEvents, FeaturedEventsSkeleton } from "@/features/event/_components/FeaturedEvents";
 import { GetEventValues } from "@/features/event/types";
 import { honoFetch } from "@/lib/hono-client";
-import { cacheLife } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import Link from "next/link";
 import { Suspense } from "react";
 
 export default async function HomePage() {
 'use cache';
 cacheLife("weeks")
+cacheTag("events")
 let eventData: GetEventValues[] = [];
 
 try {

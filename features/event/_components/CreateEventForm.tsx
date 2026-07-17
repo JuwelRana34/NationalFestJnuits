@@ -6,8 +6,9 @@ import { deleteImage } from "@/lib/ImageDelete";
 import { useEffect, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 // আপনার আলাদা করে রাখা টাইপগুলো ইম্পোর্ট করা হলো
-import { FormValues, GetEventValues } from "../types";
 import { uploadImage } from "@/lib/cloudinaryUpload";
+import { revalidatePath } from "next/cache";
+import { FormValues, GetEventValues } from "../types";
 
 interface EventFormProps {
   initialData?: GetEventValues | null;
@@ -159,33 +160,33 @@ export default function EventForm({ initialData }: EventFormProps) {
           }))
         : [];
 
-     let coverImageUrl = initialData?.coverImage ?? "";
+      let coverImageUrl = initialData?.coverImage ?? "";
 
-     // যদি ইউজার নতুন কোনো ছবি সিলেক্ট করে থাকে
-     if (data.coverImage && data.coverImage.length > 0) {
-       try {
-         // ১. প্রথমে নতুন ছবিটি আপলোড করুন
-         coverImageUrl = await uploadImage(data.coverImage[0], "events");
+      // যদি ইউজার নতুন কোনো ছবি সিলেক্ট করে থাকে
+      if (data.coverImage && data.coverImage.length > 0) {
+        try {
+          // ১. প্রথমে নতুন ছবিটি আপলোড করুন
+          coverImageUrl = await uploadImage(data.coverImage[0], "events");
 
-         // ২. আপলোড সফল হলে এবং এটি Edit Mode হলে, পুরনো ছবিটি ডিলিট করে দিন
-         if (isEditing && initialData?.coverImage) {
-           // deleteImage ফাংশনটি ইম্পোর্ট করে নিতে ভুলবেন না!
-           await deleteImage(initialData.coverImage);
-           console.log("Old image scheduled for deletion.");
-         }
-       } catch (err) {
-         console.error(err);
+          // ২. আপলোড সফল হলে এবং এটি Edit Mode হলে, পুরনো ছবিটি ডিলিট করে দিন
+          if (isEditing && initialData?.coverImage) {
+            // deleteImage ফাংশনটি ইম্পোর্ট করে নিতে ভুলবেন না!
+            await deleteImage(initialData.coverImage);
+            console.log("Old image scheduled for deletion.");
+          }
+        } catch (err) {
+          console.error(err);
 
-         if (err instanceof Error) {
-           console.error(err.message);
-           console.error(err.stack);
-         }
+          if (err instanceof Error) {
+            console.error(err.message);
+            console.error(err.stack);
+          }
 
-         alert(err instanceof Error ? err.message : "Upload failed");
-         setIsSubmitting(false);
-         return; // আপলোড ফেইল করলে ফর্ম সাবমিট বন্ধ করে দিবে
-       }
-     }
+          alert(err instanceof Error ? err.message : "Upload failed");
+          setIsSubmitting(false);
+          return; // আপলোড ফেইল করলে ফর্ম সাবমিট বন্ধ করে দিবে
+        }
+      }
 
       // Payload for API
       const payload = {
@@ -238,6 +239,7 @@ export default function EventForm({ initialData }: EventFormProps) {
             ? "Event updated successfully!"
             : "Event created successfully!",
         );
+        revalidatePath("/events");
       } else {
         alert("Failed to save event.");
       }
