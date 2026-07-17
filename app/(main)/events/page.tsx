@@ -1,8 +1,14 @@
 import { FeaturedEvents, FeaturedEventsSkeleton } from "@/features/event/_components/FeaturedEvents";
+import { GetEventValues } from "@/features/event/types";
+import { honoFetch } from "@/lib/hono-client";
 import Link from "next/link";
 import { Suspense } from "react";
 
 export default function HomePage() {
+const eventsPromise = honoFetch<{ success: boolean; data: GetEventValues[] }>(
+  "/api/events",
+);
+ 
   return (
     <main>
       {/* Hero — pure static, prerenders fine */}
@@ -41,7 +47,7 @@ export default function HomePage() {
         </div>
 
         <Suspense fallback={<FeaturedEventsSkeleton />}>
-          <FeaturedEvents />
+          <FeaturedEvents promise={eventsPromise} />
         </Suspense>
       </section>
     </main>

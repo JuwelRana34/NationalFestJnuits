@@ -58,17 +58,19 @@ function countdownLabel(daysLeft: number) {
   if (daysLeft === 1) return "1 day left";
   return `${daysLeft} days left`;
 }
+ interface FeaturedEventsProps {
+    promise: Promise<{
+      status: number;
+      response: { success: boolean; data: GetEventValues[] } | null;
+    }>;
+  }
 
-export async function FeaturedEvents() {
-  await connection(); // explicitly opts this subtree into request-time rendering
-const { status, response } = await honoFetch<{
-  success: boolean;
-  data: GetEventValues[];
-}>("/api/events");
+export async function FeaturedEvents({ promise }: FeaturedEventsProps) {
+  const { status, response } = await promise;
 
-if (status === 200 && response) {
-  console.log(response.data);
-}
+  if (status === 200 && response) {
+    console.log(response.data);
+  }
 
   const featuredEvents = response?.data || [];
 
@@ -143,7 +145,10 @@ if (status === 200 && response) {
               <div className="mt-4 flex flex-col gap-2 text-sm text-foreground/80">
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 shrink-0 text-muted-foreground" />
-                  <span>{formatDate(event.eventDate)} at {formatTime(event.eventDate)}</span>
+                  <span>
+                    {formatDate(event.eventDate)} at{" "}
+                    {formatTime(event.eventDate)}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <MapPin className="h-4 w-4 shrink-0 text-muted-foreground" />
