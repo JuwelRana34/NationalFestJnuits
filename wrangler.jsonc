@@ -45,7 +45,7 @@
   ],
   "vars": {
     "BETTER_AUTH_URL": "https://festapi.jnuits.org.bd",
-    "CLOUDINARY_CLOUD_NAME": "dbwbwwteo",
-    "CLOUDINARY_UPLOAD_PRESET": "itsociety",
+    "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME": "dbwbwwteo",
+    "NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET": "itsociety",
   },
 }

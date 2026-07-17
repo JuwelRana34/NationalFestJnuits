@@ -2,7 +2,6 @@
 
 import FetchDashboardData from "@/features/adminDashboard/Services";
 import { DashboardData } from "@/features/adminDashboard/types"; // আপনার ফোল্ডার অনুযায়ী পাথ ঠিক আছে কিনা দেখবেন
-import { honoFetch } from "@/lib/hono-client";
 import { formatDistanceToNow } from "date-fns"; // Date ঠিক করার জন্য (না থাকলে npm install date-fns দিন)
 import {
   Activity,
@@ -12,9 +11,9 @@ import {
   Clock,
   CreditCard,
   DollarSign,
+  Loader2,
   MoreVertical,
   Users,
-  Loader2, // লোডিং স্পিনারের জন্য
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -28,8 +27,8 @@ export default function DashboardOverviewPage() {
   useEffect(() => {
     async function fetchDashboard() {
       try {
-       const { status, response } = await FetchDashboardData();
-       
+        const { status, response } = await FetchDashboardData();
+
         if (status === 200 && response?.success) {
           setData(response.data);
         }

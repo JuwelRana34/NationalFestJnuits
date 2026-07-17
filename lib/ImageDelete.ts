@@ -53,7 +53,7 @@ export async function deleteImage(imageUrl: string): Promise<boolean> {
     const publicId = getPublicIdFromUrl(imageUrl);
 
     
-    const cloudName = env.CLOUDINARY_CLOUD_NAME;
+    const cloudName = env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
     const apiKey = env.CLOUDINARY_API_KEY;
     const apiSecret = env.CLOUDINARY_API_SECRET;
 
