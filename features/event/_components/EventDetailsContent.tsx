@@ -77,15 +77,25 @@ function countdownLabel(daysLeft: number) {
 
 export async function EventDetailsContent({ params }: Props) {
   const { slug } = await params;
-  const { status, response } = await honoFetch<{
+
+  const res = await fetch(`https://festapi.jnuits.org.bd/api/events/${slug}`, {
+    next: { revalidate: 3600 },
+  });
+
+  if (!res.ok) {
+    return notFound();
+  }
+
+  const { data } = (await res.json()) as {
     success: boolean;
     data: GetEventValues;
-  }>(`/api/events/${slug}`);
+  };
 
-  if (status === 200 && response) {
-    console.log("get data");
+  if (!data) {
+    return notFound();
   }
-  const event = response?.data ?? null;
+  
+  const event = data ?? null;
 
   if (!event) {
     notFound();

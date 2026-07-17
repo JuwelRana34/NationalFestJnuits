@@ -13,6 +13,7 @@ type Props = {
 };
 
 export default async function EventDetailsPage({ params }: Props) {
+
   return (
     <main className="container mx-auto max-w-5xl px-6 py-10 mt-16">
       <Link
