@@ -33,6 +33,22 @@ const nextConfig: NextConfig = {
     ],
     serverMinification: true,
   },
+
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          {
+            key: "Vary",
+            value:
+              "RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Url, Accept",
+          },
+        ],
+      },
+    ];
+  },
+  
 };
 
 initOpenNextCloudflareForDev();
