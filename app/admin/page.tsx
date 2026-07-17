@@ -1,3 +1,9 @@
+"use client";
+
+import FetchDashboardData from "@/features/adminDashboard/Services";
+import { DashboardData } from "@/features/adminDashboard/types"; // আপনার ফোল্ডার অনুযায়ী পাথ ঠিক আছে কিনা দেখবেন
+import { honoFetch } from "@/lib/hono-client";
+import { formatDistanceToNow } from "date-fns"; // Date ঠিক করার জন্য (না থাকলে npm install date-fns দিন)
 import {
   Activity,
   ArrowUpRight,
@@ -8,91 +14,95 @@ import {
   DollarSign,
   MoreVertical,
   Users,
+  Loader2, // লোডিং স্পিনারের জন্য
 } from "lucide-react";
 import Link from "next/link";
-
-// ==========================================
-// Mock Data (পরে এগুলো Drizzle ORM দিয়ে ডেটাবেস থেকে আসবে)
-// ==========================================
-const stats = [
-  {
-    title: "Total Revenue",
-    value: "৳1,25,000",
-    change: "+12.5%",
-    trend: "up",
-    icon: DollarSign,
-    color: "text-blue-600",
-    bgColor: "bg-blue-100",
-  },
-  {
-    title: "Total Registrations",
-    value: "842",
-    change: "+5.2%",
-    trend: "up",
-    icon: Users,
-    color: "text-green-600",
-    bgColor: "bg-green-100",
-  },
-  {
-    title: "Pending Verifications",
-    value: "45",
-    change: "Action required",
-    trend: "neutral",
-    icon: Clock,
-    color: "text-orange-600",
-    bgColor: "bg-orange-100",
-  },
-  {
-    title: "Active Events",
-    value: "4",
-    change: "Live now",
-    trend: "neutral",
-    icon: CalendarDays,
-    color: "text-purple-600",
-    bgColor: "bg-purple-100",
-  },
-];
-
-const recentRegistrations = [
-  {
-    id: "1",
-    trackingId: "TRK-12345",
-    name: "Md. Juwel Rana",
-    event: "Hackathon 2026",
-    amount: "৳1000",
-    status: "VERIFIED",
-    date: "10 mins ago",
-  },
-  {
-    id: "2",
-    trackingId: "TRK-98765",
-    name: "Tareq Hasan",
-    event: "Programming Contest",
-    amount: "৳500",
-    status: "PENDING",
-    date: "1 hour ago",
-  },
-  {
-    id: "3",
-    trackingId: "TRK-45678",
-    name: "Rakib Uddin",
-    event: "UI/UX Workshop",
-    amount: "৳100",
-    status: "VERIFIED",
-    date: "2 hours ago",
-  },
-  {
-    id: "4",
-    trackingId: "TRK-23456",
-    name: "Alif Hossain",
-    event: "Hackathon 2026",
-    amount: "৳1000",
-    status: "PENDING",
-    date: "3 hours ago",
-  },
-];
+import { useEffect, useState } from "react";
 
 export default function DashboardOverviewPage() {
+  // ১. স্টেট ডিক্লেয়ারেশন
+  const [data, setData] = useState<DashboardData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // ২. API কল (useEffect এর ভেতরে)
+  useEffect(() => {
+    async function fetchDashboard() {
+      try {
+       const { status, response } = await FetchDashboardData();
+       
+        if (status === 200 && response?.success) {
+          setData(response.data);
+        }
+      } catch (error) {
+        console.error("Failed to load dashboard data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchDashboard();
+  }, []);
+
+  // ৩. ডেটা লোড হওয়ার আগে লোডিং দেখানো
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-gray-50/50">
+        <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+        <span className="ml-2 text-gray-500 font-medium">
+          Loading Dashboard...
+        </span>
+      </div>
+    );
+  }
+
+  // যদি কোনো কারণে ডেটা না আসে
+  if (!data) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-gray-50/50 text-red-500">
+        Failed to load data. Please refresh.
+      </div>
+    );
+  }
+
+  // ৪. API থেকে আসা ডেটা দিয়ে Stats Array ডাইনামিক করা
+  const stats = [
+    {
+      title: "Total Revenue",
+      value: `৳${data.stats.totalRevenue.toLocaleString()}`,
+      change: "All time",
+      trend: "up",
+      icon: DollarSign,
+      color: "text-blue-600",
+      bgColor: "bg-blue-100",
+    },
+    {
+      title: "Total Registrations",
+      value: data.stats.totalRegistrations.toString(),
+      change: "All events",
+      trend: "up",
+      icon: Users,
+      color: "text-green-600",
+      bgColor: "bg-green-100",
+    },
+    {
+      title: "Pending Verifications",
+      value: data.stats.pendingVerifications.toString(),
+      change: "Action required",
+      trend: "neutral",
+      icon: Clock,
+      color: "text-orange-600",
+      bgColor: "bg-orange-100",
+    },
+    {
+      title: "Active Events",
+      value: data.stats.activeEvents.toString(),
+      change: "Live now",
+      trend: "neutral",
+      icon: CalendarDays,
+      color: "text-purple-600",
+      bgColor: "bg-purple-100",
+    },
+  ];
+
   return (
     <div className="p-4 md:p-8 w-full max-w-7xl mx-auto space-y-8 bg-gray-50/50 min-h-screen">
       {/* Header Section */}
@@ -163,7 +173,7 @@ export default function DashboardOverviewPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Recent Registrations Table (Takes up 2 columns on large screens) */}
+        {/* Recent Registrations Table */}
         <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
           <div className="p-6 border-b border-gray-100 flex justify-between items-center">
             <h3 className="text-lg font-bold text-gray-900">
@@ -188,52 +198,67 @@ export default function DashboardOverviewPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 text-sm">
-                {recentRegistrations.map((reg) => (
-                  <tr
-                    key={reg.id}
-                    className="hover:bg-gray-50/50 transition-colors"
-                  >
-                    <td className="p-4 font-mono font-medium text-gray-900">
-                      {reg.trackingId}
-                    </td>
-                    <td className="p-4">
-                      <p className="font-medium text-gray-900">{reg.name}</p>
-                      <p className="text-xs text-gray-500">{reg.date}</p>
-                    </td>
-                    <td className="p-4 text-gray-600">{reg.event}</td>
-                    <td className="p-4 font-medium text-gray-900">
-                      {reg.amount}
-                    </td>
-                    <td className="p-4">
-                      <span
-                        className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                          reg.status === "VERIFIED"
-                            ? "bg-green-100 text-green-700 border border-green-200"
-                            : "bg-yellow-100 text-yellow-700 border border-yellow-200"
-                        }`}
-                      >
-                        {reg.status === "VERIFIED" ? (
-                          <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
-                        ) : (
-                          <Clock className="w-3.5 h-3.5 mr-1" />
-                        )}
-                        {reg.status}
-                      </span>
+                {data.recentRegistrations.length > 0 ? (
+                  data.recentRegistrations.map((reg) => (
+                    <tr
+                      key={reg.id}
+                      className="hover:bg-gray-50/50 transition-colors"
+                    >
+                      <td className="p-4 font-mono font-medium text-gray-900">
+                        {reg.trackingId}
+                      </td>
+                      <td className="p-4">
+                        <p className="font-medium text-gray-900">{reg.name}</p>
+                        <p className="text-xs text-gray-500">
+                          {formatDistanceToNow(new Date(reg.createdAt), {
+                            addSuffix: true,
+                          })}
+                        </p>
+                      </td>
+                      <td className="p-4 text-gray-600">{reg.eventName}</td>
+                      <td className="p-4 font-medium text-gray-900">
+                        ৳{reg.amount}
+                      </td>
+                      <td className="p-4">
+                        <span
+                          className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
+                            reg.status === "VERIFIED"
+                              ? "bg-green-100 text-green-700 border border-green-200"
+                              : reg.status === "REJECTED"
+                                ? "bg-red-100 text-red-700 border border-red-200"
+                                : "bg-yellow-100 text-yellow-700 border border-yellow-200"
+                          }`}
+                        >
+                          {reg.status === "VERIFIED" ? (
+                            <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
+                          ) : (
+                            <Clock className="w-3.5 h-3.5 mr-1" />
+                          )}
+                          {reg.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5} className="p-8 text-center text-gray-500">
+                      No recent registrations found.
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
         </div>
 
-        {/* Quick Actions / Pending Tasks (Takes up 1 column) */}
+        {/* Quick Actions / Pending Tasks */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
           <h3 className="text-lg font-bold text-gray-900 mb-6">
             Quick Actions
           </h3>
 
           <div className="space-y-4">
+            {/* Pending Payments Action */}
             <div className="flex items-start gap-4 p-4 rounded-xl border border-orange-100 bg-orange-50/50">
               <div className="p-2 bg-orange-100 text-orange-600 rounded-lg shrink-0">
                 <CreditCard className="w-5 h-5" />
@@ -243,7 +268,8 @@ export default function DashboardOverviewPage() {
                   Verify Payments
                 </h4>
                 <p className="text-xs text-gray-500 mt-1">
-                  45 pending manual payment verifications require attention.
+                  {data.stats.pendingVerifications} pending manual payment
+                  verifications require attention.
                 </p>
                 <Link
                   href="/admin/payments"
@@ -254,6 +280,7 @@ export default function DashboardOverviewPage() {
               </div>
             </div>
 
+            {/* Submissions Action */}
             <div className="flex items-start gap-4 p-4 rounded-xl border border-indigo-100 bg-indigo-50/50">
               <div className="p-2 bg-indigo-100 text-indigo-600 rounded-lg shrink-0">
                 <Activity className="w-5 h-5" />
@@ -263,7 +290,8 @@ export default function DashboardOverviewPage() {
                   Project Submissions
                 </h4>
                 <p className="text-xs text-gray-500 mt-1">
-                  12 new projects submitted for Hackathon 2026.
+                  {data.quickActions.newSubmissionsCount} total projects
+                  submitted across all events.
                 </p>
                 <Link
                   href="/admin/submissions"
@@ -275,7 +303,10 @@ export default function DashboardOverviewPage() {
             </div>
 
             {/* Quick Link Item */}
-            <div className="pt-4 border-t border-gray-100 flex items-center justify-between group cursor-pointer">
+            <Link
+              href="/admin/events"
+              className="pt-4 border-t border-gray-100 flex items-center justify-between group cursor-pointer"
+            >
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 group-hover:bg-gray-200 transition-colors">
                   <CalendarDays className="w-4 h-4" />
@@ -284,8 +315,8 @@ export default function DashboardOverviewPage() {
                   Manage Events
                 </span>
               </div>
-              <MoreVertical className="w-4 h-4 text-gray-400" />
-            </div>
+              <MoreVertical className="w-4 h-4 text-gray-400 group-hover:text-gray-900" />
+            </Link>
           </div>
         </div>
       </div>

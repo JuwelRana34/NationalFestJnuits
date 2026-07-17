@@ -1,85 +1,106 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { useState } from "react";
+import { honoFetch } from "@/lib/hono-client";
+import { deleteImage, uploadImage } from "@/lib/uploadImage";
+import { useEffect, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
+// আপনার আলাদা করে রাখা টাইপগুলো ইম্পোর্ট করা হলো
+import { FormValues, GetEventValues } from "../types";
 
-// টাইপ ডেফিনেশন
-export type FormValues = {
-  title: string;
-  eventType: string;
-  description: string;
-  isActive: boolean;
-  fee: number;
-  baseTeamSize: number;
-  maxExtraMembers: number;
-  extraMemberFee: number;
-  deadline: string;
-  eventDate: string;
-  venue: string;
-  coverImage?: FileList; // Update এর সময় ছবি না-ও দিতে পারে, তাই অপশনাল
-  responsible: { name: string; phone: string }[];
-  schemaFields: {
-    label: string;
-    type: "text" | "number" | "url" | "select" | "file";
-    required: boolean;
-    options: string;
-  }[];
-  isSubmissionRequired: boolean;
-  submissionSchema: {
-    label: string;
-    type: "text" | "number" | "url" | "select" | "file";
-    required: boolean;
-    options: string;
-  }[];
-};
-
-// Props: এডিট করার সময় initialData আসবে, ক্রিয়েট করার সময় ফাঁকা থাকবে
 interface EventFormProps {
-  initialData?: FormValues & { id: string; coverImageUrl?: string };
+  initialData?: GetEventValues | null;
 }
 
 export default function EventForm({ initialData }: EventFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // যদি এডিট মোড হয় এবং আগের ছবি থাকে, সেটা প্রিভিউ হিসেবে দেখাবে
   const [imagePreview, setImagePreview] = useState<string | null>(
-    initialData?.coverImageUrl || null,
+    initialData?.coverImage || null,
   );
 
-  const isEditing = !!initialData; // initialData থাকলে এটি Update Mode
+  const isEditing = !!initialData;
 
   const { register, control, handleSubmit, watch } = useForm<FormValues>({
-    defaultValues: initialData || {
-      title: "",
-      isActive: true,
-      eventType: "solo",
-      description: "",
-      fee: 0,
-      baseTeamSize: 0,
-      maxExtraMembers: 0,
-      extraMemberFee: 0,
-      venue: "",
-      responsible: [],
-      schemaFields: [
-        { label: "Full Name", type: "text", required: true, options: "" },
-      ],
-      isSubmissionRequired: false,
-      submissionSchema: [],
-    },
+    defaultValues: initialData
+      ? {
+          title: initialData.title,
+          subtitle: initialData.subtitle || "",
+          eventType: initialData.eventType,
+          description: initialData.description,
+          isActive: initialData.isActive,
+          fee: initialData.fee,
+          baseTeamSize: initialData.baseTeamSize,
+          maxExtraMembers: initialData.maxExtraMembers,
+          extraMemberFee: initialData.extraMemberFee,
+          prizeMoney: initialData.prizeMoney || 0,
+          venue: initialData.venue,
+          time: initialData.time || "",
+
+          eventDate: initialData.eventDate?.slice(0, 16) || "",
+          deadline: initialData.deadline?.slice(0, 16) || "",
+
+          responsible: initialData.responsible || [],
+
+          // Data Mapping: DB Array -> Form String
+          registrationSchema:
+            initialData.registrationSchema?.map((field) => ({
+              label: field.label,
+              type: field.type,
+              required: field.required,
+              options: field.options ? field.options.join(", ") : "",
+            })) || [],
+
+          isSubmissionOpen: initialData.isSubmissionOpen,
+
+          // Data Mapping: DB Array -> Form String
+          submissionSchema:
+            initialData.submissionSchema?.map((field) => ({
+              label: field.label,
+              type: field.type,
+              required: field.required,
+              options: field.options ? field.options.join(", ") : "",
+            })) || [],
+
+          coverImage: null, // এডিট মোডে ফাইল ইনপুট ফাঁকা থাকে
+        }
+      : {
+          title: "",
+          subtitle: "",
+          isActive: true,
+          eventType: "solo",
+          description: "",
+          fee: 0,
+          baseTeamSize: 0,
+          maxExtraMembers: 0,
+          extraMemberFee: 0,
+          prizeMoney: 0,
+          venue: "",
+          time: "",
+          eventDate: "",
+          deadline: "",
+          responsible: [],
+          registrationSchema: [
+            { label: "Full Name", type: "text", required: true, options: "" },
+          ],
+          isSubmissionOpen: false,
+          submissionSchema: [],
+          coverImage: null,
+        },
   });
 
   const {
-    fields: schemaFieldsList,
-    append: appendSchema,
-    remove: removeSchema,
-  } = useFieldArray({ control, name: "schemaFields" });
+    fields: registrationFields,
+    append: appendRegistration,
+    remove: removeRegistration,
+  } = useFieldArray({ control, name: "registrationSchema" });
+
   const {
     fields: responsibleFields,
     append: appendResponsible,
     remove: removeResponsible,
   } = useFieldArray({ control, name: "responsible" });
+
   const {
     fields: submissionFieldsList,
     append: appendSubmission,
@@ -87,98 +108,135 @@ export default function EventForm({ initialData }: EventFormProps) {
   } = useFieldArray({ control, name: "submissionSchema" });
 
   const selectedEventType = watch("eventType");
-  const isSubmissionRequired = watch("isSubmissionRequired");
+  const isSubmissionOpen = watch("isSubmissionOpen");
   const watchCoverImage = watch("coverImage");
 
-  // নতুন ছবি সিলেক্ট করলে প্রিভিউ আপডেট হবে
-  if (
-    watchCoverImage &&
-    watchCoverImage.length > 0 &&
-    imagePreview !== URL.createObjectURL(watchCoverImage[0])
-  ) {
-    setImagePreview(URL.createObjectURL(watchCoverImage[0]));
-  }
+  useEffect(() => {
+    if (watchCoverImage && watchCoverImage.length > 0) {
+      const file = watchCoverImage[0];
+      const objectUrl = URL.createObjectURL(file);
+
+      setImagePreview(objectUrl);
+
+      return () => {
+        URL.revokeObjectURL(objectUrl);
+      };
+    }
+  }, [watchCoverImage]);
 
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true);
 
-    const formattedSchema = data.schemaFields.map((field) => ({
-      id: field.label.toLowerCase().replace(/[\s_-]+/g, "_"),
-      label: field.label,
-      type: field.type,
-      required: field.required,
-      ...(field.type === "select" && {
-        options: field.options
-          .split(",")
-          .map((opt) => opt.trim())
-          .filter(Boolean),
-      }),
-    }));
-
-    const formattedSubmissionSchema = data.isSubmissionRequired
-      ? data.submissionSchema.map((field) => ({
-          id: field.label.toLowerCase().replace(/[\s_-]+/g, "_"),
-          label: field.label,
-          type: field.type,
-          required: field.required,
-          ...(field.type === "select" && {
-            options: field.options
-              .split(",")
-              .map((opt) => opt.trim())
-              .filter(Boolean),
-          }),
-        }))
-      : [];
-
-    const formData = new FormData();
-    if (isEditing && initialData?.id) {
-      formData.append("id", initialData.id); // আপডেটের জন্য ID পাঠানো হচ্ছে
-    }
-
-    formData.append("title", data.title);
-    formData.append("eventType", data.eventType);
-    formData.append("description", data.description);
-    formData.append("fee", data.fee.toString());
-    formData.append("deadline", data.deadline);
-    formData.append("eventDate", data.eventDate);
-    formData.append("venue", data.venue);
-    formData.append("isActive", String(data.isActive));
-    formData.append("registrationSchema", JSON.stringify(formattedSchema));
-    formData.append("responsible", JSON.stringify(data.responsible));
-    formData.append("isSubmissionRequired", String(data.isSubmissionRequired));
-    formData.append(
-      "submissionSchema",
-      JSON.stringify(formattedSubmissionSchema),
-    );
-
-    if (data.eventType === "team") {
-      formData.append("baseTeamSize", data.baseTeamSize.toString());
-      formData.append("maxExtraMembers", data.maxExtraMembers.toString());
-      formData.append("extraMemberFee", data.extraMemberFee.toString());
-    }
-
-    if (data.coverImage && data.coverImage.length > 0) {
-      formData.append("coverImage", data.coverImage[0]);
-    }
-
     try {
-      console.log(
-        `Sending ${isEditing ? "PUT" : "POST"} request with:`,
-        Object.fromEntries(formData),
-      );
+      // Form String -> DB Array Conversion
+      const formattedSchema = data.registrationSchema.map((field) => ({
+        id: field.label.toLowerCase().replace(/[\s_-]+/g, "_"),
+        label: field.label,
+        type: field.type,
+        required: field.required,
+        ...(field.type === "select" && {
+          options: field.options
+            .split(",")
+            .map((opt) => opt.trim())
+            .filter(Boolean),
+        }),
+      }));
 
-      // API Call logic Example:
-      // const endpoint = isEditing ? `/api/events/${initialData.id}` : `/api/events`;
-      // const method = isEditing ? "PATCH" : "POST";
-      // await fetch(endpoint, { method, body: formData });
+      // Form String -> DB Array Conversion
+      const formattedSubmissionSchema = data.isSubmissionOpen
+        ? data.submissionSchema.map((field) => ({
+            id: field.label.toLowerCase().replace(/[\s_-]+/g, "_"),
+            label: field.label,
+            type: field.type,
+            required: field.required,
+            ...(field.type === "select" && {
+              options: field.options
+                .split(",")
+                .map((opt) => opt.trim())
+                .filter(Boolean),
+            }),
+          }))
+        : [];
 
-      alert(
-        isEditing
-          ? "Event updated successfully!"
-          : "Event created successfully!",
-      );
+     let coverImageUrl = initialData?.coverImage ?? "";
+
+     // যদি ইউজার নতুন কোনো ছবি সিলেক্ট করে থাকে
+     if (data.coverImage && data.coverImage.length > 0) {
+       try {
+         // ১. প্রথমে নতুন ছবিটি আপলোড করুন
+         coverImageUrl = await uploadImage(data.coverImage[0], "events");
+
+         // ২. আপলোড সফল হলে এবং এটি Edit Mode হলে, পুরনো ছবিটি ডিলিট করে দিন
+         if (isEditing && initialData?.coverImage) {
+           // deleteImage ফাংশনটি ইম্পোর্ট করে নিতে ভুলবেন না!
+           await deleteImage(initialData.coverImage);
+           console.log("Old image scheduled for deletion.");
+         }
+       } catch (err) {
+         console.error("Image Upload Error:", err);
+         alert("Image upload failed.");
+         setIsSubmitting(false);
+         return; // আপলোড ফেইল করলে ফর্ম সাবমিট বন্ধ করে দিবে
+       }
+     }
+
+      // Payload for API
+      const payload = {
+        ...(isEditing && initialData?.id ? { id: initialData.id } : {}),
+        title: data.title,
+        subtitle: data.subtitle,
+        eventType: data.eventType,
+        description: data.description,
+        fee: data.fee,
+        prizeMoney: data.prizeMoney,
+        deadline: data.deadline,
+        eventDate: data.eventDate,
+        time: data.time,
+        venue: data.venue,
+        isActive: data.isActive,
+        coverImage: coverImageUrl,
+        registrationSchema: formattedSchema,
+        responsible: data.responsible,
+        isSubmissionOpen: data.isSubmissionOpen,
+        submissionSchema: formattedSubmissionSchema,
+        ...(data.eventType === "team" && {
+          baseTeamSize: data.baseTeamSize,
+          maxExtraMembers: data.maxExtraMembers,
+          extraMemberFee: data.extraMemberFee,
+        }),
+      };
+
+      console.log("Sending Payload:", payload);
+
+      const endpoint = isEditing
+        ? `/api/events/${initialData.id}`
+        : "/api/events";
+
+      const method = isEditing ? "PATCH" : "POST";
+
+      const { status, response } = await honoFetch<{
+        success: boolean;
+        data: GetEventValues;
+      }>(endpoint, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (status === 200 && response) {
+        alert(
+          isEditing
+            ? "Event updated successfully!"
+            : "Event created successfully!",
+        );
+      } else {
+        alert("Failed to save event.");
+      }
     } catch (error) {
-      console.error(error);
+      console.error("Submit Error:", error);
+      alert("Something went wrong.");
     } finally {
       setIsSubmitting(false);
     }
@@ -224,17 +282,13 @@ export default function EventForm({ initialData }: EventFormProps) {
                   </svg>
                 )}
                 <div className="flex text-sm text-gray-600 justify-center">
-                  <label
-                    htmlFor="file-upload"
-                    className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none"
-                  >
+                  <label className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none">
                     <span>
                       {isEditing && imagePreview
                         ? "Change file"
                         : "Upload a file"}
                     </span>
                     <input
-                      id="file-upload"
                       type="file"
                       accept="image/*"
                       className="sr-only"
@@ -285,7 +339,6 @@ export default function EventForm({ initialData }: EventFormProps) {
             />
           </div>
 
-          {/* Conditional Team Settings */}
           {selectedEventType === "team" && (
             <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4 bg-blue-50 border border-blue-100 p-4 rounded-lg mt-2">
               <div>
@@ -330,7 +383,8 @@ export default function EventForm({ initialData }: EventFormProps) {
             </label>
             <input
               type="datetime-local"
-              {...register("eventDate")}
+              step="any"
+              {...register("eventDate", { required: true })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
             />
           </div>
@@ -341,7 +395,8 @@ export default function EventForm({ initialData }: EventFormProps) {
             </label>
             <input
               type="datetime-local"
-              {...register("deadline")}
+              step="any"
+              {...register("deadline", { required: true })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
             />
           </div>
@@ -425,14 +480,14 @@ export default function EventForm({ initialData }: EventFormProps) {
               >
                 <input
                   {...register(`responsible.${index}.name`, { required: true })}
-                  placeholder="Name (e.g. Md. Juwel)"
+                  placeholder="Name"
                   className="flex-1 min-w-[200px] px-3 py-2 border rounded-md outline-none focus:ring-2 focus:ring-orange-400"
                 />
                 <input
                   {...register(`responsible.${index}.phone`, {
                     required: true,
                   })}
-                  placeholder="Phone (e.g. 017XXXXXXXX)"
+                  placeholder="Phone"
                   className="flex-1 min-w-[200px] px-3 py-2 border rounded-md outline-none focus:ring-2 focus:ring-orange-400"
                 />
                 <button
@@ -460,7 +515,7 @@ export default function EventForm({ initialData }: EventFormProps) {
             <Button
               type="button"
               onClick={() =>
-                appendSchema({
+                appendRegistration({
                   label: "",
                   type: "text",
                   required: false,
@@ -474,8 +529,8 @@ export default function EventForm({ initialData }: EventFormProps) {
           </div>
 
           <div className="space-y-4">
-            {schemaFieldsList.map((item, index) => {
-              const currentType = watch(`schemaFields.${index}.type`);
+            {registrationFields.map((item, index) => {
+              const currentType = watch(`registrationSchema.${index}.type`);
               return (
                 <div
                   key={item.id}
@@ -486,7 +541,7 @@ export default function EventForm({ initialData }: EventFormProps) {
                       Field Label
                     </label>
                     <input
-                      {...register(`schemaFields.${index}.label`, {
+                      {...register(`registrationSchema.${index}.label`, {
                         required: true,
                       })}
                       placeholder="e.g. University Name"
@@ -499,7 +554,7 @@ export default function EventForm({ initialData }: EventFormProps) {
                       Input Type
                     </label>
                     <select
-                      {...register(`schemaFields.${index}.type`)}
+                      {...register(`registrationSchema.${index}.type`)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm outline-none focus:border-blue-500"
                     >
                       <option value="text">Text</option>
@@ -516,7 +571,7 @@ export default function EventForm({ initialData }: EventFormProps) {
                         Options (Comma separated)
                       </label>
                       <input
-                        {...register(`schemaFields.${index}.options`, {
+                        {...register(`registrationSchema.${index}.options`, {
                           required: true,
                         })}
                         placeholder="M, L, XL, XXL"
@@ -529,15 +584,15 @@ export default function EventForm({ initialData }: EventFormProps) {
                     <label className="flex items-center text-sm text-gray-700 cursor-pointer">
                       <input
                         type="checkbox"
-                        {...register(`schemaFields.${index}.required`)}
+                        {...register(`registrationSchema.${index}.required`)}
                         className="mr-2 h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                       />{" "}
                       Required
                     </label>
-                    {schemaFieldsList.length > 1 && (
+                    {registrationFields.length > 1 && (
                       <button
                         type="button"
-                        onClick={() => removeSchema(index)}
+                        onClick={() => removeRegistration(index)}
                         className="text-red-500 hover:text-red-700 p-2"
                       >
                         ✕
@@ -564,7 +619,7 @@ export default function EventForm({ initialData }: EventFormProps) {
               </p>
             </div>
             <Controller
-              name="isSubmissionRequired"
+              name="isSubmissionOpen"
               control={control}
               render={({ field }) => (
                 <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-lg border shadow-sm">
@@ -580,7 +635,7 @@ export default function EventForm({ initialData }: EventFormProps) {
             />
           </div>
 
-          {isSubmissionRequired && (
+          {isSubmissionOpen && (
             <div className="mt-6 space-y-4 animate-in fade-in slide-in-from-top-4 duration-300">
               <div className="flex justify-end">
                 <Button
@@ -601,7 +656,8 @@ export default function EventForm({ initialData }: EventFormProps) {
 
               {submissionFieldsList.length === 0 && (
                 <div className="text-center py-6 bg-white border border-dashed border-indigo-200 rounded-lg text-indigo-400">
-                  Click &quot;+ Add Submission Field&quot; to configure requirements.
+                  Click &quot;+ Add Submission Field&quot; to configure
+                  requirements.
                 </div>
               )}
 

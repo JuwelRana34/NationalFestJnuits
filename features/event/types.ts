@@ -1,6 +1,5 @@
 export type FieldType = "text" | "number" | "url" | "select" | "file";
 
-// ইভেন্টের টাইপ নির্দিষ্ট করে দেওয়া হলো
 export type EventType = "solo" | "team" | "seminar";
 
 export interface FormField {
@@ -11,32 +10,94 @@ export interface FormField {
   options?: string[];
 }
 
-// Create/Edit form-এর জন্য
-export type FormFieldInput = Omit<FormField, "id">;
+// React Hook Form-এর জন্য
+export interface FormFieldInput {
+  label: string;
+  type: FieldType;
+  required: boolean;
+  options: string;
+}
 
-export type GetEventValues = {
+export interface ResponsiblePerson {
+  name: string;
+  phone: string;
+}
+
+/**
+ * Database / API Event Model
+ */
+export interface GetEventValues {
   id: string;
-  coverImage: string; // ডেটাবেস থেকে আসার সময় এটি ছবির URL (string)
-  isActive: boolean;
-  slug: string;
+
   title: string;
-  eventType: EventType; // string এর বদলে নির্দিষ্ট টাইপ দেওয়া হলো
+  slug: string;
+  subtitle?: string | null;
+
+  eventType: EventType;
+
   description: string;
+
+  coverImage: string | null;
+
+  eventDate: string;
+  deadline: string;
+  time?: string | null;
+  venue: string;
+
   fee: number;
 
-  // টিম ইভেন্টের জন্য নতুন ফিল্ডসমূহ
   baseTeamSize: number;
   maxExtraMembers: number;
   extraMemberFee: number;
 
-  deadline: string;
-  eventDate: string;
-  venue: string;
-  registrationSchema: FormField[];
-};
+  prizeMoney: number;
 
-// ফর্মের জন্য টাইপ
-export type FormValues = Omit<GetEventValues, "id" | "slug" | "coverImage"> & {
-  coverImage: FileList | null; // ফর্মে যেহেতু ফাইল আপলোড হবে, তাই টাইপ FileList করা হলো
+  registrationSchema: FormField[];
+
+  isSubmissionOpen: boolean;
+  submissionSchema: FormField[];
+
+  responsible: ResponsiblePerson[];
+
+  isActive: boolean;
+
+  registrationCount?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+/**
+ * Create / Update Form Values
+ */
+export interface FormValues {
+  title: string;
+  subtitle: string;
+
+  eventType: EventType;
+
+  description: string;
+
+  coverImage: FileList | null;
+
+  eventDate: string;
+  deadline: string;
+  time: string;
+  venue: string;
+
+  fee: number;
+
+  baseTeamSize: number;
+  maxExtraMembers: number;
+  extraMemberFee: number;
+
+  prizeMoney: number;
+
   registrationSchema: FormFieldInput[];
-};
+
+  isSubmissionOpen: boolean;
+  submissionSchema: FormFieldInput[];
+
+  responsible: ResponsiblePerson[];
+
+  isActive: boolean;
+}

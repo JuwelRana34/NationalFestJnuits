@@ -9,9 +9,10 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { formatDate } from "@/lib/DateAndTimeFormater";
+import { formatDate, formatTime } from "@/lib/DateAndTimeFormater";
 import { honoFetch } from "@/lib/hono-client";
 import { GetEventValues } from "../types";
+import MarkdownRenderer from "@/components/custom/MarkdownRenderer";
 
 type Props = {
   params: Promise<{
@@ -127,12 +128,12 @@ export async function EventDetailsContent({ params }: Props) {
             />
           ) : (
             <div
-              className={`absolute inset-0 bg-gradient-to-br ${accent.cover} opacity-90`}
+              className={`absolute inset-0 bg-linear-to-br ${accent.cover} opacity-90`}
             />
           )}
 
           {/* Elegant Dark Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
 
           {/* Hero Content */}
           <div className="absolute inset-x-0 bottom-0 flex flex-col justify-end p-6 sm:p-10">
@@ -184,7 +185,7 @@ export async function EventDetailsContent({ params }: Props) {
               </h2>
             </div>
             <p className="leading-relaxed text-muted-foreground md:text-lg">
-              {event.description}
+              <MarkdownRenderer content={event.description} />
             </p>
           </section>
 
@@ -217,7 +218,7 @@ export async function EventDetailsContent({ params }: Props) {
         <div className="lg:col-span-1">
           <Card className="sticky top-8 overflow-hidden shadow-xl border-border/50">
             {/* Soft decorative top border matching accent */}
-            <div className={`h-1.5 w-full bg-gradient-to-r ${accent.cover}`} />
+            <div className={`h-1.5 w-full bg-linear-to-r ${accent.cover}`} />
 
             <CardHeader className="pb-6">
               <div className="flex flex-col gap-1">
@@ -233,7 +234,7 @@ export async function EventDetailsContent({ params }: Props) {
                 <p className="mt-2 text-sm text-muted-foreground">
                   Closes on{" "}
                   <span className="font-medium text-foreground">
-                    {formatDate(event.deadline)}
+                    {formatDate(event.deadline)} at {formatTime(event.deadline)}
                   </span>
                 </p>
               )}
