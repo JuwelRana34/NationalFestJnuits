@@ -1,13 +1,29 @@
 import { FeaturedEvents, FeaturedEventsSkeleton } from "@/features/event/_components/FeaturedEvents";
 import { GetEventValues } from "@/features/event/types";
 import { honoFetch } from "@/lib/hono-client";
+import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { Suspense } from "react";
 
-export default function HomePage() {
-const eventsPromise = honoFetch<{ success: boolean; data: GetEventValues[] }>(
+export default async function HomePage() {
+'use cache';
+cacheLife("weeks")
+let eventData: GetEventValues[] = [];
+
+try {
+const {status, response} = await honoFetch<{ success: boolean; data: GetEventValues[] }>(
   "/api/events",
 );
+
+ if (status === 200 && response) {
+  console.log(response.data);
+  eventData = response.data;
+ }
+}catch (error) {
+  console.error("Error fetching events:", error);
+  return <p className="text-red-500">Failed to load events. Please try again later.</p>;
+ }
+
  
   return (
     <main>
@@ -47,7 +63,7 @@ const eventsPromise = honoFetch<{ success: boolean; data: GetEventValues[] }>(
         </div>
 
         <Suspense fallback={<FeaturedEventsSkeleton />}>
-          <FeaturedEvents promise={eventsPromise} />
+          <FeaturedEvents data={eventData} />
         </Suspense>
       </section>
     </main>

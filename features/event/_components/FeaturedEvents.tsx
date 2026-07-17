@@ -5,6 +5,7 @@ import { Calendar, MapPin, ArrowRight, Clock } from "lucide-react";
 import { formatDate, formatTime } from "@/lib/DateAndTimeFormater";
 import { honoFetch } from "@/lib/hono-client";
 import { GetEventValues } from "../types";
+import { promise } from "zod/v4/mini";
 
 const ACCENTS = [
   {
@@ -58,21 +59,11 @@ function countdownLabel(daysLeft: number) {
   if (daysLeft === 1) return "1 day left";
   return `${daysLeft} days left`;
 }
- interface FeaturedEventsProps {
-    promise: Promise<{
-      status: number;
-      response: { success: boolean; data: GetEventValues[] } | null;
-    }>;
-  }
 
-export async function FeaturedEvents({ promise }: FeaturedEventsProps) {
-  const { status, response } = await promise;
 
-  if (status === 200 && response) {
-    console.log(response.data);
-  }
+export async function FeaturedEvents({data}: { data: GetEventValues[] }) {
 
-  const featuredEvents = response?.data || [];
+  const featuredEvents = data || [];
 
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
