@@ -2,7 +2,7 @@ import { connection } from "next/server";
 import Link from "next/link";
 import Image from "next/image";
 import { Calendar, MapPin, ArrowRight, Clock } from "lucide-react";
-import { formatDate } from "@/lib/DateAndTimeFormater";
+import { formatDate, formatTime } from "@/lib/DateAndTimeFormater";
 import { honoFetch } from "@/lib/hono-client";
 import { GetEventValues } from "../types";
 
@@ -97,7 +97,7 @@ if (status === 200 && response) {
                 />
               ) : (
                 <div
-                  className={`flex h-full w-full items-center justify-center bg-gradient-to-br p-6 ${accent.cover}`}
+                  className={`flex h-full w-full items-center justify-center bg-linear-to-br p-6 ${accent.cover}`}
                 >
                   <span className="text-center text-lg font-semibold leading-snug text-white">
                     {event.title}
@@ -105,7 +105,7 @@ if (status === 200 && response) {
                 </div>
               )}
 
-              <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/40 to-transparent" />
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-linear-to-b from-black/40 to-transparent" />
 
               <div className="absolute inset-x-3 top-3 flex items-center justify-between gap-2">
                 <span
@@ -143,7 +143,7 @@ if (status === 200 && response) {
               <div className="mt-4 flex flex-col gap-2 text-sm text-foreground/80">
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 shrink-0 text-muted-foreground" />
-                  <span>{formatDate(event.eventDate)}</span>
+                  <span>{formatDate(event.eventDate)} at {formatTime(event.eventDate)}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <MapPin className="h-4 w-4 shrink-0 text-muted-foreground" />
