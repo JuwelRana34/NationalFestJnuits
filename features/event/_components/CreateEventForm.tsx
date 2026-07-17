@@ -2,11 +2,12 @@
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { honoFetch } from "@/lib/hono-client";
-import { deleteImage, uploadImage } from "@/lib/uploadImage";
+import { deleteImage } from "@/lib/ImageDelete";
 import { useEffect, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 // আপনার আলাদা করে রাখা টাইপগুলো ইম্পোর্ট করা হলো
 import { FormValues, GetEventValues } from "../types";
+import { uploadImage } from "@/lib/cloudinaryUpload";
 
 interface EventFormProps {
   initialData?: GetEventValues | null;

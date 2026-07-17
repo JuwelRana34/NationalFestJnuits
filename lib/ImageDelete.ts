@@ -2,40 +2,40 @@
 
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 
-export async function uploadImage(
-  file: File,
-  folder = "events",
-): Promise<string> {
-  const { env } = getCloudflareContext();
+// export async function uploadImage(
+//   file: File,
+//   folder = "events",
+// ): Promise<string> {
+//   const { env } = getCloudflareContext();
 
-  console.log(env.CLOUDINARY_CLOUD_NAME);
-  console.log(env.CLOUDINARY_UPLOAD_PRESET);
-  console.log(env.CLOUDINARY_API_KEY);
-  console.log(env.CLOUDINARY_API_SECRET);
+//   console.log(env.CLOUDINARY_CLOUD_NAME);
+//   console.log(env.CLOUDINARY_UPLOAD_PRESET);
+//   console.log(env.CLOUDINARY_API_KEY);
+//   console.log(env.CLOUDINARY_API_SECRET);
   
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("upload_preset", env.CLOUDINARY_UPLOAD_PRESET);
-  formData.append("folder", folder);
+//   const formData = new FormData();
+//   formData.append("file", file);
+//   formData.append("upload_preset", env.CLOUDINARY_UPLOAD_PRESET);
+//   formData.append("folder", folder);
 
-  const res = await fetch(
-    `https://api.cloudinary.com/v1_1/${env.CLOUDINARY_CLOUD_NAME}/image/upload`,
-    {
-      method: "POST",
-      body: formData,
-    },
-  );
+//   const res = await fetch(
+//     `https://api.cloudinary.com/v1_1/${env.CLOUDINARY_CLOUD_NAME}/image/upload`,
+//     {
+//       method: "POST",
+//       body: formData,
+//     },
+//   );
 
-  if (!res.ok) {
-    throw new Error(await res.text());
-  }
+//   if (!res.ok) {
+//     throw new Error(await res.text());
+//   }
 
-  const data = (await res.json()) as {
-    secure_url: string;
-  };
+//   const data = (await res.json()) as {
+//     secure_url: string;
+//   };
 
-  return data.secure_url;
-}
+//   return data.secure_url;
+// }
 
 function getPublicIdFromUrl(url: string) {
   
