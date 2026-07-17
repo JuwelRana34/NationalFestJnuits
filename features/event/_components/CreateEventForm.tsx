@@ -173,8 +173,14 @@ export default function EventForm({ initialData }: EventFormProps) {
            console.log("Old image scheduled for deletion.");
          }
        } catch (err) {
-         console.error("Image Upload Error:", err);
-         alert("Image upload failed.");
+         console.error(err);
+
+         if (err instanceof Error) {
+           console.error(err.message);
+           console.error(err.stack);
+         }
+
+         alert(err instanceof Error ? err.message : "Upload failed");
          setIsSubmitting(false);
          return; // আপলোড ফেইল করলে ফর্ম সাবমিট বন্ধ করে দিবে
        }

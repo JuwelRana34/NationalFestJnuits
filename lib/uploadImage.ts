@@ -8,6 +8,11 @@ export async function uploadImage(
 ): Promise<string> {
   const { env } = getCloudflareContext();
 
+  console.log(env.CLOUDINARY_CLOUD_NAME);
+  console.log(env.CLOUDINARY_UPLOAD_PRESET);
+  console.log(env.CLOUDINARY_API_KEY);
+  console.log(env.CLOUDINARY_API_SECRET);
+  
   const formData = new FormData();
   formData.append("file", file);
   formData.append("upload_preset", env.CLOUDINARY_UPLOAD_PRESET);
