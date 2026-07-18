@@ -1,5 +1,6 @@
 import { EventDetailsContent } from "@/features/event/_components/EventDetailsContent";
 import { GetEventValues } from "@/features/event/types";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -12,12 +13,13 @@ type Props = {
 
 export default async function EventDetailsPage({ params }: Props) {
   const { slug } = await params;
-
-  const res = await fetch(`${process.env.localApi}/api/events/${slug}`, {
+  const { env } = await getCloudflareContext();
+  console.log("Cloudflare Environment Variables:", env);
+  const res = await fetch(`${env.API_URL}/api/events/${slug}`, {
     next: { revalidate: 3600 },
   });
 
-  console.log("Event Details API Response:", res);
+
   if (!res.ok) {
     return notFound();
   }
