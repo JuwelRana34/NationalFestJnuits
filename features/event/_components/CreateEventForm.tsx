@@ -7,8 +7,8 @@ import { useEffect, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 // আপনার আলাদা করে রাখা টাইপগুলো ইম্পোর্ট করা হলো
 import { uploadImage } from "@/lib/cloudinaryUpload";
-import { revalidatePath } from "next/cache";
 import { FormValues, GetEventValues } from "../types";
+import { revalidateEvents } from "@/actions/eventActions";
 
 interface EventFormProps {
   initialData?: GetEventValues | null;
@@ -239,7 +239,8 @@ export default function EventForm({ initialData }: EventFormProps) {
             ? "Event updated successfully!"
             : "Event created successfully!",
         );
-        revalidatePath("/events");
+        await revalidateEvents();
+
       } else {
         alert("Failed to save event.");
       }
@@ -520,6 +521,9 @@ export default function EventForm({ initialData }: EventFormProps) {
               <h3 className="text-lg font-semibold text-gray-800">
                 Registration Form Builder
               </h3>
+              ⚠️<span className="text-xs text-red-500 ml-2 inline-block animate-pulse">
+                you must add email field & make it required for all events!
+              </span>
             </div>
             <Button
               type="button"

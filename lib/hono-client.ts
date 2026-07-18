@@ -69,9 +69,9 @@ export const honoFetch = async <T>(
     }
   }
 
-  if (fetchResponse.status >= 400 && fetchResponse.status !== 401) {
-    return { status: fetchResponse.status, response: null };
-  }
+  // if (fetchResponse.status >= 400 && fetchResponse.status !== 401) {
+  //   return { status: fetchResponse.status, response: null };
+  // }
 
   try {
     const result = (await fetchResponse.json()) as T;

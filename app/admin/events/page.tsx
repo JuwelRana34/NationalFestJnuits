@@ -3,6 +3,7 @@
 import { GetEventValues } from "@/features/event/types";
 import { formatDate } from "@/lib/DateAndTimeFormater";
 import { honoFetch } from "@/lib/hono-client";
+import { deleteImage } from "@/lib/ImageDelete";
 import {
   AlertCircle,
   CalendarDays,
@@ -97,10 +98,23 @@ export default function EventManagementPage() {
   }, [events, searchQuery, typeFilter, statusFilter]);
 
   // 5. Action Handlers
-  const handleDelete = async (id: string, title: string) => {
+  const handleDelete = async (id: string, title: string, coverImage: string | null) => {
     if (window.confirm(`Are you sure you want to delete "${title}"?`)) {
-      // In production, implement actual API deletion here and update local state
-      // setEvents(prev => prev.filter(e => e.id !== id));
+      const { status } = await honoFetch(`/api/events/${id}`, {
+        method: "DELETE",
+      });
+
+      if (status !== 200) {
+        alert("Failed to delete the event. Please try again.");
+        return;
+      }
+
+      if (coverImage) {
+        await deleteImage(coverImage);
+        console.log(`Deleted cover image: ${coverImage}`);
+      }
+
+      setEvents(prev => prev.filter(e => e.id !== id));
       alert(`Event deleted! (Demo ID: ${id})`);
     }
   };
@@ -262,7 +276,7 @@ export default function EventManagementPage() {
                             <Edit size={16} />
                           </Link>
                           <button
-                            onClick={() => handleDelete(event.id, event.title)}
+                            onClick={() => handleDelete(event.id, event.title, event.coverImage)}
                             className="p-2 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors focus:opacity-100"
                             title="Delete Event"
                           >

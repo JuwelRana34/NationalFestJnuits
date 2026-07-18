@@ -7,7 +7,7 @@ import { Suspense } from "react";
 
 export default async function HomePage() {
 'use cache';
-cacheLife("weeks")
+cacheLife("hours")
 cacheTag("events")
 let eventData: GetEventValues[] = [];
 

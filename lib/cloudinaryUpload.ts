@@ -1,4 +1,7 @@
 export async function uploadImage(file: File, folder = "events") {
+  console.log("Preset:", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET);
+  console.log("Cloud Name:", process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME);
+  
   const formData = new FormData();
 
   formData.append("file", file);

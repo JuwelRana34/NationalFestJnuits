@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { FormField } from "../types";
+import { honoFetch } from "@/lib/hono-client";
 
 interface Props {
   eventId: string;
@@ -145,7 +146,7 @@ export default function DynamicRegistrationForm({
       // সব ডেটা `metadata` এর ভেতরে ঢোকানো হচ্ছে, ডেটাবেস স্কিমা অনুযায়ী
       const finalPayload = {
         eventId,
-        couponCode: couponStatus === "success" ? couponCode : null,
+        couponCode: couponStatus === "success" ? couponCode.toUpperCase() : null,
         metadata: {
           commonDetails: formData,
           teamInfo: eventType === "team" ? { baseMembers, extraMembers } : null,
@@ -160,13 +161,24 @@ export default function DynamicRegistrationForm({
             : null,
       };
 
-      console.log(
-        "Submitting to DB (Metadata Pattern):",
-        JSON.stringify(finalPayload, null, 2),
-      );
+      console.log("Final Payload to Submit:",finalPayload);
 
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      alert("Registration Successful!");
+      const { status, response } = await honoFetch("/api/registrations/event", {
+        method: "POST",
+        body: JSON.stringify(finalPayload),
+      });
+      const responseData = response as { message?: string; success?: boolean };
+      
+      if (status !== 200 || !responseData.success) {
+        alert(
+          responseData?.message ||
+            "Registration failed. Please check your details and try again.",
+        );
+        return;
+      }
+
+      alert("Registration successful!");
+      console.log("API Success Response:", response);
 
       // Reset
       setIsOpen(false);
@@ -181,7 +193,7 @@ export default function DynamicRegistrationForm({
         })),
       );
       setExtraMembers([]);
-      setPaymentData({ transactionId: "", senderNumber: "" });
+      setPaymentData({ transactionId: "", senderNumber: ""});
       setImagePreviews({});
       setCouponCode("");
       setDiscountAmount(0);
@@ -656,7 +668,7 @@ export default function DynamicRegistrationForm({
                         </div>
                       </>
                     ) : (
-                      <div className="text-center py-8">
+                      <div className="text-center py-8 animate-pulse">
                         <div className="text-green-500 text-6xl mb-4">🎉</div>
                         <p className="font-black text-3xl text-green-600">
                           100% Free Registration!
@@ -690,6 +702,7 @@ export default function DynamicRegistrationForm({
                           className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                         />
                       </div>
+                   
 
                       <div className="flex flex-col space-y-2">
                         <label className="text-sm font-bold text-gray-700">

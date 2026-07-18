@@ -101,7 +101,7 @@ export async function EventDetailsContent({event}:{event: GetEventValues}) {
   return (
     <div className="container mx-auto max-w-6xl pb-16">
       {/* Hero Section */}
-      <div className="relative mt-8 overflow-hidden rounded-3xl border bg-background shadow-lg sm:mt-10">
+      <div className="relative mt-8 overflow-hidden rounded-xl border bg-background shadow-lg sm:mt-10">
         <div className="relative aspect-video w-full sm:aspect-21/9">
           {event.coverImage ? (
             <Image
@@ -114,7 +114,7 @@ export async function EventDetailsContent({event}:{event: GetEventValues}) {
             />
           ) : (
             <div
-              className={`absolute inset-0 bg-linear-to-br ${accent.cover} opacity-90`}
+              className={`absolute inset-0 bg-linear-to-br ${accent.cover} opacity-80`}
             />
           )}
 
@@ -123,7 +123,7 @@ export async function EventDetailsContent({event}:{event: GetEventValues}) {
 
           {/* Hero Content */}
           <div className="absolute inset-x-0 bottom-0 flex flex-col justify-end p-6 sm:p-10">
-            <div className="mb-4 flex flex-wrap items-center gap-3">
+            <div className="mb-2 flex flex-wrap items-center gap-2">
               <Badge
                 variant="outline"
                 className={`border backdrop-blur-md px-3 py-1 ${accent.chip}`}
@@ -151,7 +151,7 @@ export async function EventDetailsContent({event}:{event: GetEventValues}) {
               )}
             </div>
 
-            <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl max-w-4xl">
+            <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-xl md:text-6xl max-w-4xl">
               {event.title}
             </h1>
           </div>
@@ -165,8 +165,8 @@ export async function EventDetailsContent({event}:{event: GetEventValues}) {
           {/* About Section */}
           <section>
             <div className="flex items-center gap-2 mb-4">
-              <Info className="h-5 w-5 text-muted-foreground" />
-              <h2 className="text-xl font-bold tracking-tight">
+              <Info className="h-5 w-5 text-orange-500" />
+              <h2 className="text-xl font-bold tracking-tight text-orange-400">
                 About this event
               </h2>
             </div>
