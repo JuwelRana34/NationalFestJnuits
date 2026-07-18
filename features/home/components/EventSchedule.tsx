@@ -64,7 +64,7 @@ export default function EventSchedule() {
   const [activeDay, setActiveDay] = useState<1 | 2>(1);
 
   return (
-    <section className="relative min-h-screen bg-background text-foreground py-16 px-4 sm:px-6 lg:px-8 font-sans">
+    <section className="relative min-h-screen bg-background text-black py-16 px-4 sm:px-6 lg:px-8 font-['Inter',sans-serif]">
       {/* Grid background */}
       <div className="absolute inset-0 z-0 bg-[linear-gradient(to_right,hsl(var(--border))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border))_1px,transparent_1px)] bg-[length:3rem_3rem] opacity-30 pointer-events-none" />
 

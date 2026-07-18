@@ -18,7 +18,7 @@ export default function JnUITFestLanding() {
       {/* <EventSchedule /> */}
       <SpeakersJudges isComingSoon={true} isShowMore={true} />
       <Suspense fallback={<div>Loading Campus Ambassador Program...</div>}>
-      <CampusAmbassadorList />
+        <CampusAmbassadorList />
       </Suspense>
       {/* Footer */}
       <footer className="bg-slate-950 text-slate-300 py-12 px-6 md:px-12 border-t border-slate-800">
@@ -58,7 +58,6 @@ export default function JnUITFestLanding() {
                   Speakers
                 </Link>
               </li>
-         
             </ul>
           </div>
 
@@ -88,7 +87,7 @@ export default function JnUITFestLanding() {
               <div className="absolute inset-0 border border-transparent group-hover:border-indigo-500/30 rounded-xl transition-colors pointer-events-none z-10"></div>
 
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3652.8778401309855!2d90.40879551543118!3d23.714322494639913!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755b900084f938f%3A0xc6c78e11e3b679!2sJagannath%20University!5e0!3m2!1sen!2sbd!4v1700000000000!5m2!1sen!2sbd"
+                src="https://www.google.com/maps/dir//Jagannath+University+IT+Society,+9,+10+Chittaranjan+Ave,+Dhaka+1100/@23.7207552,90.4167424,14z/data=!4m8!4m7!1m0!1m5!1m1!1s0x3755b9072c00d493:0x4c7a9385bc430a6f!2m2!1d90.4108982!2d23.7090019?entry=ttu&g_ep=EgoyMDI2MDgwNS4xIKXMDSoASAFQAw%3D%3D"
                 width="100%"
                 height="100%"
                 style={{
@@ -107,8 +106,7 @@ export default function JnUITFestLanding() {
 
         {/* Footer Bottom */}
         <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-slate-800 text-sm text-center text-slate-500">
-          &copy; 2026 Jagannath University IT Society. All
-          rights reserved.
+          &copy; 2026 Jagannath University IT Society. All rights reserved.
         </div>
       </footer>
     </div>

@@ -124,7 +124,7 @@ export default function SpeakersJudges({
       {isShowMore && (
         <div>
           <Link href="/speakers" className="flex justify-center mt-8">
-            <Button className='bg-indigo-500 '> Show More </Button>
+            <Button className="bg-indigo-500 "> Show More </Button>
           </Link>
         </div>
       )}
