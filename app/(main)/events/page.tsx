@@ -17,7 +17,6 @@ const {status, response} = await honoFetch<{ success: boolean; data: GetEventVal
 );
 
  if (status === 200 && response) {
-  console.log(response.data);
   eventData = response.data;
  }
 }catch (error) {

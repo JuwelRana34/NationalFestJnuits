@@ -12,10 +12,10 @@ export const AnimatedItem = dynamic(
   { ssr: false },
 );
 
-export const HeroSection = dynamic(
-  () => import("@/features/home/components/HeroSection"),
-  { ssr: false },
-);
+// export const HeroSection = dynamic(
+//   () => import("@/features/home/components/HeroSection"),
+//   { ssr: false },
+// );
 
 export const About = dynamic(
   () => import("@/features/home/components/AboutSection"),
@@ -42,9 +42,12 @@ export const CouponForm = dynamic(
   { ssr: false },
 );
 
-export const Navbar = dynamic(() => import("@/components/custom/navbar"), {
-  ssr: false,
-});
+export const Navbar = dynamic(
+  () => import("@/components/custom/navbar/navbar"),
+  {
+    ssr: false,
+  },
+);
 
 // export const Events = dynamic(
 //   () => import("@/features/Events/components/Events"),

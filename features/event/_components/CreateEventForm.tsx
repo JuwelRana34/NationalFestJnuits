@@ -239,7 +239,7 @@ export default function EventForm({ initialData }: EventFormProps) {
             ? "Event updated successfully!"
             : "Event created successfully!",
         );
-        await revalidateEvents();
+        await revalidateEvents(initialData?.slug);
 
       } else {
         alert("Failed to save event.");

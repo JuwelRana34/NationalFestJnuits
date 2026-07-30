@@ -1,9 +1,10 @@
-import { EventDetailsContent } from "@/features/event/_components/EventDetailsContent";
-import { GetEventValues } from "@/features/event/types";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
+import {
+  EventDetailsContent,
+  EventDetailsSkeleton,
+} from "@/features/event/_components/EventDetailsContent";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 type Props = {
   params: Promise<{
@@ -11,45 +12,22 @@ type Props = {
   }>;
 };
 
-export default async function EventDetailsPage({ params }: Props) {
-  const { slug } = await params;
-  const { env } = await getCloudflareContext();
-  console.log("Cloudflare Environment Variables:", env);
-  const res = await fetch(`${env.API_URL}/api/events/${slug}`, {
-    next: { revalidate: 3600 },
-  });
-
-
-  if (!res.ok) {
-    return notFound();
-  }
-
-  const { data } = (await res.json()) as {
-    success: boolean;
-    data: GetEventValues;
-  };
-
-  if (!data) {
-    return notFound();
-  }
-
-  const event = data ?? null;
-
-  if (!event) {
-    notFound();
-  }
-
+// 🎯 এটি আর async ফাংশন থাকবে না!
+export default function EventDetailsPage({ params }: Props) {
   return (
     <main className="container mx-auto max-w-5xl px-6 py-10 mt-16">
       <Link
         href="/events"
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition hover:text-foreground"
+        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition hover:text-foreground mb-6"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to Events
       </Link>
 
-      <EventDetailsContent event={data} />
+      {/* 🎯 params প্রমিসটিকে সরাসরি চাইল্ড কম্পোনেন্টে পাস করে দিচ্ছি */}
+      <Suspense fallback={<EventDetailsSkeleton />}>
+        <EventDetailsContent params={params} />
+      </Suspense>
     </main>
   );
 }

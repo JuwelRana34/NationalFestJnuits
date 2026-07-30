@@ -3,23 +3,21 @@ import { Calendar, Clock, Info, MapPin, Wallet } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
-// Assuming you have these shadcn/ui components installed.
-// If not, run: npx shadcn-ui@latest add card badge separator skeleton
+import MarkdownRenderer from "@/components/custom/MarkdownRenderer";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDate, formatTime } from "@/lib/DateAndTimeFormater";
-import { honoFetch } from "@/lib/hono-client";
+import { fetchSingleEvent } from "@/features/event/_components/actions";
 import { GetEventValues } from "../types";
-import MarkdownRenderer from "@/components/custom/MarkdownRenderer";
+
 
 type Props = {
   params: Promise<{
     slug: string;
   }>;
 };
-
 // Polished accent system with refined opacities and vivid gradients
 const ACCENTS = [
   {
@@ -75,8 +73,18 @@ function countdownLabel(daysLeft: number) {
   return `${daysLeft} days left to register`;
 }
 
-export async function EventDetailsContent({event}:{event: GetEventValues}) {
-  
+
+
+export async function EventDetailsContent({ params }: Props) {
+  const { slug } = await params;
+  const { data, success } = await fetchSingleEvent(slug);
+  const eventData = data ?? null;
+
+  if (!success || !eventData) {
+    notFound();
+  }
+
+  const event: GetEventValues = eventData;
   const accent = getAccent(event.slug ?? event.title);
   const daysLeft = event.deadline ? getDaysLeft(event.deadline) : null;
   const showCountdown = event.isActive && daysLeft !== null && daysLeft >= 0;
@@ -170,9 +178,9 @@ export async function EventDetailsContent({event}:{event: GetEventValues}) {
                 About this event
               </h2>
             </div>
-            <p className="leading-relaxed text-muted-foreground md:text-lg">
+            <div className="leading-relaxed text-muted-foreground md:text-lg">
               <MarkdownRenderer content={event.description} />
-            </p>
+            </div>
           </section>
 
           {/* Details Grid */}

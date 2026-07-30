@@ -1,10 +1,10 @@
 import {
   EventSchedule,
-  HeroSection,
   Segments,
   SpeakersJudges,
 } from "@/components/custom/DynamicMotion";
 import About from "@/features/home/components/AboutSection";
+import HeroSection from "@/features/home/components/HeroSection";
 
 export default function JnUITFestLanding() {
   return (

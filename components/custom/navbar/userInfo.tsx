@@ -3,16 +3,23 @@
 import { useAuth } from "@/hooks/useUserSession";
 import Image from "next/image";
 import Link from "next/link";
-import { Skeleton } from "../ui/skeleton";
-import LogoutButton from "./logout";
+import { useEffect } from "react";
+import LogoutButton from "../logout";
 
 export default function UserMenu() {
   const { user, isLoading } = useAuth();
-  if (isLoading) {
-    return (
-      <Skeleton className="h-12 w-12 rounded-full ring-1 ring-cyan-500 shadow-2xl shadow-violet-500" />
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <Skeleton className="h-12 w-12 rounded-full ring-1 ring-cyan-500 shadow-2xl shadow-violet-500" />
+  //   );
+  // }
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      localStorage.removeItem("is_logged_in");
+      window.location.reload();
+    }
+  }, [user, isLoading]);
 
   return (
     <div className="flex items-center gap-4">
