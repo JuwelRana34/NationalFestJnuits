@@ -1,6 +1,6 @@
 import { honoFetch } from "@/lib/hono-client";
 import { GetEventValues } from "../types";
-import { cacheLife, cacheTag } from "next/cache";
+import { cacheLife,revalidateTag } from "next/cache";
 
 // আমাদের ফাংশন যেটা রিটার্ন করবে
 interface Event {
@@ -19,7 +19,7 @@ export const fetchSingleEvent = async (slug: string): Promise<Event> => {
 
     "use cache";  
     cacheLife("hours");
-    cacheTag(`event-${slug}`); 
+    revalidateTag(`event-${slug}`,'max'); 
 
   const { response, status } = await honoFetch<ApiResponse>(
     `/api/events/${slug}`,

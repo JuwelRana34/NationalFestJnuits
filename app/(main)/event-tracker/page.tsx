@@ -22,6 +22,7 @@ import { toast } from "sonner";
 import { formatDate, formatTime } from "@/lib/DateAndTimeFormater";
 import DynamicSubmissionForm from "@/features/event/_components/ProjectSubmission";
 import { FormField } from "@/features/event/types";
+import { honoFetch } from "@/lib/hono-client";
 
 // সাবমিশন ফর্ম কম্পোনেন্টটি ইম্পোর্ট করুন (আপনার পাথ অনুযায়ী ঠিক করে নেবেন)
 ;
@@ -49,7 +50,11 @@ interface TrackingResult {
   isSubmissionOpen: boolean;
   submissionSchema: FormField[];
 }
-
+interface ApiResponse<T> {
+  success: boolean;
+  message?: string;
+  data: T;
+}
 export default function EventTrackerPage() {
   const [trackingId, setTrackingId] = useState("");
   const [result, setResult] = useState<TrackingResult | null>(null);
@@ -69,74 +74,30 @@ export default function EventTrackerPage() {
       setSearched(false);
 
       try {
-        // ডেমো API রেসপন্স (টেস্টিং এর জন্য)
-        const mockResponse = await new Promise<{
-          success: boolean;
-          data?: TrackingResult;
-        }>((resolve) => {
-          setTimeout(() => {
-            // "TRK-12345" দিলে সাকসেস দেখাবে এবং সাবমিশন ফর্ম ওপেন হবে
-            if (cleanId === "TRK-12345") {
-              resolve({
-                success: true,
-                data: {
-                  eventId: "evt_001",
-                  trackingNumber: "TRK-12345",
-                  category: "UNIVERSITY",
-                  selectionStatus: "APPROVED", // স্ট্যাটাস সিলেক্টেড থাকলেই সাবমিট করতে পারবে
-                  segment: {
-                    title: "National AI & IT Summit 2026",
-                    type: "Hackathon",
-                    date: "2026-10-08",
-                    time: "10:00 AM",
-                    venue: "Jagannath University",
-                  },
-                  user: {
-                    name: "Md. Juwel Rana",
-                    phone: "017XXXXXXXX",
-                  },
-                  // সাবমিশন কনফিগারেশন
-                  isSubmissionRequired: true,
-                  isSubmissionOpen: true, // এটি false থাকলে ফর্ম দেখাবে না
-                  submissionSchema: [
-                    {
-                      id: "github_repo",
-                      label: "GitHub Repository Link",
-                      type: "url",
-                      required: true,
-                    },
-                    {
-                      id: "pitch_deck",
-                      label: "Pitch Deck (PDF)",
-                      type: "file",
-                      required: true,
-                    },
-                    {
-                      id: "project_desc",
-                      label: "Short Description",
-                      type: "text",
-                      required: true,
-                    },
-                  ],
-                },
-              });
-            } else {
-              resolve({ success: false });
-            }
-          }, 1500);
-        });
+        // 🎯 any এর পরিবর্তে ApiResponse<TrackingResult> ব্যবহার করা হলো
+        const res = await honoFetch<ApiResponse<TrackingResult>>(
+          `api/events/tracking/${cleanId}`,
+          {
+            method: "GET",
+          },
+        );
 
-        // রেসপন্স অনুযায়ী স্টেট আপডেট
-        if (mockResponse.success && mockResponse.data) {
-          setResult(mockResponse.data);
+        console.log("Tracking API Response:", res);
+
+        if (res.status === 200 && res.response?.success && res.response?.data) {
+          setResult(res.response.data);
           toast.success("Event details found!");
         } else {
-          toast.error("No event found with this tracking ID.");
+          toast.error(
+            res.response?.message || "No event found with this tracking ID.",
+          );
         }
 
         setSearched(true);
       } catch (error) {
+        console.error("Tracking fetch error:", error);
         toast.error("An error occurred while fetching the event status.");
+        setSearched(true);
       }
     });
   };
@@ -270,7 +231,7 @@ export default function EventTrackerPage() {
                         </p>
                         <p className="text-foreground font-medium mt-0.5">
                           {formatDate(result.segment.date)} at{" "}
-                          {formatTime(result.segment.time)}
+                          {formatTime(result.segment.date)}
                         </p>
                       </div>
                     </div>
@@ -347,7 +308,11 @@ export default function EventTrackerPage() {
                   <h3 className="text-lg font-semibold border-b pb-2">
                     Current Status
                   </h3>
-                  <div className={` ${result.selectionStatus === "APPROVED"? "bg-green-100" :"bg-red-100" } rounded-2xl p-6 flex flex-col items-center justify-center text-center h-[calc(100%-3rem)] border border-border/50`}>
+                  <div className={` ${result.selectionStatus === "APPROVED"? "bg-green-100" :
+                  
+                  `${result.selectionStatus === "REJECTED" ? "bg-red-100" : "bg-orange-50" }` 
+                
+                } rounded-2xl p-6 flex flex-col items-center justify-center text-center h-[calc(100%-3rem)] border border-border/50`}>
                     <span
                       className={`inline-flex items-center rounded-full border px-4 py-1.5 font-medium mb-3 ${getStatusInfo(result.selectionStatus).color}`}
                     >
