@@ -1,10 +1,8 @@
-import {
-  EventDetailsContent,
-  EventDetailsSkeleton,
-} from "@/features/event/_components/EventDetailsContent";
+import { fetchSingleEvent } from "@/features/event/_components/actions";
+import { EventDetailsContent } from "@/features/event/_components/EventDetailsContent";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { Suspense } from "react";
+import { notFound } from "next/navigation";
 
 type Props = {
   params: Promise<{
@@ -14,7 +12,14 @@ type Props = {
 
 // 🎯 এটি আর async ফাংশন থাকবে না!
 export default async function EventDetailsPage({ params }: Props) {
-const {slug} = await params
+  const { slug } = await params;
+
+  const { data, success } = await fetchSingleEvent(slug);
+  const eventData = data ?? null;
+
+  if (!success || !eventData) {
+    notFound();
+  }
 
   return (
     <main className="container mx-auto max-w-5xl px-6 py-10 mt-16">
@@ -26,10 +31,7 @@ const {slug} = await params
         Back to Events
       </Link>
 
-      {/* 🎯 params প্রমিসটিকে সরাসরি চাইল্ড কম্পোনেন্টে পাস করে দিচ্ছি */}
-      <Suspense fallback={<EventDetailsSkeleton />}>
-        <EventDetailsContent slug={slug} />
-      </Suspense>
+      <EventDetailsContent eventData={data} />
     </main>
   );
 }

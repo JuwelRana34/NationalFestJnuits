@@ -1,7 +1,6 @@
 import DynamicRegistrationForm from "@/features/event/_components/DynamicRegistrationForm";
 import { Calendar, Clock, Info, MapPin, Wallet } from "lucide-react";
 import Image from "next/image";
-import { notFound } from "next/navigation";
 
 import MarkdownRenderer from "@/components/custom/MarkdownRenderer";
 import { Badge } from "@/components/ui/badge";
@@ -9,12 +8,10 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDate, formatTime } from "@/lib/DateAndTimeFormater";
-import { fetchSingleEvent } from "@/features/event/_components/actions";
 import { GetEventValues } from "../types";
 
-
 type Props = {
-  slug: string;
+  eventData: GetEventValues | null;
 };
 // Polished accent system with refined opacities and vivid gradients
 const ACCENTS = [
@@ -71,17 +68,10 @@ function countdownLabel(daysLeft: number) {
   return `${daysLeft} days left to register`;
 }
 
+export async function EventDetailsContent({ eventData }: Props) {
+  if (!eventData) return null;
+  const event = eventData;
 
-
-export async function EventDetailsContent({ slug }: Props) {
-  const { data, success } = await fetchSingleEvent(slug);
-  const eventData = data ?? null;
-
-  if (!success || !eventData) {
-    notFound();
-  }
-
-  const event: GetEventValues = eventData;
   const accent = getAccent(event.slug ?? event.title);
   const daysLeft = event.deadline ? getDaysLeft(event.deadline) : null;
   const showCountdown = event.isActive && daysLeft !== null && daysLeft >= 0;
