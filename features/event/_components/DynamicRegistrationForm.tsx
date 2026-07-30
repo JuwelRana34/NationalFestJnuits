@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { FormField } from "../types";
 import { honoFetch } from "@/lib/hono-client";
+import { submitEventRegistration } from "@/actions/registrationActions";
 
 interface Props {
   eventId: string;
@@ -138,15 +139,84 @@ export default function DynamicRegistrationForm({
     }
   };
 
+  // const handleFinalSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setIsSubmitting(true);
+
+  //   try {
+  //     // সব ডেটা `metadata` এর ভেতরে ঢোকানো হচ্ছে, ডেটাবেস স্কিমা অনুযায়ী
+  //     const finalPayload = {
+  //       eventId,
+  //       couponCode: couponStatus === "success" ? couponCode.toUpperCase() : null,
+  //       metadata: {
+  //         commonDetails: formData,
+  //         teamInfo: eventType === "team" ? { baseMembers, extraMembers } : null,
+  //       },
+  //       paymentInfo:
+  //         totalPayable > 0
+  //           ? {
+  //               ...paymentData,
+  //               baseAmount: subTotal,
+  //               paidAmount: totalPayable,
+  //             }
+  //           : null,
+  //     };
+
+  //     console.log("Final Payload to Submit:",finalPayload);
+
+  //     const { status, response } = await honoFetch("/api/registrations/event", {
+  //       method: "POST",
+  //       body: JSON.stringify(finalPayload),
+  //     });
+  //     const responseData = response as { message?: string; success?: boolean };
+      
+  //     if (status !== 200 || !responseData.success) {
+  //       alert(
+  //         responseData?.message ||
+  //           "Registration failed. Please check your details and try again.",
+  //       );
+  //       return;
+  //     }
+
+  //     alert("Registration successful!");
+  //     console.log("API Success Response:", response);
+
+  //     // Reset
+  //     setIsOpen(false);
+  //     setStep(1);
+  //     setFormData({});
+  //     setBaseMembers(
+  //       Array.from({ length: eventType === "team" ? baseTeamSize : 0 }, () => ({
+  //         name: "",
+  //         email: "",
+  //         phone: "",
+  //         studentId: "",
+  //       })),
+  //     );
+  //     setExtraMembers([]);
+  //     setPaymentData({ transactionId: "", senderNumber: ""});
+  //     setImagePreviews({});
+  //     setCouponCode("");
+  //     setDiscountAmount(0);
+  //     setCouponStatus("idle");
+  //   } catch (error) {
+  //     alert("Something went wrong!");
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
+
+
   const handleFinalSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
-      // সব ডেটা `metadata` এর ভেতরে ঢোকানো হচ্ছে, ডেটাবেস স্কিমা অনুযায়ী
+      // সব ডেটা `metadata` এর ভেতরে গোছানো হচ্ছে
       const finalPayload = {
         eventId,
-        couponCode: couponStatus === "success" ? couponCode.toUpperCase() : null,
+        couponCode:
+          couponStatus === "success" ? couponCode.toUpperCase() : null,
         metadata: {
           commonDetails: formData,
           teamInfo: eventType === "team" ? { baseMembers, extraMembers } : null,
@@ -161,26 +231,20 @@ export default function DynamicRegistrationForm({
             : null,
       };
 
-      console.log("Final Payload to Submit:",finalPayload);
+      console.log("Final Payload to Submit via Server Action:", finalPayload);
 
-      const { status, response } = await honoFetch("/api/registrations/event", {
-        method: "POST",
-        body: JSON.stringify(finalPayload),
-      });
-      const responseData = response as { message?: string; success?: boolean };
-      
-      if (status !== 200 || !responseData.success) {
-        alert(
-          responseData?.message ||
-            "Registration failed. Please check your details and try again.",
-        );
+      // 🎯 ডাইরেক্ট Hono API কল বাদ দিয়ে এখন সার্ভার অ্যাকশন কল করা হচ্ছে
+      const result = await submitEventRegistration(finalPayload);
+
+      if (!result.success) {
+        alert(result.message);
         return;
       }
 
-      alert("Registration successful!");
-      console.log("API Success Response:", response);
+      alert(result.message);
+      console.log("API Success Response:", result.data);
 
-      // Reset
+      // Reset Form State
       setIsOpen(false);
       setStep(1);
       setFormData({});
@@ -193,12 +257,13 @@ export default function DynamicRegistrationForm({
         })),
       );
       setExtraMembers([]);
-      setPaymentData({ transactionId: "", senderNumber: ""});
+      setPaymentData({ transactionId: "", senderNumber: "" });
       setImagePreviews({});
       setCouponCode("");
       setDiscountAmount(0);
       setCouponStatus("idle");
     } catch (error) {
+      console.error(error);
       alert("Something went wrong!");
     } finally {
       setIsSubmitting(false);

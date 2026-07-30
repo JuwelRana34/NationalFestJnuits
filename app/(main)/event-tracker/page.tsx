@@ -148,7 +148,7 @@ export default function EventTrackerPage() {
           color:
             "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20",
           icon: <CheckCircle2 size={16} className="mr-1.5" />,
-          label: "APPROVED & Approved",
+          label: "APPROVED",
         };
       case "REJECTED":
         return {
@@ -347,7 +347,7 @@ export default function EventTrackerPage() {
                   <h3 className="text-lg font-semibold border-b pb-2">
                     Current Status
                   </h3>
-                  <div className="bg-muted/50 rounded-2xl p-6 flex flex-col items-center justify-center text-center h-[calc(100%-3rem)] border border-border/50">
+                  <div className={` ${result.selectionStatus === "APPROVED"? "bg-green-100" :"bg-red-100" } rounded-2xl p-6 flex flex-col items-center justify-center text-center h-[calc(100%-3rem)] border border-border/50`}>
                     <span
                       className={`inline-flex items-center rounded-full border px-4 py-1.5 font-medium mb-3 ${getStatusInfo(result.selectionStatus).color}`}
                     >

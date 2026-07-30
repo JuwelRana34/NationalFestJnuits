@@ -23,6 +23,7 @@ export default function DashboardOverviewPage() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  console.log("dashboard data:", data);
   // ২. API কল (useEffect এর ভেতরে)
   useEffect(() => {
     async function fetchDashboard() {
@@ -271,7 +272,7 @@ export default function DashboardOverviewPage() {
                   verifications require attention.
                 </p>
                 <Link
-                  href="/admin/payments"
+                  href="/admin/registrations"
                   className="text-xs font-medium text-orange-600 hover:text-orange-700 mt-2 inline-block"
                 >
                   Review now &rarr;

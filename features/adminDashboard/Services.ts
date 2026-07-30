@@ -6,7 +6,7 @@ import { cacheLife, cacheTag } from "next/cache";
 
 const FetchDashboardData = async () => {
   "use cache";
-  cacheLife("days");
+  cacheLife("hours");
   cacheTag("dashboard-data");
 
   const { status, response } = await honoFetch<{
