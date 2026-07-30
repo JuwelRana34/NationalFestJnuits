@@ -13,7 +13,9 @@ type Props = {
 };
 
 // 🎯 এটি আর async ফাংশন থাকবে না!
-export default function EventDetailsPage({ params }: Props) {
+export default async function EventDetailsPage({ params }: Props) {
+const {slug} = await params
+
   return (
     <main className="container mx-auto max-w-5xl px-6 py-10 mt-16">
       <Link
@@ -26,7 +28,7 @@ export default function EventDetailsPage({ params }: Props) {
 
       {/* 🎯 params প্রমিসটিকে সরাসরি চাইল্ড কম্পোনেন্টে পাস করে দিচ্ছি */}
       <Suspense fallback={<EventDetailsSkeleton />}>
-        <EventDetailsContent params={params} />
+        <EventDetailsContent slug={slug} />
       </Suspense>
     </main>
   );

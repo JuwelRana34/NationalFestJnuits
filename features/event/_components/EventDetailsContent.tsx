@@ -14,9 +14,7 @@ import { GetEventValues } from "../types";
 
 
 type Props = {
-  params: Promise<{
-    slug: string;
-  }>;
+  slug: string;
 };
 // Polished accent system with refined opacities and vivid gradients
 const ACCENTS = [
@@ -75,8 +73,7 @@ function countdownLabel(daysLeft: number) {
 
 
 
-export async function EventDetailsContent({ params }: Props) {
-  const { slug } = await params;
+export async function EventDetailsContent({ slug }: Props) {
   const { data, success } = await fetchSingleEvent(slug);
   const eventData = data ?? null;
 
