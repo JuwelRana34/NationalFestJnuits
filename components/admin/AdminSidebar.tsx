@@ -3,35 +3,11 @@
 import { DashboardNavItems } from "@/app/constant/data";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import {
-  FileText,
-  LayoutDashboard,
-  LogOut,
-  TicketPercent,
-  Users,
-} from "lucide-react";
+import { LogOut } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { Suspense } from "react";
+import { Suspense } from "react";
 
-interface NavItem {
-  icon: React.ReactNode;
-  label: string;
-  href: string;
-}
-
-// const navItems: NavItem[] = [
-//   { icon: <LayoutDashboard size={20} />, label: "Dashboard", href: "/admin" },
-//   { icon: <Users size={20} />, label: "Users", href: "/admin/users" },
-//   { icon: <FileText size={20} />, label: "Events", href: "/admin/events" },
-//   {
-//     icon: <TicketPercent size={20} />,
-//     label: "Coupons",
-//     href: "/admin/coupon",
-//   },
-// ];
-
-// Inner component handling the dynamic routing
 function AdminSidebarInner() {
   const pathname = usePathname();
 
@@ -56,7 +32,7 @@ function AdminSidebarInner() {
                 "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
                 isActive
                   ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                  : "text-muted-foreground hover:text-primary hover:bg-primary/16",
               )}
             >
               {/* {item.icon} */}

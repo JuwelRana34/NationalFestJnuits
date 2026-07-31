@@ -47,6 +47,10 @@ export const DashboardNavItems = [
     title: "Registration Management",
     Path: "/admin/registrations",
   },
+  {
+    title: "User Management",
+    Path: "/admin/UserManagement",
+  },
 ];
 
 // export const demoEvents: GetEventValues[] = [

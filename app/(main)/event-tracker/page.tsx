@@ -129,7 +129,7 @@ export default function EventTrackerPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background pt-20 pb-20">
+    <div className="min-h-screen bg-background  pb-20">
       <div className="container max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {/* Header */}
         <div className="text-center mb-10 sm:mb-12">
@@ -142,7 +142,7 @@ export default function EventTrackerPage() {
         </div>
 
         {/* Search Box */}
-        <div className="bg-card border border-border rounded-2xl sm:rounded-3xl p-3 sm:p-5 shadow-sm mb-10 max-w-2xl mx-auto relative z-10 transition-all hover:shadow-md">
+        <div className="bg-card  rounded-2xl sm:rounded-3xl p-3 sm:p-5 shadow-sm mb-10 max-w-2xl mx-auto relative z-10 transition-all hover:shadow-md">
           <div className="flex flex-col sm:flex-row gap-3">
             <input
               type="text"
@@ -150,7 +150,7 @@ export default function EventTrackerPage() {
               value={trackingId}
               onChange={(e) => setTrackingId(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-              className="flex-1 h-12 sm:h-14 rounded-xl border border-input bg-background px-4 sm:px-5 text-foreground outline-none focus:ring-2 focus:ring-primary transition-all uppercase"
+              className="flex-1 p-4  rounded-xl  border-input bg-background px-4  text-foreground outline-none focus:ring-2 focus:ring-primary transition-all uppercase"
             />
             <button
               onClick={handleSearch}
@@ -184,10 +184,10 @@ export default function EventTrackerPage() {
 
         {/* Result Card */}
         {result && (
-          <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-lg shadow-primary/5 transition-all animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="bg-card  rounded-3xl overflow-hidden shadow-lg shadow-primary/5 transition-all animate-in fade-in slide-in-from-bottom-4 duration-500">
             {/* Card Header */}
-            <div className="bg-linear-to-br from-primary/90 to-primary p-6 sm:p-8 relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-8 opacity-10">
+            <div className="bg-linear-to-br from-primary/70 to-primary p-6 sm:p-8 relative overflow-hidden">
+              <div className="absolute top-0 right-32 p-8 opacity-10">
                 <LayoutGrid size={120} />
               </div>
               <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -204,7 +204,7 @@ export default function EventTrackerPage() {
                   <p className="text-white/70 text-xs font-medium uppercase tracking-wider mb-1">
                     Tracking ID
                   </p>
-                  <p className="text-xl font-mono font-bold tracking-tight uppercase">
+                  <p className="text-xl text-slate-800 font-mono font-bold tracking-tight uppercase">
                     {result.trackingNumber}
                   </p>
                 </div>

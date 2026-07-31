@@ -1,36 +1,12 @@
 "use client";
 
+import { DashboardNavItems } from "@/app/constant/data";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import {
-  FileText,
-  LayoutDashboard,
-  LogOut,
-  Menu,
-  TicketPercent,
-  Users,
-  X,
-} from "lucide-react";
+import { LogOut, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { Suspense, useState } from "react";
-
-interface NavItem {
-  icon: React.ReactNode;
-  label: string;
-  href: string;
-}
-
-const navItems: NavItem[] = [
-  { icon: <LayoutDashboard size={18} />, label: "Dashboard", href: "/admin" },
-  { icon: <Users size={18} />, label: "Users", href: "/admin/users" },
-  { icon: <FileText size={18} />, label: "Events", href: "/admin/events" },
-  {
-    icon: <TicketPercent size={20} />,
-    label: "Coupons",
-    href: "/admin/coupon",
-  },
-];
+import { Suspense, useState } from "react";
 
 // Inner component handling the dynamic routing and state
 function AdminNavbarInner() {
@@ -58,22 +34,21 @@ function AdminNavbarInner() {
       {isOpen && (
         <div className="border-t bg-background shadow-lg">
           <div className="space-y-1 p-4 max-h-[calc(100vh-4rem)] overflow-y-auto">
-            {navItems.map((item) => {
-              const isActive = pathname === item.href;
+            {DashboardNavItems.map((item) => {
+              const isActive = pathname === item.Path;
               return (
                 <Link
-                  key={item.href}
-                  href={item.href}
+                  key={item.Path}
+                  href={item.Path}
                   onClick={() => setIsOpen(false)}
                   className={cn(
                     "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
                     isActive
                       ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                      : "text-muted-foreground hover:text-primary hover:bg-primary/20",
                   )}
                 >
-                  {item.icon}
-                  <span className="text-sm font-medium">{item.label}</span>
+                  <span className="text-sm font-medium">{item.title}</span>
                 </Link>
               );
             })}
@@ -83,7 +58,7 @@ function AdminNavbarInner() {
 
               <Button
                 variant="ghost"
-                className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
+                className="w-full justify-start text-destructive hover:text-primary hover:bg-primary/10"
               >
                 <LogOut size={16} className="mr-2" />
                 Logout

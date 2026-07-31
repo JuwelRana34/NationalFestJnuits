@@ -197,16 +197,16 @@ export async function EventDetailsContent({ eventData }: Props) {
 
         {/* Right Column: Sticky Registration Ticket */}
         <div className="lg:col-span-1">
-          <Card className="sticky top-8 overflow-hidden shadow-xl border-border/50">
+          <Card className="sticky top-8 pt-0 overflow-hidden shadow-lg *:transition-all animate-in fade-in slide-in-from-bottom-4 duration-500 backdrop:blur-xl bg-white/5 ">
             {/* Soft decorative top border matching accent */}
             <div className={`h-1.5 w-full bg-linear-to-r ${accent.cover}`} />
 
-            <CardHeader className="pb-6">
+            <CardHeader className="pb-6 ">
               <div className="flex flex-col gap-1">
                 <span className="text-sm font-medium uppercase tracking-wider text-muted-foreground">
                   Registration Fee
                 </span>
-                <span className="text-4xl font-extrabold tracking-tight">
+                <span className="text-4xl font-extrabold tracking-tight text-primary">
                   {event.fee === 0 ? "Free" : `৳${event.fee}`}
                 </span>
               </div>

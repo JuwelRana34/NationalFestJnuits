@@ -1,11 +1,10 @@
 "use server";
 
-import { updateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 
 export async function revalidateEvents(slug?: string) {
-  updateTag("events");
-  if(slug){
-    updateTag(`event-${slug}`);
+  revalidateTag("events", "max");
+  if (slug) {
+    revalidateTag(`event-${slug}`, "max");
   }
-
 }
