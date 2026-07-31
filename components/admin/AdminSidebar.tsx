@@ -1,20 +1,22 @@
 "use client";
 
 import { DashboardNavItems } from "@/app/constant/data";
-import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useUserSession";
 import { cn } from "@/lib/utils";
-import { LogOut } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Suspense } from "react";
+import LogoutButton from "../custom/logout";
 
 function AdminSidebarInner() {
   const pathname = usePathname();
+  const { session, isLoading } = useAuth();
 
+  console.log("AdminSidebarInner session:", session);
   return (
-    <aside className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-64 lg:flex-col border-r bg-background">
+    <aside className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-64 lg:flex-col border-r border-slate-800 bg-background">
       {/* Header - Fixed the weird pt-26 class so it centers perfectly in the h-16 box */}
-      <div className="flex h-16 items-center justify-between border-b px-6">
+      <div className="flex h-16 items-center justify-between border-b border-slate-800 px-6">
         <Link href="/" className="text-xl font-bold tracking-tight">
           Admin Panel
         </Link>
@@ -43,15 +45,20 @@ function AdminSidebarInner() {
       </nav>
 
       {/* Footer */}
-      <div className="border-t p-4 space-y-2">
-        {/* FIXED: Using asChild to prevent rendering a <button> inside an <a> tag */}
-        <Button
-          variant="ghost"
-          className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
-        >
-          <LogOut size={18} className="mr-2" />
-          Logout
-        </Button>
+      <div className="border-t border-slate-800 p-4 space-y-2">
+        {session?.user && (
+          <>
+            <div className="text-sm text-slate-400">
+              <span className="font-medium text-primary">Logged in as:</span>
+              <h2> Email: {session?.user?.email || "Unknown User"} </h2>
+              <h2> User Name: {session?.user?.name || "Unknown ID"} </h2>
+              <h2 className="text-cyan-400">
+                Role: {session?.user?.role  || "Unknown Role"}
+              </h2>
+            </div>
+            <LogoutButton />
+          </>
+        )}
       </div>
     </aside>
   );

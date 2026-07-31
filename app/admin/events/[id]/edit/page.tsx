@@ -1,4 +1,3 @@
-
 import EventForm from "@/features/event/_components/CreateEventForm";
 import { GetEventValues } from "@/features/event/types";
 import { honoFetch } from "@/lib/hono-client";
@@ -18,7 +17,7 @@ export default async function EditEventPage({
 }
 
 async function FetchingData({ params }: { params: Promise<{ id: string }> }) {
-  // ১. প্রথমে params কে await করে id বের করে আনুন
+  
   const { id } = await params;
   console.log("Fetching event data for ID:", id);
   // ২. এবার সেই id দিয়ে API কল করুন
@@ -30,8 +29,6 @@ async function FetchingData({ params }: { params: Promise<{ id: string }> }) {
   if (status === 200 && response) {
     console.log("Got data successfully");
   }
-
-  console.log("Initial Data:", response);
 
   const initialData = response?.data;
 

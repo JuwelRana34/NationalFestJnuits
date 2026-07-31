@@ -84,6 +84,13 @@ export default function EventForm({ initialData }: EventFormProps) {
           responsible: [],
           registrationSchema: [
             { label: "Full Name", type: "text", required: true, options: "" },
+            {
+              label: "Email", type: "text", required: true, options: "" 
+            },
+            {
+              label: "Phone Number", type: "text", required: true, options: ""
+            }
+            
           ],
           isSubmissionOpen: false,
           submissionSchema: [],

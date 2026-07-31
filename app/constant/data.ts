@@ -24,10 +24,10 @@ export const NaveItems = [
     title: "events",
     Path: "/events",
   },
-  {
-    title: "Dashboard",
-    Path: "/admin",
-  },
+  // {
+  //   title: "Dashboard",
+  //   Path: "/admin",
+  // },
 ];
 
 export const DashboardNavItems = [

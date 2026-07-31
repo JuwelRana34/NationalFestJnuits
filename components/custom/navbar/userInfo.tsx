@@ -35,8 +35,8 @@ export default function UserMenu() {
               unoptimized
             />
           )}
-          <Link href="/dashboard" className="">
-            Profile
+          <Link href="/admin" className="">
+            Dashboard
           </Link>
           <div className="hidden md:block">
             <LogoutButton />{" "}

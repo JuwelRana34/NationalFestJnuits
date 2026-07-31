@@ -1,8 +1,8 @@
 export function generateSlug(title: string): string {
   return title
-    .toLowerCase() // ১. সবকিছু ছোট হাতের করবে
-    .trim() // ২. সামনে বা পেছনের অতিরিক্ত স্পেস মুছে ফেলবে
-    .replace(/[^\w\s-]/g, "") // ৩. স্পেশাল ক্যারেক্টার (%, &, @) রিমুভ করবে
-    .replace(/[\s_-]+/g, "-") // ৪. স্পেস বা আন্ডারস্কোর থাকলে সেগুলোকে হাইফেন (-) বানাবে
-    .replace(/^-+|-+$/g, ""); // ৫. শুরুতে বা শেষে কোনো হাইফেন থাকলে মুছে ফেলবে
+    .toLowerCase() 
+    .trim() 
+    .replace(/[^\w\s-]/g, "") 
+    .replace(/[\s_-]+/g, "-") 
+    .replace(/^-+|-+$/g, "");
 }
