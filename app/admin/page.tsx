@@ -1,4 +1,4 @@
-// app/admin/page.tsx (বা app/admin/dashboard/page.tsx)
+// app/admin/page.tsx
 import FetchDashboardData from "@/features/adminDashboard/Services";
 import { formatDistanceToNow } from "date-fns";
 import {
@@ -14,42 +14,42 @@ import {
   Lock,
 } from "lucide-react";
 import Link from "next/link";
-import { getFormattedCookies } from "@/lib/getCookie";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 
-// মেইন পেজ - কোনো Suspense নেই, সরাসরি async কম্পোনেন্ট (Route Blocking)
 export default async function DashboardOverviewPage() {
-  const cookie = await cookies();
-  const token = cookie
+  // ১. Next.js 15+ অনুযায়ী cookies() await করতে হবে
+  const cookieStore = await cookies();
+  const token = cookieStore
     .getAll()
     .map((c) => `${c.name}=${c.value}`)
     .join("; ");
-  console.log("Admin Dashboard Token:", token);
 
   // 💎 Premium Unauthorized State
-  if (!token) return redirect("/signin");
+  if (!token) {
+    redirect("/login");
+  }
 
+  // ২. API কল করা
   const { status, response } = await FetchDashboardData(token);
 
-  // 💎 Premium Error/Failed State
-  if (status !== 200 || !response?.success || !response.data) {
+  // ৩. ডাটা না পেলে বা এরর হলে Safe Error UI দেখানো (যাতে ক্র্যাশ না করে)
+  if (status !== 200 || !response?.success || !response?.data) {
     return (
       <div className="p-4 md:p-8 w-full max-w-7xl mx-auto min-h-screen">
         <div className="flex min-h-[80vh] items-center justify-center">
-          <div className="backdrop-blur-xl bg-red/10 p-8 rounded-2xl shadow-sm border border-red-500 max-w-md w-full text-center space-y-4 transition-all hover:shadow-md">
-            <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto">
+          <div className="backdrop-blur-xl bg-red-500/10 p-8 rounded-2xl shadow-sm border border-red-500 max-w-md w-full text-center space-y-4 transition-all hover:shadow-md">
+            <div className="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto">
               <Lock className="w-8 h-8" />
             </div>
-            <h2 className="text-2xl font-bold text-red-500">Access Denied!</h2>
-            <p className="text-gray-500 text-sm">
-              You do not have permission to view this dashboard. Please log in
-              with a valid administrator account.
+            <h2 className="text-2xl font-bold text-red-500">Access Denied or Error!</h2>
+            <p className="text-gray-400 text-sm">
+              Unable to load dashboard data. Please try again later or log in with a valid administrator account.
             </p>
             <div className="pt-4">
               <Link
                 href="/login"
-                className="inline-flex items-center justify-center px-6 py-2.5 bg-red-400 text-white font-medium rounded-xl hover:bg-red-700 transition-colors shadow-sm w-full sm:w-auto"
+                className="inline-flex items-center justify-center px-6 py-2.5 bg-red-500 text-white font-medium rounded-xl hover:bg-red-600 transition-colors shadow-sm w-full sm:w-auto"
               >
                 Go to Login
               </Link>
@@ -62,14 +62,11 @@ export default async function DashboardOverviewPage() {
 
   const data = response.data;
 
-  // ------------------------------------------------------------------
-  // নিচের কোনো ডিজাইন বা লেআউট পরিবর্তন করা হয়নি। একদম আপনারটাই আছে।
-  // ------------------------------------------------------------------
-
+  // ৪. Nullish Coalescing (??) ব্যবহার করে ডিফল্ট ভ্যালু সেট করা, যাতে toLocaleString() এ ক্র্যাশ না করে
   const stats = [
     {
       title: "Total Revenue",
-      value: `৳${data.stats.totalRevenue.toLocaleString()}`,
+      value: `৳${(data?.stats?.totalRevenue ?? 0).toLocaleString()}`,
       change: "All time",
       trend: "up",
       icon: DollarSign,
@@ -78,7 +75,7 @@ export default async function DashboardOverviewPage() {
     },
     {
       title: "Total Registrations",
-      value: data.stats.totalRegistrations.toString(),
+      value: (data?.stats?.totalRegistrations ?? 0).toString(),
       change: "All events",
       trend: "up",
       icon: Users,
@@ -87,7 +84,7 @@ export default async function DashboardOverviewPage() {
     },
     {
       title: "Pending Verifications",
-      value: data.stats.pendingVerifications.toString(),
+      value: (data?.stats?.pendingVerifications ?? 0).toString(),
       change: "Action required",
       trend: "neutral",
       icon: Clock,
@@ -96,7 +93,7 @@ export default async function DashboardOverviewPage() {
     },
     {
       title: "Active Events",
-      value: data.stats.activeEvents.toString(),
+      value: (data?.stats?.activeEvents ?? 0).toString(),
       change: "Live now",
       trend: "neutral",
       icon: CalendarDays,
@@ -194,47 +191,59 @@ export default async function DashboardOverviewPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-700 text-sm">
-                {data.recentRegistrations?.length > 0 ? (
-                  data.recentRegistrations.map((reg) => (
-                    <tr
-                      key={reg.id}
-                      className="hover:bg-primary/10 transition-colors"
-                    >
-                      <td className="p-4 font-mono font-medium text-slate-300 text-sm">
-                        {reg.trackingId}
-                      </td>
-                      <td className="p-4">
-                        <p className="font-medium text-slate-300">{reg.name}</p>
-                        <p className="text-xs text-slate-500">
-                          {formatDistanceToNow(new Date(reg.createdAt), {
-                            addSuffix: true,
-                          })}
-                        </p>
-                      </td>
-                      <td className="p-4 text-slate-400">{reg.eventName}</td>
-                      <td className="p-4 font-medium text-slate-300">
-                        ৳{reg.amount}
-                      </td>
-                      <td className="p-4">
-                        <span
-                          className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                            reg.status === "VERIFIED"
-                              ? "bg-green-100 text-green-700 border border-green-200"
-                              : reg.status === "REJECTED"
-                                ? "bg-red-100 text-red-700 border border-red-200"
-                                : "bg-yellow-100 text-yellow-700 border border-yellow-200"
-                          }`}
-                        >
-                          {reg.status === "VERIFIED" ? (
-                            <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
-                          ) : (
-                            <Clock className="w-3.5 h-3.5 mr-1" />
-                          )}
-                          {reg.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))
+                {/* ৫. অ্যারে আছে কিনা তা চেক করা (?.length) */}
+                {data?.recentRegistrations && data.recentRegistrations.length > 0 ? (
+                  data.recentRegistrations.map((reg: any) => {
+                    
+                    // ৬. Date format-এ try-catch, ভুল Date আসলে যেন ক্র্যাশ না করে
+                    let timeAgo = "Unknown";
+                    try {
+                      if (reg.createdAt) {
+                        timeAgo = formatDistanceToNow(new Date(reg.createdAt), {
+                          addSuffix: true,
+                        });
+                      }
+                    } catch (error) {
+                      console.error("Invalid date string:", reg.createdAt);
+                    }
+
+                    return (
+                      <tr
+                        key={reg.id || reg.trackingId}
+                        className="hover:bg-primary/10 transition-colors"
+                      >
+                        <td className="p-4 font-mono font-medium text-slate-300 text-sm">
+                          {reg.trackingId ?? "N/A"}
+                        </td>
+                        <td className="p-4">
+                          <p className="font-medium text-slate-300">{reg.name ?? "Unknown"}</p>
+                          <p className="text-xs text-slate-500">{timeAgo}</p>
+                        </td>
+                        <td className="p-4 text-slate-400">{reg.eventName ?? "Unknown"}</td>
+                        <td className="p-4 font-medium text-slate-300">
+                          ৳{reg.amount ?? 0}
+                        </td>
+                        <td className="p-4">
+                          <span
+                            className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
+                              reg.status === "VERIFIED"
+                                ? "bg-green-100 text-green-700 border border-green-200"
+                                : reg.status === "REJECTED"
+                                  ? "bg-red-100 text-red-700 border border-red-200"
+                                  : "bg-yellow-100 text-yellow-700 border border-yellow-200"
+                            }`}
+                          >
+                            {reg.status === "VERIFIED" ? (
+                              <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
+                            ) : (
+                              <Clock className="w-3.5 h-3.5 mr-1" />
+                            )}
+                            {reg.status ?? "PENDING"}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })
                 ) : (
                   <tr>
                     <td colSpan={5} className="p-8 text-center text-gray-400">
@@ -259,7 +268,7 @@ export default async function DashboardOverviewPage() {
                   Verify Payments
                 </h4>
                 <p className="text-xs text-slate-400 mt-1">
-                  {data.stats.pendingVerifications} pending manual payment
+                  {data?.stats?.pendingVerifications ?? 0} pending manual payment
                   verifications require attention.
                 </p>
                 <Link
@@ -280,7 +289,7 @@ export default async function DashboardOverviewPage() {
                   Project Submissions
                 </h4>
                 <p className="text-xs text-slate-400 mt-1">
-                  {data.quickActions?.newSubmissionsCount || 0} total projects
+                  {data?.quickActions?.newSubmissionsCount ?? 0} total projects
                   submitted across all events.
                 </p>
                 <Link
