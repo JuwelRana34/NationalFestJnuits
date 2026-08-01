@@ -83,12 +83,12 @@ export default function EventForm({ initialData }: EventFormProps) {
           deadline: "",
           responsible: [],
           registrationSchema: [
-            { label: "Full Name", type: "text", required: true, options: "" },
+            { label: "name", type: "text", required: true, options: "" },
             {
-              label: "Email", type: "text", required: true, options: "" 
+              label: "email", type: "text", required: true, options: "" 
             },
             {
-              label: "Phone Number", type: "text", required: true, options: ""
+              label: "phone", type: "text", required: true, options: ""
             }
             
           ],
@@ -238,6 +238,7 @@ export default function EventForm({ initialData }: EventFormProps) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
+        credentials: "include",
       });
 
       if (status === 200 && response) {
@@ -260,8 +261,8 @@ export default function EventForm({ initialData }: EventFormProps) {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto border rounded p-2 md:p-6 bg-white my-10 shadow-sm">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-4">
+    <div className="w-full max-w-7xl mx-auto  rounded p-2 md:p-6 bg-white/10 backdrop-blur-2xl my-10 shadow-sm">
+      <h2 className="text-2xl font-bold  mb-6 border-b border-slate-400 pb-4">
         {isEditing ? "Edit Event" : "Create New Event"}
       </h2>
 
@@ -269,12 +270,12 @@ export default function EventForm({ initialData }: EventFormProps) {
         {/* =====================
             1. Basic Information 
         ====================== */}
-        <div className="bg-gray-50 p-4 md:p-6 rounded-lg border border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className=" p-4 md:p-6 rounded-lg  grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-slate-300 mb-1">
               Event Cover Image (Optional)
             </label>
-            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg bg-white hover:bg-gray-50 transition-colors">
+            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2  border-dashed rounded-lg border-slate-400 hover:bg-slate-800 transition-colors">
               <div className="space-y-1 text-center">
                 {imagePreview ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -298,8 +299,8 @@ export default function EventForm({ initialData }: EventFormProps) {
                     />
                   </svg>
                 )}
-                <div className="flex text-sm text-gray-600 justify-center">
-                  <label className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none">
+                <div className="flex text-sm text-gray-400 justify-center">
+                  <label className="relative cursor-pointer  rounded-md font-medium text-primary hover:text-blue-500 focus-within:outline-none">
                     <span>
                       {isEditing && imagePreview
                         ? "Change file"
@@ -314,29 +315,29 @@ export default function EventForm({ initialData }: EventFormProps) {
                   </label>
                   <p className="pl-1">or drag and drop</p>
                 </div>
-                <p className="text-xs text-gray-500">PNG, JPG, GIF up to 5MB</p>
+                <p className="text-xs text-slate-400">PNG, JPG, GIF up to 5MB</p>
               </div>
             </div>
           </div>
 
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-slate-300 mb-1">
               Event Title
             </label>
             <input
               {...register("title", { required: true })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-4 py-2 border border-slate-400 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
               placeholder="e.g. National AI & IT Summit 2026"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-slate-300 mb-1">
               Event Type
             </label>
             <select
               {...register("eventType")}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-4 py-2 border border-slate-400 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
             >
               <option value="solo">Solo Participant</option>
               <option value="team">Team Based</option>
@@ -345,49 +346,49 @@ export default function EventForm({ initialData }: EventFormProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-slate-300 mb-1">
               Base Registration Fee (৳)
             </label>
             <input
               type="number"
               {...register("fee", { valueAsNumber: true })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-4 py-2 border border-slate-400 rounded-lg focus:ring-2 focus:ring-primary outline-none"
               placeholder="e.g. 500"
             />
           </div>
 
           {selectedEventType === "team" && (
-            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4 bg-blue-50 border border-blue-100 p-4 rounded-lg mt-2">
+            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-900 border border-slate-400 p-4 rounded-lg mt-2">
               <div>
-                <label className="block text-sm font-medium text-blue-800 mb-1">
+                <label className="block text-sm font-medium text-slate-300 mb-1">
                   Base Team Size
                 </label>
                 <input
                   type="number"
                   {...register("baseTeamSize", { valueAsNumber: true })}
-                  className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  className="w-full px-4 py-2 border border-slate-400 rounded-lg focus:ring-2 focus:ring-primary outline-none"
                   placeholder="e.g. 5"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-blue-800 mb-1">
+                <label className="block text-sm font-medium text-slate-300 mb-1">
                   Max Extra Members
                 </label>
                 <input
                   type="number"
                   {...register("maxExtraMembers", { valueAsNumber: true })}
-                  className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  className="w-full px-4 py-2 border border-slate-400 rounded-lg focus:ring-2 focus:ring-primary outline-none"
                   placeholder="e.g. 2"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-blue-800 mb-1">
+                <label className="block text-sm font-medium text-slate-300 mb-1">
                   Extra Member Fee (৳)
                 </label>
                 <input
                   type="number"
                   {...register("extraMemberFee", { valueAsNumber: true })}
-                  className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  className="w-full px-4 py-2 border border-slate-400 rounded-lg focus:ring-2 focus:ring-primary outline-none"
                   placeholder="e.g. 200"
                 />
               </div>
@@ -395,49 +396,49 @@ export default function EventForm({ initialData }: EventFormProps) {
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-slate-300 mb-1">
               Event Date
             </label>
             <input
               type="datetime-local"
               step="any"
               {...register("eventDate", { required: true })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-4 py-2 border border-slate-400 rounded-lg focus:ring-2 focus:ring-primary outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-slate-300 mb-1">
               Registration Deadline
             </label>
             <input
               type="datetime-local"
               step="any"
               {...register("deadline", { required: true })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-4 py-2 border border-slate-400 rounded-lg focus:ring-2 focus:ring-primary outline-none"
             />
           </div>
 
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-slate-300 mb-1">
               Venue
             </label>
             <input
               type="text"
               {...register("venue")}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-4 py-2 border border-slate-400 rounded-lg focus:ring-2 focus:ring-primary outline-none"
               placeholder="e.g. JnU Central Auditorium"
             />
           </div>
 
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-slate-300 mb-1">
               Event Description (Optional)
             </label>
             <textarea
               rows={4}
               {...register("description")}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-4 py-2 border border-slate-400 rounded-lg focus:ring-2 focus:ring-primary outline-none"
               placeholder="Write something about the event..."
             />
           </div>
@@ -451,9 +452,9 @@ export default function EventForm({ initialData }: EventFormProps) {
               control={control}
               render={({ field }) => (
                 <div
-                  className={`flex items-center justify-between ${field.value ? "bg-green-100" : "bg-red-100"} rounded-md border p-4`}
+                  className={`flex items-center justify-between ${field.value ? "bg-green-700" : "bg-red-700"} rounded-md  p-4`}
                 >
-                  <p className="text-sm text-gray-700 font-medium">
+                  <p className="text-sm text-slate-200 font-medium">
                     {field.value ? "Event is Active" : "Event is Inactive"}
                   </p>
                   <Switch
@@ -469,13 +470,13 @@ export default function EventForm({ initialData }: EventFormProps) {
         {/* =====================
             2. Responsible / Organizers
         ====================== */}
-        <div className="bg-orange-50 p-6 rounded-lg border border-orange-100">
+        <div className=" p-6 rounded-lg  ">
           <div className="flex justify-between items-center mb-4">
             <div>
-              <h3 className="text-lg font-semibold text-orange-900">
+              <h3 className="text-lg font-semibold text-orange-500">
                 Responsible / Organizers (Optional)
               </h3>
-              <p className="text-sm text-orange-700">
+              <p className="text-sm text-orange-300">
                 Add contact info for event coordinators
               </p>
             </div>
@@ -483,7 +484,7 @@ export default function EventForm({ initialData }: EventFormProps) {
               type="button"
               onClick={() => appendResponsible({ name: "", phone: "" })}
               variant="outline"
-              className="border-orange-300 text-orange-700 hover:bg-orange-100"
+              className=" hover:bg-cyan-600"
             >
               + Add Organizer
             </Button>
@@ -493,19 +494,19 @@ export default function EventForm({ initialData }: EventFormProps) {
             {responsibleFields.map((item, index) => (
               <div
                 key={item.id}
-                className="flex flex-wrap sm:flex-nowrap gap-4 items-center bg-white p-3 rounded-lg border border-orange-200"
+                className="flex flex-wrap sm:flex-nowrap gap-4 items-center  p-3 rounded-lg border border-slate-700"
               >
                 <input
                   {...register(`responsible.${index}.name`, { required: true })}
                   placeholder="Name"
-                  className="flex-1 min-w-[200px] px-3 py-2 border rounded-md outline-none focus:ring-2 focus:ring-orange-400"
+                  className="flex-1 min-w-[200px] px-3 py-2 border border-slate-600 rounded-md outline-none focus:ring-2 focus:ring-orange-400"
                 />
                 <input
                   {...register(`responsible.${index}.phone`, {
                     required: true,
                   })}
                   placeholder="Phone"
-                  className="flex-1 min-w-[200px] px-3 py-2 border rounded-md outline-none focus:ring-2 focus:ring-orange-400"
+                  className="flex-1 min-w-[200px] px-3 py-2 border border-slate-600 rounded-md outline-none focus:ring-2 focus:ring-orange-400"
                 />
                 <button
                   type="button"
@@ -522,13 +523,13 @@ export default function EventForm({ initialData }: EventFormProps) {
         {/* =====================
             3. Registration Form Builder 
         ====================== */}
-        <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
+        <div className="bg-slate-800 p-6 rounded-lg border border-slate-600">
           <div className="flex justify-between items-center mb-4">
             <div>
-              <h3 className="text-lg font-semibold text-gray-800">
+              <h3 className="text-lg font-semibold text-slate-300">
                 Registration Form Builder
               </h3>
-              ⚠️<span className="text-xs text-red-500 ml-2 inline-block animate-pulse">
+              ⚠️<span className="text-xs text-red-400 ml-2 inline-block animate-pulse">
                 you must add email field & make it required for all events!
               </span>
             </div>
@@ -554,10 +555,10 @@ export default function EventForm({ initialData }: EventFormProps) {
               return (
                 <div
                   key={item.id}
-                  className="flex flex-wrap md:flex-nowrap gap-4 bg-white p-4 rounded-lg border border-gray-200 shadow-sm items-start"
+                  className="flex flex-wrap md:flex-nowrap gap-4  p-4 rounded-lg border border-slate-600 shadow-sm items-start"
                 >
                   <div className="w-full md:w-1/3">
-                    <label className="block text-xs font-medium text-gray-500 mb-1">
+                    <label className="block text-xs font-medium text-slate-400 mb-1">
                       Field Label
                     </label>
                     <input
@@ -565,17 +566,17 @@ export default function EventForm({ initialData }: EventFormProps) {
                         required: true,
                       })}
                       placeholder="e.g. University Name"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm outline-none focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-slate-600 rounded-md text-sm outline-none focus:border-blue-500"
                     />
                   </div>
 
                   <div className="w-full md:w-1/4">
-                    <label className="block text-xs font-medium text-gray-500 mb-1">
+                    <label className="block text-xs font-medium text-slate-400 mb-1">
                       Input Type
                     </label>
                     <select
                       {...register(`registrationSchema.${index}.type`)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm outline-none focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-slate-600 rounded-md text-sm outline-none focus:border-blue-500"
                     >
                       <option value="text">Text</option>
                       <option value="number">Number</option>
@@ -587,7 +588,7 @@ export default function EventForm({ initialData }: EventFormProps) {
 
                   {currentType === "select" && (
                     <div className="w-full md:w-1/3">
-                      <label className="block text-xs font-medium text-gray-500 mb-1">
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
                         Options (Comma separated)
                       </label>
                       <input
@@ -595,17 +596,17 @@ export default function EventForm({ initialData }: EventFormProps) {
                           required: true,
                         })}
                         placeholder="M, L, XL, XXL"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm outline-none focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-slate-600 rounded-md text-sm outline-none focus:border-blue-500"
                       />
                     </div>
                   )}
 
                   <div className="w-full md:w-auto flex items-center mt-6 gap-4">
-                    <label className="flex items-center text-sm text-gray-700 cursor-pointer">
+                    <label className="flex items-center text-sm text-slate-400 cursor-pointer">
                       <input
                         type="checkbox"
                         {...register(`registrationSchema.${index}.required`)}
-                        className="mr-2 h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                        className="mr-2 h-4 w-4 text-blue-600 rounded border-slate-600 focus:ring-blue-500"
                       />{" "}
                       Required
                     </label>
@@ -628,13 +629,13 @@ export default function EventForm({ initialData }: EventFormProps) {
         {/* =====================
             4. Submission Form Builder 
         ====================== */}
-        <div className="bg-indigo-50 p-6 rounded-lg border border-indigo-100">
+        <div className=" p-6 rounded-lg border border-slate-600 bg-slate-900">
           <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-4 gap-4">
             <div>
-              <h3 className="text-lg font-semibold text-indigo-900">
+              <h3 className="text-lg font-semibold text-indigo-300">
                 Project Submission Builder
               </h3>
-              <p className="text-sm text-indigo-700">
+              <p className="text-sm text-indigo-400">
                 Set up what participants need to submit later.
               </p>
             </div>
@@ -642,8 +643,8 @@ export default function EventForm({ initialData }: EventFormProps) {
               name="isSubmissionOpen"
               control={control}
               render={({ field }) => (
-                <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-lg border shadow-sm">
-                  <span className="text-sm font-medium text-gray-700">
+                <div className="flex items-center gap-3 bg-slate-700 px-4 py-2 rounded-lg  shadow-sm">
+                  <span className="text-sm font-medium text-slate-300">
                     Require Submission?
                   </span>
                   <Switch
@@ -668,14 +669,14 @@ export default function EventForm({ initialData }: EventFormProps) {
                       options: "",
                     })
                   }
-                  className="px-4 py-2 text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg"
+                  className="px-4 py-2 text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-slate-300 rounded-lg"
                 >
                   + Add Submission Field
                 </Button>
               </div>
 
               {submissionFieldsList.length === 0 && (
-                <div className="text-center py-6 bg-white border border-dashed border-indigo-200 rounded-lg text-indigo-400">
+                <div className="text-center py-6 bg-slate-800 border border-dashed border-indigo-200 rounded-lg text-indigo-400">
                   Click &quot;+ Add Submission Field&quot; to configure
                   requirements.
                 </div>
@@ -685,10 +686,10 @@ export default function EventForm({ initialData }: EventFormProps) {
                 return (
                   <div
                     key={item.id}
-                    className="flex flex-wrap md:flex-nowrap gap-4 bg-white p-4 rounded-lg border border-indigo-200 shadow-sm items-start"
+                    className="flex flex-wrap md:flex-nowrap gap-4 bg-white/10 backdrop-blur-2xl p-4 rounded-lg border border-indigo-500 shadow-sm items-start"
                   >
                     <div className="w-full md:w-1/3">
-                      <label className="block text-xs font-medium text-gray-500 mb-1">
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
                         Requirement Label
                       </label>
                       <input
@@ -696,16 +697,16 @@ export default function EventForm({ initialData }: EventFormProps) {
                           required: true,
                         })}
                         placeholder="e.g. GitHub Repository Link"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm outline-none focus:border-indigo-500"
+                        className="w-full px-3 py-2 border border-slate-500 rounded-md text-sm outline-none focus:border-indigo-500"
                       />
                     </div>
                     <div className="w-full md:w-1/4">
-                      <label className="block text-xs font-medium text-gray-500 mb-1">
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
                         Expected Type
                       </label>
                       <select
                         {...register(`submissionSchema.${index}.type`)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm outline-none focus:border-indigo-500"
+                        className="w-full px-3 py-2 border border-slate-500 rounded-md text-sm outline-none focus:border-indigo-500"
                       >
                         <option value="url">Link / URL</option>
                         <option value="file">File Upload (PDF/ZIP)</option>
@@ -713,11 +714,11 @@ export default function EventForm({ initialData }: EventFormProps) {
                       </select>
                     </div>
                     <div className="w-full md:w-auto flex items-center mt-6 gap-4">
-                      <label className="flex items-center text-sm text-gray-700 cursor-pointer">
+                      <label className="flex items-center text-sm text-slate-400 cursor-pointer">
                         <input
                           type="checkbox"
                           {...register(`submissionSchema.${index}.required`)}
-                          className="mr-2 h-4 w-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"
+                          className="mr-2 h-4 w-4 text-indigo-600 rounded border-slate-500 focus:ring-indigo-500"
                         />{" "}
                         Required
                       </label>
@@ -739,7 +740,7 @@ export default function EventForm({ initialData }: EventFormProps) {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full py-4 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold rounded-lg transition-colors shadow-lg shadow-blue-200"
+          className="w-full py-4 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold rounded-lg transition-colors shadow-lg shadow-primary/30"
         >
           {isSubmitting
             ? "Saving..."

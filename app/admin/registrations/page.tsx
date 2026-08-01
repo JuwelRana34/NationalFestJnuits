@@ -268,21 +268,66 @@ export default function RegistrationManagementPage() {
     return matchesSearch && matchesStatus && matchesEvent;
   });
 
-  const handleUpdateStatus = async (id: string, newStatus: string) => {
-    if (window.confirm(`Are you sure you want to mark this as ${newStatus}?`)) {
-      // 💡 Optimistic UI Update: Selection Status এবং Payment Status দুটোই সাথে সাথে আপডেট হবে
+  // const handleUpdateStatus = async (id: string, newStatus: string) => {
+  //   if (window.confirm(`Are you sure you want to mark this as ${newStatus}?`)) {
+  //     // 💡 Optimistic UI Update: Selection Status এবং Payment Status দুটোই সাথে সাথে আপডেট হবে
+  //     setRegistrations((prev) =>
+  //       prev.map((reg) => {
+  //         if (reg.id === id) {
+  //           let newPaymentStatus = reg.paymentStatus;
+  //           if (newStatus === "VERIFIED") newPaymentStatus = "VERIFIED";
+  //           else if (newStatus === "REJECTED") newPaymentStatus = "REJECTED";
+
+  //           return {
+  //             ...reg,
+  //             selectionStatus: newStatus,
+  //             paymentStatus: newPaymentStatus,
+  //             // Modal-এ দেখানোর জন্য rawPayments-ও আপডেট করে দিচ্ছি
+  //             rawPayments: reg.rawPayments.map((payment, index) =>
+  //               index === 0
+  //                 ? { ...payment, status: newPaymentStatus }
+  //                 : payment,
+  //             ),
+  //           };
+  //         }
+  //         return reg;
+  //       }),
+  //     );
+
+  //     try {
+  //       const { status, response } = await honoFetch<ApiResponse>(
+  //         `/api/registrations/${id}/status`,
+  //         {
+  //           method: "PATCH",
+  //           body: JSON.stringify({ selectionStatus: newStatus }),
+  //           credentials:"include",
+  //         },
+  //       );
+
+  //       if (status !== 200 || !response?.success) {
+  //         throw new Error(response?.message || "Failed to update status.");
+  //       }
+  //      await revalidationAdminDashboard();
+  //     } catch (error) {
+  //       alert("Failed to update status in database.");
+  //       // রিয়েল-ওয়ার্ল্ড অ্যাপে এখানে API ফেইল করলে আবার fetchRegistrations() কল করে স্টেট রিস্টোর করা যায়।
+  //     }
+  //   }
+  // };
+
+  // 💡 শুধুমাত্র Payment Status আপডেটের জন্য
+  const handlePaymentUpdate = async (id: string, newPaymentStatus: string) => {
+    if (
+      window.confirm(
+        `Are you sure you want to mark payment as ${newPaymentStatus}?`,
+      )
+    ) {
       setRegistrations((prev) =>
         prev.map((reg) => {
           if (reg.id === id) {
-            let newPaymentStatus = reg.paymentStatus;
-            if (newStatus === "APPROVED") newPaymentStatus = "VERIFIED";
-            else if (newStatus === "REJECTED") newPaymentStatus = "REJECTED";
-
             return {
               ...reg,
-              selectionStatus: newStatus,
               paymentStatus: newPaymentStatus,
-              // Modal-এ দেখানোর জন্য rawPayments-ও আপডেট করে দিচ্ছি
               rawPayments: reg.rawPayments.map((payment, index) =>
                 index === 0
                   ? { ...payment, status: newPaymentStatus }
@@ -299,20 +344,64 @@ export default function RegistrationManagementPage() {
           `/api/registrations/${id}/status`,
           {
             method: "PATCH",
-            body: JSON.stringify({ selectionStatus: newStatus }),
+            body: JSON.stringify({ paymentStatus: newPaymentStatus }),
+            credentials: "include",
           },
         );
 
         if (status !== 200 || !response?.success) {
-          throw new Error(response?.message || "Failed to update status.");
+          throw new Error(
+            response?.message || "Failed to update payment status.",
+          );
         }
-       await revalidationAdminDashboard(); 
+        await revalidationAdminDashboard();
       } catch (error) {
-        alert("Failed to update status in database.");
-        // রিয়েল-ওয়ার্ল্ড অ্যাপে এখানে API ফেইল করলে আবার fetchRegistrations() কল করে স্টেট রিস্টোর করা যায়।
+        alert("Failed to update payment status in database.");
       }
     }
   };
+
+  // 💡 শুধুমাত্র Selection Status আপডেটের জন্য
+  const handleSelectionUpdate = async (
+    id: string,
+    newSelectionStatus: string,
+  ) => {
+    if (
+      window.confirm(
+        `Are you sure you want to mark selection as ${newSelectionStatus}?`,
+      )
+    ) {
+      setRegistrations((prev) =>
+        prev.map((reg) => {
+          if (reg.id === id) {
+            return { ...reg, selectionStatus: newSelectionStatus };
+          }
+          return reg;
+        }),
+      );
+
+      try {
+        const { status, response } = await honoFetch<ApiResponse>(
+          `/api/registrations/${id}/status`,
+          {
+            method: "PATCH",
+            body: JSON.stringify({ selectionStatus: newSelectionStatus }),
+            credentials: "include",
+          },
+        );
+
+        if (status !== 200 || !response?.success) {
+          throw new Error(
+            response?.message || "Failed to update selection status.",
+          );
+        }
+        await revalidationAdminDashboard();
+      } catch (error) {
+        alert("Failed to update selection status in database.");
+      }
+    }
+  };
+
 
   return (
     <div className="p-4 md:p-8 w-full max-w-7xl mx-auto space-y-6 bg-gray-50/50 min-h-screen">
@@ -368,8 +457,8 @@ export default function RegistrationManagementPage() {
           >
             <option value="ALL">All Status</option>
             <option value="PENDING">Pending</option>
-            {/* 💡 "SELECTED" এর বদলে "APPROVED" দেওয়া হলো */}
-            <option value="APPROVED">Approved</option>
+            {/* 💡 "SELECTED" এর বদলে "VERIFIED" দেওয়া হলো */}
+            <option value="VERIFIED">Verified</option>
             <option value="REJECTED">Rejected</option>
           </select>
         </div>
@@ -511,8 +600,10 @@ export default function RegistrationManagementPage() {
                         {reg.selectionStatus}
                       </span>
                     </td>
+
                     <td className="p-4 text-right">
                       <div className="flex items-center justify-end gap-2">
+                        {/* View Details Button */}
                         <button
                           onClick={() => setSelectedReg(reg)}
                           className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
@@ -520,25 +611,43 @@ export default function RegistrationManagementPage() {
                         >
                           <Eye size={16} />
                         </button>
-                        {/* 💡 এখানেও APPROVED করে দেওয়া হয়েছে */}
+
+                        {/* 💡 Payment Actions (পেমেন্ট ভেরিফাই বা রিজেক্ট করার বাটন) */}
+                        {reg.paymentStatus === "PENDING" && (
+                          <>
+                            <button
+                              onClick={() =>
+                                handlePaymentUpdate(reg.id, "VERIFIED")
+                              }
+                              className="p-2 text-emerald-600 bg-emerald-50 hover:bg-emerald-100 rounded-lg transition-colors"
+                              title="Verify Payment"
+                            >
+                              <Receipt size={16} />{" "}
+                              {/* Receipt আইকন import করে নিবেন */}
+                            </button>
+                          </>
+                        )}
+
+                        {/* 💡 Selection Actions (ক্যান্ডিডেট সিলেক্ট বা রিজেক্ট করার বাটন) */}
                         {reg.selectionStatus !== "APPROVED" && (
                           <button
                             onClick={() =>
-                              handleUpdateStatus(reg.id, "APPROVED")
+                              handleSelectionUpdate(reg.id, "APPROVED")
                             }
                             className="p-2 text-green-600 bg-green-50 hover:bg-green-100 rounded-lg transition-colors"
-                            title="Accept"
+                            title="Approve Candidate"
                           >
                             <CheckCircle2 size={16} />
                           </button>
                         )}
+
                         {reg.selectionStatus !== "REJECTED" && (
                           <button
                             onClick={() =>
-                              handleUpdateStatus(reg.id, "REJECTED")
+                              handleSelectionUpdate(reg.id, "REJECTED")
                             }
                             className="p-2 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
-                            title="Reject"
+                            title="Reject Candidate"
                           >
                             <XCircle size={16} />
                           </button>

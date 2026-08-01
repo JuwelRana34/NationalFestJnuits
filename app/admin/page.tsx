@@ -1,7 +1,6 @@
 // app/admin/page.tsx (বা app/admin/dashboard/page.tsx)
 import FetchDashboardData from "@/features/adminDashboard/Services";
 import { formatDistanceToNow } from "date-fns";
-import { Suspense } from "react";
 import {
   Activity,
   ArrowUpRight,
@@ -12,46 +11,49 @@ import {
   DollarSign,
   MoreVertical,
   Users,
-  Loader2,
-  Lock, // নতুন ইম্পোর্ট (আনঅথোরাইজড আইকন)
-  AlertCircle, // নতুন ইম্পোর্ট (এরর আইকন)
+  Lock,
 } from "lucide-react";
 import Link from "next/link";
 import { getFormattedCookies } from "@/lib/getCookie";
 import { redirect } from "next/navigation";
-// import ExportReportButton from "@/components/ExportReportButton";
+import { cookies } from "next/headers";
 
-// ১. এই কম্পোনেন্টটি ডাইনামিক ডেটা এবং কুকি হ্যান্ডেল করবে
-async function DashboardContent() {
-  const token = await getFormattedCookies();
+// মেইন পেজ - কোনো Suspense নেই, সরাসরি async কম্পোনেন্ট (Route Blocking)
+export default async function DashboardOverviewPage() {
+  const cookie = await cookies();
+  const token = cookie
+    .getAll()
+    .map((c) => `${c.name}=${c.value}`)
+    .join("; ");
+  console.log("Admin Dashboard Token:", token);
 
   // 💎 Premium Unauthorized State
-  if (!token) return redirect("/login");
-   
+  if (!token) return redirect("/signin");
 
   const { status, response } = await FetchDashboardData(token);
 
   // 💎 Premium Error/Failed State
   if (status !== 200 || !response?.success || !response.data) {
     return (
-
-<div className="flex min-h-[80vh] items-center justify-center">
-        <div className=" backdrop-blur-xl bg-white/10 p-8 rounded-2xl shadow-sm border border-red-100 max-w-md w-full text-center space-y-4 transition-all hover:shadow-md">
-          <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto">
-            <Lock className="w-8 h-8" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900">Access Denied</h2>
-          <p className="text-gray-500 text-sm">
-            You do not have permission to view this dashboard. Please log in
-            with a valid administrator account.
-          </p>
-          <div className="pt-4">
-            <Link
-              href="/login"
-              className="inline-flex items-center justify-center px-6 py-2.5 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition-colors shadow-sm w-full sm:w-auto"
-            >
-              Go to Login
-            </Link>
+      <div className="p-4 md:p-8 w-full max-w-7xl mx-auto min-h-screen">
+        <div className="flex min-h-[80vh] items-center justify-center">
+          <div className="backdrop-blur-xl bg-red/10 p-8 rounded-2xl shadow-sm border border-red-500 max-w-md w-full text-center space-y-4 transition-all hover:shadow-md">
+            <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto">
+              <Lock className="w-8 h-8" />
+            </div>
+            <h2 className="text-2xl font-bold text-red-500">Access Denied!</h2>
+            <p className="text-gray-500 text-sm">
+              You do not have permission to view this dashboard. Please log in
+              with a valid administrator account.
+            </p>
+            <div className="pt-4">
+              <Link
+                href="/login"
+                className="inline-flex items-center justify-center px-6 py-2.5 bg-red-400 text-white font-medium rounded-xl hover:bg-red-700 transition-colors shadow-sm w-full sm:w-auto"
+              >
+                Go to Login
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -61,7 +63,7 @@ async function DashboardContent() {
   const data = response.data;
 
   // ------------------------------------------------------------------
-  // নিচের কোনো ডিজাইন বা লেআউট পরিবর্তন করা হয়নি। একদম আপনারটাই আছে।
+  // নিচের কোনো ডিজাইন বা লেআউট পরিবর্তন করা হয়নি। একদম আপনারটাই আছে।
   // ------------------------------------------------------------------
 
   const stats = [
@@ -104,7 +106,7 @@ async function DashboardContent() {
   ];
 
   return (
-    <>
+    <div className="p-4 md:p-8 w-full max-w-7xl mx-auto min-h-screen">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-primary">
@@ -116,7 +118,6 @@ async function DashboardContent() {
           </p>
         </div>
         <div className="flex gap-3">
-          {/* <ExportReportButton data={data.stats} /> */}
           <Link
             href="/admin/events/create"
             className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors text-sm shadow-sm"
@@ -136,7 +137,7 @@ async function DashboardContent() {
             >
               <div className="flex justify-between items-start">
                 <div>
-                  <p className="text-sm font-medium text-slate-400  ">
+                  <p className="text-sm font-medium text-slate-400">
                     {stat.title}
                   </p>
                   <h3 className="text-2xl font-bold text-primary mt-2">
@@ -169,7 +170,7 @@ async function DashboardContent() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
-        <div className="lg:col-span-2 bg-white/10 backdrop-blur-xl rounded-2xl   shadow-sm overflow-hidden">
+        <div className="lg:col-span-2 bg-white/10 backdrop-blur-xl rounded-2xl shadow-sm overflow-hidden">
           <div className="p-6 border-b border-slate-800 flex justify-between items-center">
             <h3 className="text-lg font-bold text-primary">
               Recent Registrations
@@ -246,10 +247,8 @@ async function DashboardContent() {
           </div>
         </div>
 
-        <div className="bg-white/10 backdrop-blur-xl rounded-2xl   shadow-sm p-6">
-          <h3 className="text-lg font-bold text-primary mb-6">
-            Quick Actions
-          </h3>
+        <div className="bg-white/10 backdrop-blur-xl rounded-2xl shadow-sm p-6">
+          <h3 className="text-lg font-bold text-primary mb-6">Quick Actions</h3>
           <div className="space-y-4">
             <div className="flex items-start gap-4 p-4 rounded-xl border border-slate-800 bg-slate-800">
               <div className="p-2 bg-orange-100 text-orange-600 rounded-lg shrink-0">
@@ -272,7 +271,7 @@ async function DashboardContent() {
               </div>
             </div>
 
-            <div className="flex items-start gap-4 p-4 rounded-xl  bg-slate-800">
+            <div className="flex items-start gap-4 p-4 rounded-xl bg-slate-800">
               <div className="p-2 bg-indigo-100 text-indigo-600 rounded-lg shrink-0">
                 <Activity className="w-5 h-5" />
               </div>
@@ -310,30 +309,6 @@ async function DashboardContent() {
           </div>
         </div>
       </div>
-    </>
-  );
-}
-
-// ২. লোডিং স্কেলিটন (যতক্ষণ ডেটা না আসবে, এটি দেখাবে)
-function DashboardLoading() {
-  return (
-    <div className="flex h-[60vh] items-center justify-center">
-      <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
-      <span className="ml-2 text-gray-500 font-medium">
-        Loading Dashboard...
-      </span>
-    </div>
-  );
-}
-
-// ৩. মেইন পেজ - যা শুধু Suspense রিটার্ন করবে
-export default  function DashboardOverviewPage() {
- 
-  return (
-    <div className="p-4 md:p-8 w-full max-w-7xl mx-auto  min-h-screen">
-      <Suspense fallback={<DashboardLoading />}>
-        <DashboardContent />
-      </Suspense>
     </div>
   );
 }
