@@ -1,7 +1,25 @@
 import type { NextConfig } from "next";
 import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 
+const isDev = process.env.NODE_ENV === 'development';
+const DESTINATION_URL = isDev 
+  ? 'http://localhost:5173' // লোকাল React Router পোর্ট
+  : 'https://your-react-router-app.pages.dev'; // প্রোডাকশন লিংক
+
 const nextConfig: NextConfig = {
+  async rewrites() {
+    return [
+      {
+        source: "/admin",
+        destination: DESTINATION_URL,
+      },
+      {
+        source: "/admin/:path*",
+        destination: `${DESTINATION_URL}/:path*`,
+      },
+    ];
+  },
+
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "lh3.googleusercontent.com" },
