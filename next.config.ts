@@ -2,20 +2,19 @@ import type { NextConfig } from "next";
 import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 
 const isDev = process.env.NODE_ENV === 'development';
-const DESTINATION_URL = isDev 
-  ? 'http://localhost:5173' // লোকাল React Router পোর্ট
-  : 'https://your-react-router-app.pages.dev'; // প্রোডাকশন লিংক
-
+const DESTINATION_URL = isDev
+  ? "http://localhost:5173" 
+  : "http://localhost:5173";
 const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        source: "/admin",
-        destination: DESTINATION_URL,
+        source: "/adminDashboard",
+        destination: `${DESTINATION_URL}/adminDashboard/`,
       },
       {
-        source: "/admin/:path*",
-        destination: `${DESTINATION_URL}/:path*`,
+        source: "/adminDashboard/:path*",
+        destination: `${DESTINATION_URL}/adminDashboard/:path*`,
       },
     ];
   },
@@ -51,7 +50,6 @@ const nextConfig: NextConfig = {
     ],
     serverMinification: true,
   },
- 
 };
 
 initOpenNextCloudflareForDev();

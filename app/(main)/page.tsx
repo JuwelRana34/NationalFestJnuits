@@ -4,11 +4,14 @@ import {
   SpeakersJudges,
 } from "@/components/custom/DynamicMotion";
 import About from "@/features/home/components/AboutSection";
+import Hero from "@/features/home/components/Hero";
 import HeroSection from "@/features/home/components/HeroSection";
 
 export default function JnUITFestLanding() {
   return (
     <div className=" min-h-screen bg-slate-50 font-sans text-slate-900">
+      {/* <Hero />
+      <Segments /> */}
       <HeroSection />
       {/* About Section */}
 

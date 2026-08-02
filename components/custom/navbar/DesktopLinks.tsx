@@ -10,7 +10,6 @@ export default function DesktopLinks() {
   return (
     <>
       {NaveItems.map((link) => {
-        // 🎯 চেক করছি বর্তমান পাথ এবং লিংকের পাথ এক কি না
         const isActive = pathname === link.Path;
 
         return (

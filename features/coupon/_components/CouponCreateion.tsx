@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { honoFetch } from "@/lib/hono-client";
 import {
   AlertCircle,
   CheckCircle2,
@@ -13,7 +14,6 @@ import {
   Save,
   Ticket,
 } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
 import React, { useState } from "react";
 
 export default function CouponForm() {
@@ -36,7 +36,6 @@ export default function CouponForm() {
     setStatus({ type: null, message: "" });
 
     try {
-      // Prepare payload to match CreateCouponInput type
       const payload = {
         code,
         discountPercentage: Number(discountPercentage),
@@ -45,13 +44,28 @@ export default function CouponForm() {
         expiresAt: expiresAt ? new Date(expiresAt) : null,
       };
 
-      // Call the server action
-      const result = { success: true };
-      //FIXME: Replace with actual API call to save the coupon
-      // console.log("Save Coupon Result:", result);
-      if (result.success) {
-        setStatus({ type: "success", message: "Coupon saved successfully!" });
-        //   // Optional: Reset form or redirect
+      console.log("Submitting coupon:", payload);
+      // Simulated API call
+      const { response, status } = await honoFetch<{
+        success: boolean;
+        message: string;
+      }>("/api/coupons/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      });
+
+      console.log("API response:", response);
+
+      if (status === 200 && response?.success) {
+        setStatus({
+          type: "success",
+          message: response.message || "Coupon saved successfully!",
+        });
+
         if (!code.includes("EDIT")) {
           setCode("");
           setDiscountPercentage("");
@@ -70,74 +84,66 @@ export default function CouponForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50/50 flex items-center justify-center p-4 sm:p-8 dark:bg-gray-950 font-sans text-gray-900 dark:text-gray-100">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
-        className="w-full max-w-2xl bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden"
-      >
-        <div className="border-b bg-gradient p-3 pl-4">
-          <h2 className="text-xl font-semibold tracking-tight flex items-center gap-2">
-            <Ticket className="w-5 h-5 text-amber-600 " />
+    <div className="min-h-screen bg-black flex items-center justify-center p-4 sm:p-8 font-sans text-zinc-100">
+      <div className="w-full max-w-2xl bg-zinc-950 rounded-xl border border-zinc-800 shadow-2xl overflow-hidden">
+        {/* Header */}
+        <div className="border-b border-zinc-800 bg-zinc-900/40 px-6 py-5">
+          <h2 className="text-xl font-semibold tracking-tight flex items-center gap-2 text-zinc-50">
+            <Ticket className="w-5 h-5 text-indigo-500" />
             Create New Coupon
           </h2>
-          <p className="text-sm text-gray-200 mt-1">
+          <p className="text-sm text-zinc-400 mt-1">
             Configure discount rules, usage limits, and expiration dates.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          <AnimatePresence mode="wait">
-            {status.type && (
-              <motion.div
-                initial={{ opacity: 0, height: 0, marginBottom: 0 }}
-                animate={{ opacity: 1, height: "auto", marginBottom: 24 }}
-                exit={{ opacity: 0, height: 0, marginBottom: 0 }}
-                className={`p-4 rounded-md flex items-start gap-3 text-sm ${
-                  status.type === "success"
-                    ? "bg-green-50 text-green-900 border border-green-200 dark:bg-green-900/20 dark:text-green-200 dark:border-green-900/30"
-                    : "bg-red-50 text-red-900 border border-red-200 dark:bg-red-900/20 dark:text-red-200 dark:border-red-900/30"
-                }`}
-              >
-                {status.type === "success" ? (
-                  <CheckCircle2 className="w-5 h-5 shrink-0" />
-                ) : (
-                  <AlertCircle className="w-5 h-5 shrink-0" />
-                )}
-                <span className="mt-0.5">{status.message}</span>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {/* Status Message */}
+          {status.type && (
+            <div
+              className={`p-4 rounded-lg flex items-start gap-3 text-sm border ${
+                status.type === "success"
+                  ? "bg-emerald-950/30 text-emerald-400 border-emerald-900/50"
+                  : "bg-red-950/30 text-red-400 border-red-900/50"
+              }`}
+            >
+              {status.type === "success" ? (
+                <CheckCircle2 className="w-5 h-5 shrink-0" />
+              ) : (
+                <AlertCircle className="w-5 h-5 shrink-0" />
+              )}
+              <span className="mt-0.5">{status.message}</span>
+            </div>
+          )}
 
-          {}
+          {/* Primary Inputs */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2 relative">
-              <Label htmlFor="code">
+              <Label htmlFor="code" className="text-zinc-300">
                 Coupon Code <span className="text-red-500">*</span>
               </Label>
               <div className="relative">
-                <Ticket className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                <Ticket className="absolute left-3 top-2.5 h-5 w-5 text-zinc-500" />
                 <Input
                   id="code"
                   placeholder="e.g. SUMMER24"
-                  className="pl-10 uppercase uppercase-placeholder"
+                  className="pl-10 uppercase bg-zinc-900 border-zinc-800 text-zinc-100 placeholder:text-zinc-600 focus-visible:ring-indigo-500"
                   value={code}
                   onChange={(e) => setCode(e.target.value.toUpperCase())}
                   required
                 />
               </div>
-              <p className="text-[13px] text-gray-500">
+              <p className="text-[13px] text-zinc-500">
                 Unique identifier for checkout.
               </p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="discount">
+              <Label htmlFor="discount" className="text-zinc-300">
                 Discount Percentage <span className="text-red-500">*</span>
               </Label>
               <div className="relative">
-                <Percent className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                <Percent className="absolute left-3 top-2.5 h-5 w-5 text-zinc-500" />
                 <Input
                   id="discount"
                   type="number"
@@ -145,7 +151,7 @@ export default function CouponForm() {
                   max="100"
                   step="0.01"
                   placeholder="e.g. 15"
-                  className="pl-10"
+                  className="pl-10 bg-zinc-900 border-zinc-800 text-zinc-100 placeholder:text-zinc-600 focus-visible:ring-indigo-500"
                   value={discountPercentage}
                   onChange={(e) =>
                     setDiscountPercentage(
@@ -155,24 +161,26 @@ export default function CouponForm() {
                   required
                 />
               </div>
-              <p className="text-[13px] text-gray-500">
+              <p className="text-[13px] text-zinc-500">
                 Value between 1% and 100%.
               </p>
             </div>
           </div>
 
-          {}
+          {/* Secondary Inputs */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="maxUses">Maximum Uses</Label>
+              <Label htmlFor="maxUses" className="text-zinc-300">
+                Maximum Uses
+              </Label>
               <div className="relative">
-                <Hash className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                <Hash className="absolute left-3 top-2.5 h-5 w-5 text-zinc-500" />
                 <Input
                   id="maxUses"
                   type="number"
                   min="1"
                   placeholder="Unlimited"
-                  className="pl-10"
+                  className="pl-10 bg-zinc-900 border-zinc-800 text-zinc-100 placeholder:text-zinc-600 focus-visible:ring-indigo-500"
                   value={maxUses}
                   onChange={(e) =>
                     setMaxUses(
@@ -181,36 +189,46 @@ export default function CouponForm() {
                   }
                 />
               </div>
-              <p className="text-[13px] text-gray-500">
+              <p className="text-[13px] text-zinc-500">
                 Leave blank for unlimited uses.
               </p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="expiresAt">Expiration Date</Label>
+              <Label htmlFor="expiresAt" className="text-zinc-300">
+                Expiration Date
+              </Label>
               <div className="relative">
-                {/* Standard datetime-local used for zero-dependency portability */}
                 <Input
                   id="expiresAt"
                   type="datetime-local"
-                  className="pr-4"
+                  className="pr-4 bg-zinc-900 border-zinc-800 text-zinc-100 focus-visible:ring-indigo-500 [color-scheme:dark]"
                   value={expiresAt}
                   onChange={(e) => setExpiresAt(e.target.value)}
                 />
               </div>
-              <p className="text-[13px] text-gray-500">
+              <p className="text-[13px] text-zinc-500">
                 When does this coupon expire?
               </p>
             </div>
           </div>
 
-          {}
-          <div className="pt-4 border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          {/* Footer / Actions */}
+          <div className="pt-6 border-t border-zinc-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
             <div className="flex items-center space-x-3">
-              <Switch checked={isActive} onCheckedChange={setIsActive} />
+              <Switch
+                checked={isActive}
+                onCheckedChange={setIsActive}
+                className="data-[state=checked]:bg-indigo-500 data-[state=unchecked]:bg-zinc-700"
+              />
               <div className="space-y-0.5">
-                <Label className="text-base">Active Status</Label>
-                <p className="text-[13px] text-gray-500">
+                <Label
+                  className="text-base text-zinc-200 cursor-pointer"
+                  onClick={() => setIsActive(!isActive)}
+                >
+                  Active Status
+                </Label>
+                <p className="text-[13px] text-zinc-500">
                   Allow customers to use this code.
                 </p>
               </div>
@@ -219,7 +237,7 @@ export default function CouponForm() {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-medium"
             >
               {isSubmitting ? (
                 <>
@@ -235,7 +253,7 @@ export default function CouponForm() {
             </Button>
           </div>
         </form>
-      </motion.div>
+      </div>
     </div>
   );
 }

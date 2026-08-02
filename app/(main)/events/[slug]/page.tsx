@@ -22,7 +22,7 @@ export default async function EventDetailsPage({ params }: Props) {
   }
 
   return (
-    <main className="container mx-auto max-w-5xl px-6 py-10 mt-16">
+    <main className="container mx-auto max-w-5xl px-2 py-5 ">
       <Link
         href="/events"
         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition hover:text-foreground mb-6"

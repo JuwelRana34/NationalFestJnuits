@@ -182,7 +182,9 @@ export default function RegistrationManagementPage() {
     const fetchRegistrations = async () => {
       try {
         const { status, response } =
-          await honoFetch<ApiResponse>("/api/registrations");
+          await honoFetch<ApiResponse>("/api/registrations",{
+            credentials: "include",
+          });
 
         if (status === 200 && response?.data && Array.isArray(response.data)) {
           const formattedData: MappedRegistration[] = response.data.map(

@@ -13,10 +13,6 @@ export const NaveItems = [
     Path: "/",
   },
   {
-    title: "About",
-    Path: "/about",
-  },
-  {
     title: "Track Event",
     Path: "/event-tracker",
   },
@@ -24,9 +20,13 @@ export const NaveItems = [
     title: "events",
     Path: "/events",
   },
+  {
+    title: "About",
+    Path: "/about",
+  },
   // {
   //   title: "Dashboard",
-  //   Path: "/admin",
+  //   Path: "/adminDashboard",
   // },
 ];
 
@@ -50,6 +50,10 @@ export const DashboardNavItems = [
   {
     title: "User Management",
     Path: "/admin/UserManagement",
+  },
+  {
+    title: "Cupon Management",
+    Path: "/admin/cuponManagement",
   },
 ];
 

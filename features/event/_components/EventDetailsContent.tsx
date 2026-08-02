@@ -94,9 +94,9 @@ export async function EventDetailsContent({ eventData }: Props) {
   ];
 
   return (
-    <div className="container mx-auto max-w-6xl pb-16">
+    <div className="container px-2 mx-auto max-w-6xl pb-5">
       {/* Hero Section */}
-      <div className="relative mt-8 overflow-hidden rounded-xl border bg-background shadow-lg sm:mt-10">
+      <div className="relative mt-2 overflow-hidden rounded-xl border border-slate-800 shadow-blue-500/20 bg-background shadow-lg sm:mt-10">
         <div className="relative aspect-video w-full sm:aspect-21/9">
           {event.coverImage ? (
             <Image
@@ -120,16 +120,16 @@ export async function EventDetailsContent({ eventData }: Props) {
           <div className="absolute inset-x-0 bottom-0 flex flex-col justify-end p-6 sm:p-10">
             <div className="mb-2 flex flex-wrap items-center gap-2">
               <Badge
-                variant="outline"
-                className={`border backdrop-blur-md px-3 py-1 ${accent.chip}`}
+                variant="ghost"
+                className={`border border-slate-700 backdrop-blur-md px-3 py-1`}
               >
                 {event.eventType}
               </Badge>
 
               {showCountdown && (
                 <Badge
-                  variant="outline"
-                  className={`border backdrop-blur-md px-3 py-1 flex items-center gap-1.5 ${countdownStyle(daysLeft!)}`}
+                  variant="ghost"
+                  className={`backdrop-blur-md px-3 py-1 ${countdownStyle(daysLeft!)}`}
                 >
                   <Clock className="h-3.5 w-3.5" />
                   {countdownLabel(daysLeft!)}
@@ -146,9 +146,9 @@ export async function EventDetailsContent({ eventData }: Props) {
               )}
             </div>
 
-            <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-xl md:text-6xl max-w-4xl">
+            {/* <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-xl md:text-6xl max-w-4xl">
               {event.title}
-            </h1>
+            </h1> */}
           </div>
         </div>
       </div>
@@ -175,7 +175,7 @@ export async function EventDetailsContent({ eventData }: Props) {
             {details.map(({ icon: Icon, label, value }) => (
               <Card
                 key={label}
-                className="border-none bg-muted/40 shadow-none transition-colors hover:bg-muted/60"
+                className="border-none backdrop-blur-md bg-white/10 shadow-none transition-colors hover:bg-transparent hover:shadow-lg"
               >
                 <CardContent className="flex items-start gap-4 p-5">
                   <div
@@ -184,7 +184,7 @@ export async function EventDetailsContent({ eventData }: Props) {
                     <Icon className="h-5 w-5" />
                   </div>
                   <div className="space-y-1">
-                    <p className="text-sm font-medium text-muted-foreground">
+                    <p className="text-sm font-medium text-slate-300 dark:text-slate-300">
                       {label}
                     </p>
                     <p className="font-semibold text-foreground">{value}</p>
@@ -203,7 +203,7 @@ export async function EventDetailsContent({ eventData }: Props) {
 
             <CardHeader className="pb-6 ">
               <div className="flex flex-col gap-1">
-                <span className="text-sm font-medium uppercase tracking-wider text-muted-foreground">
+                <span className="text-sm font-medium uppercase tracking-wider text-slate-300 dark:text-slate-300">
                   Registration Fee
                 </span>
                 <span className="text-4xl font-extrabold tracking-tight text-primary">
@@ -212,9 +212,9 @@ export async function EventDetailsContent({ eventData }: Props) {
               </div>
 
               {event.deadline && (
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Closes on{" "}
-                  <span className="font-medium text-foreground">
+                <p className="mt-2 text-sm text-primary/80">
+                  Closes on
+                  <span className="font-medium text-slate-200 animate-pulse px-2">
                     {formatDate(event.deadline)} at {formatTime(event.deadline)}
                   </span>
                 </p>

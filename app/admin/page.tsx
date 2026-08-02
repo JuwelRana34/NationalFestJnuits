@@ -1,4 +1,6 @@
-// app/admin/page.tsx
+"use client"; // app/admin/page.tsx
+
+import { useEffect, useState } from "react";
 import FetchDashboardData from "@/features/adminDashboard/Services";
 import { formatDistanceToNow } from "date-fns";
 import {
@@ -12,29 +14,99 @@ import {
   MoreVertical,
   Users,
   Lock,
+  Loader2,
 } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
+import { useRouter } from "next/navigation";
 
-export default async function DashboardOverviewPage() {
-  // ১. Next.js 15+ অনুযায়ী cookies() await করতে হবে
-  const cookieStore = await cookies();
-  const token = cookieStore
-    .getAll()
-    .map((c) => `${c.name}=${c.value}`)
-    .join("; ");
+// Define a basic type for the expected data to improve TypeScript support
+interface DashboardData {
+  stats?: {
+    totalRevenue?: number;
+    totalRegistrations?: number;
+    pendingVerifications?: number;
+    activeEvents?: number;
+  };
+  recentRegistrations?: Array<{
+    id?: string;
+    trackingId?: string;
+    name?: string;
+    createdAt?: string;
+    eventName?: string;
+    amount?: number;
+    status?: string;
+  }>;
+  quickActions?: {
+    newSubmissionsCount?: number;
+  };
+}
 
-  // 💎 Premium Unauthorized State
-  if (!token) {
-    redirect("/login");
+export default function DashboardOverviewPage() {
+  const router = useRouter();
+  const [data, setData] = useState<DashboardData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadDashboardData = async () => {
+      try {
+        // 1. Get cookies on the client side
+        const token = document.cookie;
+
+        // 💎 Premium Unauthorized State (Client-side check)
+        if (!token) {
+          router.push("/login");
+          return;
+        }
+
+        // 2. Fetch API Data
+        const { status, response } = await FetchDashboardData(token);
+
+        // Handle Unauthorized from API response
+        if (status === 401 || status === 403) {
+          router.push("/login");
+          return;
+        }
+
+        // 3. Safe Error check
+        if (status !== 200 || !response?.success || !response?.data) {
+          if (isMounted) setHasError(true);
+        } else {
+          if (isMounted) setData(response.data);
+        }
+      } catch (error) {
+        console.error("Dashboard Fetch Error:", error);
+        if (isMounted) setHasError(true);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    };
+
+    loadDashboardData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [router]);
+
+  // Handle Loading State
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center">
+        <div className="flex flex-col items-center gap-4 text-indigo-500">
+          <Loader2 className="w-8 h-8 animate-spin" />
+          <p className="text-sm font-medium animate-pulse">
+            Loading dashboard...
+          </p>
+        </div>
+      </div>
+    );
   }
 
-  // ২. API কল করা
-  const { status, response } = await FetchDashboardData(token);
-
-  // ৩. ডাটা না পেলে বা এরর হলে Safe Error UI দেখানো (যাতে ক্র্যাশ না করে)
-  if (status !== 200 || !response?.success || !response?.data) {
+  // Handle Error State
+  if (hasError || !data) {
     return (
       <div className="p-4 md:p-8 w-full max-w-7xl mx-auto min-h-screen">
         <div className="flex min-h-[80vh] items-center justify-center">
@@ -42,17 +114,20 @@ export default async function DashboardOverviewPage() {
             <div className="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto">
               <Lock className="w-8 h-8" />
             </div>
-            <h2 className="text-2xl font-bold text-red-500">Access Denied or Error!</h2>
+            <h2 className="text-2xl font-bold text-red-500">
+              Access Denied or Error!
+            </h2>
             <p className="text-gray-400 text-sm">
-              Unable to load dashboard data. Please try again later or log in with a valid administrator account.
+              Unable to load dashboard data. Please try again later or log in
+              with a valid administrator account.
             </p>
             <div className="pt-4">
-              <Link
-                href="/login"
+              <button
+                onClick={() => router.push("/login")}
                 className="inline-flex items-center justify-center px-6 py-2.5 bg-red-500 text-white font-medium rounded-xl hover:bg-red-600 transition-colors shadow-sm w-full sm:w-auto"
               >
                 Go to Login
-              </Link>
+              </button>
             </div>
           </div>
         </div>
@@ -60,9 +135,7 @@ export default async function DashboardOverviewPage() {
     );
   }
 
-  const data = response.data;
-
-  // ৪. Nullish Coalescing (??) ব্যবহার করে ডিফল্ট ভ্যালু সেট করা, যাতে toLocaleString() এ ক্র্যাশ না করে
+  // 4. Nullish Coalescing (??) Default Values
   const stats = [
     {
       title: "Total Revenue",
@@ -191,11 +264,11 @@ export default async function DashboardOverviewPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-700 text-sm">
-                {/* ৫. অ্যারে আছে কিনা তা চেক করা (?.length) */}
-                {data?.recentRegistrations && data.recentRegistrations.length > 0 ? (
-                  data.recentRegistrations.map((reg: any) => {
-                    
-                    // ৬. Date format-এ try-catch, ভুল Date আসলে যেন ক্র্যাশ না করে
+                {/* 5. Safe Array Check */}
+                {data?.recentRegistrations &&
+                data.recentRegistrations.length > 0 ? (
+                  data.recentRegistrations.map((reg) => {
+                    // 6. Safe Date formatting
                     let timeAgo = "Unknown";
                     try {
                       if (reg.createdAt) {
@@ -216,10 +289,14 @@ export default async function DashboardOverviewPage() {
                           {reg.trackingId ?? "N/A"}
                         </td>
                         <td className="p-4">
-                          <p className="font-medium text-slate-300">{reg.name ?? "Unknown"}</p>
+                          <p className="font-medium text-slate-300">
+                            {reg.name ?? "Unknown"}
+                          </p>
                           <p className="text-xs text-slate-500">{timeAgo}</p>
                         </td>
-                        <td className="p-4 text-slate-400">{reg.eventName ?? "Unknown"}</td>
+                        <td className="p-4 text-slate-400">
+                          {reg.eventName ?? "Unknown"}
+                        </td>
                         <td className="p-4 font-medium text-slate-300">
                           ৳{reg.amount ?? 0}
                         </td>
@@ -268,8 +345,8 @@ export default async function DashboardOverviewPage() {
                   Verify Payments
                 </h4>
                 <p className="text-xs text-slate-400 mt-1">
-                  {data?.stats?.pendingVerifications ?? 0} pending manual payment
-                  verifications require attention.
+                  {data?.stats?.pendingVerifications ?? 0} pending manual
+                  payment verifications require attention.
                 </p>
                 <Link
                   href="/admin/registrations"
