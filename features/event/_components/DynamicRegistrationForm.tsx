@@ -327,11 +327,11 @@ const handleFileChange = (fieldId: string, file: File | null) => {
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm transition-opacity">
-          <div className="relative mt-20 w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm transition-opacity">
+          <div className="relative mt-20 w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl custom-scrollbar">
             <button
               onClick={() => setIsOpen(false)}
-              className="absolute right-4 top-4 rounded-full p-2 text-rose-400 hover:bg-red-100 hover:text-red-600 transition-colors z-10"
+              className="absolute right-4 top-4 rounded-full p-2 text-rose-400 hover:bg-rose-500/20 hover:text-rose-300 transition-colors z-10"
             >
               <svg
                 className="w-5 h-5"
@@ -353,19 +353,19 @@ const handleFileChange = (fieldId: string, file: File | null) => {
               {step === 1 && (
                 <form onSubmit={handleStep1Submit} className="space-y-8">
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900">
+                    <h2 className="text-2xl font-bold text-white">
                       {eventType === "team"
                         ? "Team Registration"
                         : "Registration Form"}
                     </h2>
-                    <p className="mt-1 text-sm text-gray-500">
+                    <p className="mt-1 text-sm text-slate-400">
                       Please fill out your details (Step 1 of 2)
                     </p>
                   </div>
 
                   {/* 1. Common Team Details (From schemaFields) */}
-                  <div className="space-y-5 bg-gray-50/50 p-6 rounded-xl border border-gray-100">
-                    <h3 className="text-lg font-bold text-gray-800 border-b pb-2 mb-4">
+                  <div className="space-y-5 bg-slate-800/50 p-6 rounded-xl border border-slate-700/50">
+                    <h3 className="text-lg font-bold text-white border-b border-slate-700/50 pb-2 mb-4">
                       {eventType === "team"
                         ? "General Team Information"
                         : "Basic Information"}
@@ -378,11 +378,11 @@ const handleFileChange = (fieldId: string, file: File | null) => {
                         >
                           <label
                             htmlFor={field.id}
-                            className="text-sm font-semibold text-gray-700"
+                            className="text-sm font-semibold text-slate-300"
                           >
                             {field.label}{" "}
                             {field.required && (
-                              <span className="text-red-500">*</span>
+                              <span className="text-rose-500">*</span>
                             )}
                           </label>
 
@@ -394,9 +394,13 @@ const handleFileChange = (fieldId: string, file: File | null) => {
                               onChange={(e) =>
                                 handleChange(field.id, e.target.value)
                               }
-                              className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                              className="w-full px-4 py-3 bg-slate-800 border border-slate-700 text-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all appearance-none"
                             >
-                              <option value="" disabled>
+                              <option
+                                value=""
+                                disabled
+                                className="text-slate-500"
+                              >
                                 Select an option
                               </option>
                               {field.options?.map((opt) => (
@@ -418,7 +422,7 @@ const handleFileChange = (fieldId: string, file: File | null) => {
                                     e.target.files?.[0] || null,
                                   )
                                 }
-                                className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                className="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 text-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-500/20 file:text-indigo-400 hover:file:bg-indigo-500/30 transition-colors"
                               />
                               {imagePreviews[field.id] && (
                                 <Image
@@ -426,7 +430,7 @@ const handleFileChange = (fieldId: string, file: File | null) => {
                                   height={300}
                                   src={imagePreviews[field.id]}
                                   alt="preview"
-                                  className="h-40 w-full rounded-xl border object-cover shadow-sm"
+                                  className="h-40 w-full rounded-xl border border-slate-700 object-cover shadow-sm"
                                 />
                               )}
                             </div>
@@ -440,7 +444,7 @@ const handleFileChange = (fieldId: string, file: File | null) => {
                                 handleChange(field.id, e.target.value)
                               }
                               placeholder={`Enter ${field.label.toLowerCase()}`}
-                              className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                              className="w-full px-4 py-3 bg-slate-800 border border-slate-700 text-white placeholder-slate-500 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
                             />
                           )}
                         </div>
@@ -451,16 +455,16 @@ const handleFileChange = (fieldId: string, file: File | null) => {
                   {/* 2. Base Team Members */}
                   {eventType === "team" && baseTeamSize > 0 && (
                     <div className="space-y-6">
-                      <h3 className="text-lg font-bold text-gray-800 border-b pb-2">
+                      <h3 className="text-lg font-bold text-white border-b border-slate-800 pb-2">
                         Team Members (Base Size: {baseTeamSize})
                       </h3>
                       {baseMembers.map((member, index) => (
                         <div
                           key={`base-${index}`}
-                          className="p-5 bg-white border border-gray-200 shadow-sm rounded-xl relative"
+                          className="p-5 bg-slate-800/50 border border-slate-700/50 shadow-sm rounded-xl relative"
                         >
-                          <h4 className="font-bold text-gray-800 mb-4 text-sm flex items-center gap-2">
-                            <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs">
+                          <h4 className="font-bold text-white mb-4 text-sm flex items-center gap-2">
+                            <span className="bg-slate-700 text-slate-300 px-2 py-1 rounded text-xs">
                               {index === 0
                                 ? "Team Leader"
                                 : `Member ${index + 1}`}
@@ -468,8 +472,8 @@ const handleFileChange = (fieldId: string, file: File | null) => {
                           </h4>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                              <label className="text-xs font-semibold text-gray-600">
-                                Name <span className="text-red-500">*</span>
+                              <label className="text-xs font-semibold text-slate-400">
+                                Name <span className="text-rose-500">*</span>
                               </label>
                               <input
                                 type="text"
@@ -482,13 +486,13 @@ const handleFileChange = (fieldId: string, file: File | null) => {
                                     e.target.value,
                                   )
                                 }
-                                className="w-full mt-1 px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                                className="w-full mt-1 px-3 py-2.5 bg-slate-900 border border-slate-700 text-white placeholder-slate-600 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
                                 placeholder="Full Name"
                               />
                             </div>
                             <div>
-                              <label className="text-xs font-semibold text-gray-600">
-                                Email <span className="text-red-500">*</span>
+                              <label className="text-xs font-semibold text-slate-400">
+                                Email <span className="text-rose-500">*</span>
                               </label>
                               <input
                                 type="email"
@@ -501,13 +505,13 @@ const handleFileChange = (fieldId: string, file: File | null) => {
                                     e.target.value,
                                   )
                                 }
-                                className="w-full mt-1 px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                                className="w-full mt-1 px-3 py-2.5 bg-slate-900 border border-slate-700 text-white placeholder-slate-600 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
                                 placeholder="Email Address"
                               />
                             </div>
                             <div>
-                              <label className="text-xs font-semibold text-gray-600">
-                                Phone <span className="text-red-500">*</span>
+                              <label className="text-xs font-semibold text-slate-400">
+                                Phone <span className="text-rose-500">*</span>
                               </label>
                               <input
                                 type="text"
@@ -520,14 +524,14 @@ const handleFileChange = (fieldId: string, file: File | null) => {
                                     e.target.value,
                                   )
                                 }
-                                className="w-full mt-1 px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                                className="w-full mt-1 px-3 py-2.5 bg-slate-900 border border-slate-700 text-white placeholder-slate-600 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
                                 placeholder="Phone Number"
                               />
                             </div>
                             <div>
-                              <label className="text-xs font-semibold text-gray-600">
+                              <label className="text-xs font-semibold text-slate-400">
                                 Student ID{" "}
-                                <span className="text-red-500">*</span>
+                                <span className="text-rose-500">*</span>
                               </label>
                               <input
                                 type="text"
@@ -540,7 +544,7 @@ const handleFileChange = (fieldId: string, file: File | null) => {
                                     e.target.value,
                                   )
                                 }
-                                className="w-full mt-1 px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                                className="w-full mt-1 px-3 py-2.5 bg-slate-900 border border-slate-700 text-white placeholder-slate-600 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
                                 placeholder="Student ID"
                               />
                             </div>
@@ -553,12 +557,12 @@ const handleFileChange = (fieldId: string, file: File | null) => {
                   {/* 3. Extra Team Members SECTION */}
                   {eventType === "team" && maxExtraMembers > 0 && (
                     <div className="pt-2">
-                      <div className="flex justify-between items-end mb-4 bg-blue-50 p-4 rounded-xl border border-blue-100">
+                      <div className="flex justify-between items-end mb-4 bg-indigo-500/10 p-4 rounded-xl border border-indigo-500/20">
                         <div>
-                          <h3 className="text-lg font-bold text-blue-900">
+                          <h3 className="text-lg font-bold text-indigo-300">
                             Optional: Extra Members
                           </h3>
-                          <p className="text-sm text-blue-700 mt-1">
+                          <p className="text-sm text-indigo-400 mt-1">
                             You can add up to {maxExtraMembers} more member(s)
                             (৳{extraMemberFee}/each)
                           </p>
@@ -567,7 +571,7 @@ const handleFileChange = (fieldId: string, file: File | null) => {
                           type="button"
                           onClick={addExtraMember}
                           disabled={extraMembers.length >= maxExtraMembers}
-                          className="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm"
+                          className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm"
                         >
                           + Add Member
                         </button>
@@ -577,25 +581,25 @@ const handleFileChange = (fieldId: string, file: File | null) => {
                         {extraMembers.map((member, index) => (
                           <div
                             key={`extra-${index}`}
-                            className="p-5 bg-white border border-blue-200 shadow-sm rounded-xl relative"
+                            className="p-5 bg-slate-800/80 border border-indigo-500/20 shadow-sm rounded-xl relative"
                           >
                             <button
                               type="button"
                               onClick={() => removeExtraMember(index)}
-                              className="absolute top-4 right-4 text-red-500 hover:bg-red-50 p-1.5 rounded-md transition-colors"
+                              className="absolute top-4 right-4 text-rose-400 hover:bg-rose-500/20 p-1.5 rounded-md transition-colors"
                               title="Remove Member"
                             >
                               ✕
                             </button>
-                            <h4 className="font-bold text-blue-800 mb-4 text-sm flex items-center gap-2">
-                              <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">
+                            <h4 className="font-bold text-indigo-300 mb-4 text-sm flex items-center gap-2">
+                              <span className="bg-indigo-500/20 text-indigo-300 px-2 py-1 rounded text-xs">
                                 Extra Member {index + 1}
                               </span>
                             </h4>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                               <div>
-                                <label className="text-xs font-semibold text-gray-600">
-                                  Name <span className="text-red-500">*</span>
+                                <label className="text-xs font-semibold text-slate-400">
+                                  Name <span className="text-rose-500">*</span>
                                 </label>
                                 <input
                                   type="text"
@@ -608,13 +612,13 @@ const handleFileChange = (fieldId: string, file: File | null) => {
                                       e.target.value,
                                     )
                                   }
-                                  className="w-full mt-1 px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                                  className="w-full mt-1 px-3 py-2.5 bg-slate-900 border border-slate-700 text-white placeholder-slate-600 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
                                   placeholder="Full Name"
                                 />
                               </div>
                               <div>
-                                <label className="text-xs font-semibold text-gray-600">
-                                  Email <span className="text-red-500">*</span>
+                                <label className="text-xs font-semibold text-slate-400">
+                                  Email <span className="text-rose-500">*</span>
                                 </label>
                                 <input
                                   type="email"
@@ -627,13 +631,13 @@ const handleFileChange = (fieldId: string, file: File | null) => {
                                       e.target.value,
                                     )
                                   }
-                                  className="w-full mt-1 px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                                  className="w-full mt-1 px-3 py-2.5 bg-slate-900 border border-slate-700 text-white placeholder-slate-600 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
                                   placeholder="Email Address"
                                 />
                               </div>
                               <div>
-                                <label className="text-xs font-semibold text-gray-600">
-                                  Phone <span className="text-red-500">*</span>
+                                <label className="text-xs font-semibold text-slate-400">
+                                  Phone <span className="text-rose-500">*</span>
                                 </label>
                                 <input
                                   type="text"
@@ -646,14 +650,14 @@ const handleFileChange = (fieldId: string, file: File | null) => {
                                       e.target.value,
                                     )
                                   }
-                                  className="w-full mt-1 px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                                  className="w-full mt-1 px-3 py-2.5 bg-slate-900 border border-slate-700 text-white placeholder-slate-600 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
                                   placeholder="Phone Number"
                                 />
                               </div>
                               <div>
-                                <label className="text-xs font-semibold text-gray-600">
+                                <label className="text-xs font-semibold text-slate-400">
                                   Student ID{" "}
-                                  <span className="text-red-500">*</span>
+                                  <span className="text-rose-500">*</span>
                                 </label>
                                 <input
                                   type="text"
@@ -666,7 +670,7 @@ const handleFileChange = (fieldId: string, file: File | null) => {
                                       e.target.value,
                                     )
                                   }
-                                  className="w-full mt-1 px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                                  className="w-full mt-1 px-3 py-2.5 bg-slate-900 border border-slate-700 text-white placeholder-slate-600 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
                                   placeholder="Student ID"
                                 />
                               </div>
@@ -677,18 +681,18 @@ const handleFileChange = (fieldId: string, file: File | null) => {
                     </div>
                   )}
 
-                  <div className="pt-6 mt-6 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div className="pt-6 mt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div className="text-center sm:text-left">
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-slate-400">
                         Total Registration Fee
                       </p>
-                      <p className="text-2xl font-black text-gray-900">
+                      <p className="text-2xl font-black text-white">
                         ৳{subTotal}
                       </p>
                     </div>
                     <button
                       type="submit"
-                      className="w-full sm:w-auto py-3.5 px-8 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-xl transition-colors shadow-md"
+                      className="w-full sm:w-auto py-3.5 px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors shadow-md"
                     >
                       Proceed to Payment →
                     </button>
@@ -699,23 +703,23 @@ const handleFileChange = (fieldId: string, file: File | null) => {
               {/* === STEP 2: PAYMENT FORM === */}
               {step === 2 && (
                 <form onSubmit={handleFinalSubmit} className="space-y-6">
-                  <div className="border-b pb-4 flex justify-between items-center">
+                  <div className="border-b border-slate-800 pb-4 flex justify-between items-center">
                     <div>
                       <button
                         type="button"
                         onClick={() => setStep(1)}
-                        className="text-sm font-medium text-blue-600 hover:underline mb-2"
+                        className="text-sm font-medium text-indigo-400 hover:text-indigo-300 hover:underline mb-2 transition-colors"
                       >
                         ← Back to Details
                       </button>
-                      <h2 className="text-2xl font-bold text-gray-900">
+                      <h2 className="text-2xl font-bold text-white">
                         Make Payment
                       </h2>
                     </div>
                   </div>
 
                   {/* === Coupon Section === */}
-                  <div className="bg-indigo-50 p-4 rounded-xl border border-indigo-100 flex flex-col sm:flex-row gap-3">
+                  <div className="bg-indigo-500/10 p-4 rounded-xl border border-indigo-500/20 flex flex-col sm:flex-row gap-3">
                     <div className="flex-1">
                       <input
                         type="text"
@@ -726,7 +730,7 @@ const handleFileChange = (fieldId: string, file: File | null) => {
                           setDiscountAmount(0);
                         }}
                         placeholder="Have a promo code?"
-                        className="w-full px-4 py-2.5 rounded-lg border outline-none uppercase"
+                        className="w-full px-4 py-2.5 rounded-lg bg-slate-900 border border-slate-700 text-white placeholder-slate-500 outline-none uppercase focus:ring-2 focus:ring-indigo-500 transition-all"
                       />
                     </div>
                     <button
@@ -747,16 +751,16 @@ const handleFileChange = (fieldId: string, file: File | null) => {
                     </button>
                   </div>
                   {couponStatus === "error" && (
-                    <p className="text-sm text-red-500 mt-[-10px]">
+                    <p className="text-sm text-rose-500 mt-[-10px]">
                       Invalid or expired coupon code.
                     </p>
                   )}
 
                   {/* === Payment QR & Bill === */}
-                  <div className="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-2xl border border-dashed border-gray-300">
+                  <div className="flex flex-col items-center justify-center p-8 bg-slate-800/30 rounded-2xl border border-dashed border-slate-700">
                     {totalPayable > 0 ? (
                       <>
-                        <div className="w-40 h-40 bg-white border p-3 rounded-xl shadow-sm mb-5 flex items-center justify-center">
+                        <div className="w-40 h-40 bg-slate-800 border border-slate-700 p-3 rounded-xl shadow-sm mb-5 flex items-center justify-center">
                           <Image
                             src="/qr-placeholder.png"
                             alt="Payment QR"
@@ -767,25 +771,25 @@ const handleFileChange = (fieldId: string, file: File | null) => {
                         </div>
                         <div className="text-center">
                           {discountAmount > 0 && (
-                            <p className="text-gray-500 line-through text-sm">
+                            <p className="text-slate-500 line-through text-sm">
                               Subtotal: ৳{subTotal}
                             </p>
                           )}
-                          <p className="font-black text-2xl text-gray-900">
+                          <p className="font-black text-2xl text-white">
                             Total Payable: ৳{totalPayable}
                           </p>
-                          <p className="text-sm font-medium text-gray-600 mt-2 bg-white px-4 py-1.5 rounded-full border shadow-sm">
+                          <p className="text-sm font-medium text-slate-300 mt-2 bg-slate-800 px-4 py-1.5 rounded-full border border-slate-700 shadow-sm inline-block">
                             Official Number: 017XXXXXXXX
                           </p>
                         </div>
                       </>
                     ) : (
                       <div className="text-center py-8 animate-pulse">
-                        <div className="text-green-500 text-6xl mb-4">🎉</div>
-                        <p className="font-black text-3xl text-green-600">
+                        <div className="text-emerald-500 text-6xl mb-4">🎉</div>
+                        <p className="font-black text-3xl text-emerald-400">
                           100% Free Registration!
                         </p>
-                        <p className="text-gray-500 mt-2">
+                        <p className="text-slate-400 mt-2">
                           No payment required. Just click confirm below.
                         </p>
                       </div>
@@ -794,11 +798,11 @@ const handleFileChange = (fieldId: string, file: File | null) => {
 
                   {/* === Transaction Inputs (Hide if total is 0) === */}
                   {totalPayable > 0 && (
-                    <div className="space-y-5 text-left bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                    <div className="space-y-5 text-left bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50 shadow-sm">
                       <div className="flex flex-col space-y-2">
-                        <label className="text-sm font-bold text-gray-700">
+                        <label className="text-sm font-bold text-slate-300">
                           Sender Phone Number{" "}
-                          <span className="text-red-500">*</span>
+                          <span className="text-rose-500">*</span>
                         </label>
                         <input
                           type="text"
@@ -811,14 +815,14 @@ const handleFileChange = (fieldId: string, file: File | null) => {
                             })
                           }
                           placeholder="e.g. 017XXXXXXXX"
-                          className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                          className="w-full px-4 py-3.5 bg-slate-900 border border-slate-700 text-white placeholder-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
                         />
                       </div>
 
                       <div className="flex flex-col space-y-2">
-                        <label className="text-sm font-bold text-gray-700">
+                        <label className="text-sm font-bold text-slate-300">
                           Transaction ID (TrxID){" "}
-                          <span className="text-red-500">*</span>
+                          <span className="text-rose-500">*</span>
                         </label>
                         <input
                           type="text"
@@ -831,7 +835,7 @@ const handleFileChange = (fieldId: string, file: File | null) => {
                             })
                           }
                           placeholder="e.g. 8KDF39J2K"
-                          className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none uppercase transition-all"
+                          className="w-full px-4 py-3.5 bg-slate-900 border border-slate-700 text-white placeholder-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none uppercase transition-all"
                         />
                       </div>
                     </div>
@@ -840,7 +844,7 @@ const handleFileChange = (fieldId: string, file: File | null) => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition-all disabled:opacity-70 mt-8 flex justify-center items-center gap-2 shadow-lg shadow-green-200"
+                    className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-all disabled:opacity-70 mt-8 flex justify-center items-center gap-2 shadow-lg shadow-emerald-900/20"
                   >
                     {isSubmitting ? (
                       <>

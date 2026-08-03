@@ -50,17 +50,17 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
         prose-slate 
         
         /* Headings */
-        prose-headings:font-bold prose-headings:bg-clip-text prose-headings:text-transparent prose-headings:bg-linear-to-r prose-headings:from-cyan-500 prose-headings:to-blue-600
+        prose-headings:font-bold prose-headings:bg-clip-text prose-headings:text-transparent prose-headings:bg-linear-to-b prose-headings:from-fuchsia-500 prose-headings:to-blue-500
         
         /* Text & Strong */
-        prose-p:text-slate-300 prose-p:leading-relaxed prose-p:text-justify
-        prose-strong:text-slate-900 prose-strong:font-semibold
+        prose-p:text-slate-300 prose-p:leading-relaxed md:prose-p:text-justify
+        prose-strong:text-orange-400 prose-strong:font-semibold
         
         /* Links */
         prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline hover:prose-a:text-cyan-800 prose-a:transition-all
         
         /* Lists */
-        prose-li:text-slate-300 marker:text-cyan-500
+        prose-li:text-slate-300 marker:text-orange-500/60
         
         /* Blockquotes */
         prose-blockquote:border-l-blue-500 prose-blockquote:bg-blue-50 prose-blockquote:px-5 prose-blockquote:py-2 prose-blockquote:rounded-r-lg prose-blockquote:text-slate-700 prose-blockquote:not-italic prose-blockquote:shadow-sm

@@ -15,12 +15,12 @@ const geistMono = Geist_Mono({
 
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://jnuits.org.bd"),
-  title: "National AI & IT Summit 2026|JnUITS",
+  metadataBase: new URL("https://itfest.jnuits.org.bd"),
+  title: "JnU AI & IT Fest 2026",
   description:
-    "Welcome to the official portal for the National AI & IT Summit 2026 organized by the Jagannath University IT Society (JnUITS). Register now to compete, showcase your projects, and join the biggest tech celebration.",
+    "Welcome to the official portal for the JnU AI & IT Fest 2026 organized by the Jagannath University IT Society (JnUITS). Register now to compete, showcase your projects, and join the biggest tech celebration.",
   keywords: [
-    "National AI & IT Summit 2026",
+    "JnU AI & IT Fest 2026",
     "JnUITS Summit",
     "JnU IT Society",
     "Jagannath University IT Society",
@@ -33,17 +33,17 @@ export const metadata: Metadata = {
     icon: "/MainLogo.svg",
   },
   openGraph: {
-    title: "National AI & IT Summit 2026 | JnU IT Society",
+    title: "JnU AI & IT Fest 2026 | JnU IT Society",
     description:
-      "Join the brightest minds at the National AI & IT Summit 2026 hosted by JnUITS. Register your team for programming contests, project showcases, and esports tournaments.",
-    url: "https://jnuits.org.bd/",
-    siteName: "JnUITS National AI & IT Summit",
+      "Join the brightest minds at the JnU AI & IT Fest 2026 hosted by JnUITS. Register your team for programming contests, project showcases, and esports tournaments.",
+    url: "https://itfest.jnuits.org.bd/",
+    siteName: "JnUITS JnU AI & IT Fest 2026",
     images: [
       {
         url: "https://res.cloudinary.com/dp4fgwjik/image/upload/v1776816318/WhatsApp_Image_2026-04-22_at_6.02.24_AM_hnszse.jpg",
         width: 1200,
         height: 630,
-        alt: "JnUITS National AI & IT Summit 2026 Banner",
+        alt: "JnU AI & IT Fest 2026 Banner",
       },
     ],
     locale: "en_US",
@@ -51,9 +51,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "National IT Fest 2026 | JnU IT Society",
+    title: "JnU AI & IT Fest 2026 | JnU IT Society",
     description:
-      "Join the brightest minds at the National IT Fest 2026 hosted by JnUITS. Register your team for programming contests, project showcases, and esports tournaments.",
+      "Join the brightest minds at the JnU AI & IT Fest 2026 hosted by JnUITS. Register your team for programming contests, project showcases, and esports tournaments.",
     images: [
       "https://res.cloudinary.com/dp4fgwjik/image/upload/v1776816318/WhatsApp_Image_2026-04-22_at_6.02.24_AM_hnszse.jpg",
     ],

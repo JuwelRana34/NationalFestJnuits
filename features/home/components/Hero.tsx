@@ -155,7 +155,7 @@ export default function Hero() {
           <div className="relative flex items-end justify-center opacity-0 animate-[fadeInUp_0.8s_ease-out_0.5s_forwards] md:justify-end">
             {/* glow behind the card */}
             <div className="pointer-events-none absolute -inset-6 bottom-0 -z-10 rounded-[2rem] bg-linear-to-tr from-fuchsia-500/30 via-violet-500/20 to-cyan-400/30 blur-3xl animate-pulse" />
-            <div className="pointer-events-none absolute right-4 bottom-24 -z-10 h-40 w-40 rounded-full bg-cyan-400/30 blur-3xl animate-[floatGlow_6s_ease-in-out_infinite]" />
+            <div className=" md:hidden pointer-events-none absolute right-4 bottom-24 -z-10 h-40 w-40 rounded-full bg-cyan-400/30 blur-3xl animate-[floatGlow_6s_ease-in-out_infinite]" />
 
             <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_8px_40px_rgba(0,0,0,0.45)] backdrop-blur transition-shadow duration-500 hover:shadow-[0_0_45px_rgba(139,92,246,0.4)] sm:p-7">
               <div className="grid grid-cols-4 gap-2.5 sm:gap-3.5">

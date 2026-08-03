@@ -130,9 +130,7 @@ export async function FeaturedEvents({data}: { data: GetEventValues[] }) {
                 {event.title}
               </h3>
 
-              <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
-                {event.description}
-              </p>
+             
 
               <div className="mt-4 flex flex-col gap-2 text-sm text-foreground/80">
                 <div className="flex items-center gap-2">
