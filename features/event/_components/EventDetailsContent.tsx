@@ -1,5 +1,5 @@
 import DynamicRegistrationForm from "@/features/event/_components/DynamicRegistrationForm";
-import { Calendar, Clock, Info, MapPin, Wallet } from "lucide-react";
+import { Calendar, Clock, Info, MapPin, Phone, ShieldCheck, User, Wallet } from "lucide-react";
 import Image from "next/image";
 
 import MarkdownRenderer from "@/components/custom/MarkdownRenderer";
@@ -168,6 +168,53 @@ export async function EventDetailsContent({ eventData }: Props) {
             <div className="leading-relaxed text-muted-foreground md:text-lg">
               <MarkdownRenderer content={event.description} />
             </div>
+           
+
+            {event.responsible && event.responsible.length > 0 && (
+              <div className="mt-8 p-6 bg-slate-900 border border-slate-800 rounded-2xl shadow-sm">
+                <div className="flex items-center gap-2.5 mb-5 border-b border-slate-800 pb-4">
+                  <div className="p-1.5 bg-indigo-500/10 rounded-md border border-indigo-500/20">
+                    <ShieldCheck size={18} className="text-indigo-400" />
+                  </div>
+                  <h3 className="text-lg font-bold text-white">
+                    Responsible Persons
+                  </h3>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {event.responsible.map((person, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-3.5 p-3.5 rounded-xl bg-slate-800/40 border border-slate-700/50 hover:bg-slate-800/70 transition-colors group"
+                    >
+                      {/* Avatar Icon */}
+                      <div className="w-10 h-10 rounded-full bg-slate-700/50 border border-slate-600 flex items-center justify-center shrink-0 group-hover:border-indigo-500/30 transition-colors">
+                        <User
+                          size={18}
+                          className="text-slate-400 group-hover:text-indigo-300"
+                        />
+                      </div>
+
+                      {/* Details */}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-slate-200 text-sm truncate capitalize">
+                          {person.name || "Unknown"}
+                        </p>
+                        <div className="flex items-center gap-1.5 mt-0.5 text-slate-400 group-hover:text-slate-300 transition-colors">
+                          <Phone size={12} />
+                          <a
+                            href={`tel:${person.phone}`}
+                            className="text-xs font-mono hover:underline hover:text-indigo-400"
+                          >
+                            {person.phone || "N/A"}
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </section>
 
           {/* Details Grid */}

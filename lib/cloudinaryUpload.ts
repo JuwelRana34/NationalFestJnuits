@@ -14,7 +14,7 @@ export async function uploadImage(file: File, folder = "events") {
   const res = await fetch(
     `https://api.cloudinary.com/v1_1/${
       process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
-    }/image/upload`,
+    }/auto/upload`,
     {
       method: "POST",
       body: formData,

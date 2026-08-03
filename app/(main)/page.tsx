@@ -10,12 +10,12 @@ import HeroSection from "@/features/home/components/HeroSection";
 export default function JnUITFestLanding() {
   return (
     <div className=" min-h-screen bg-slate-50 font-sans text-slate-900">
-      {/* <Hero />
-      <Segments /> */}
-      <HeroSection />
+      <Hero />
+      {/* <Segments />
+      <HeroSection /> */}
       {/* About Section */}
 
-      <About />
+      {/* <About /> */}
       {/* Segments Section */}
       <Segments />
       <EventSchedule />

@@ -6,6 +6,7 @@ import { formatDate, formatTime } from "@/lib/DateAndTimeFormater";
 import { honoFetch } from "@/lib/hono-client";
 import { GetEventValues } from "../types";
 import { promise } from "zod/v4/mini";
+import { Separator } from "@/components/ui/separator";
 
 const ACCENTS = [
   {
@@ -77,7 +78,7 @@ export async function FeaturedEvents({data}: { data: GetEventValues[] }) {
           <Link
             key={event.id}
             href={`/events/${event.slug}`}
-            className="group flex flex-col overflow-hidden rounded-xl border bg-card transition hover:-translate-y-0.5 hover:shadow-lg"
+            className="group flex flex-col overflow-hidden rounded-xl border border-slate-800 bg-card transition hover:-translate-y-0.5 hover:shadow-lg"
           >
             <div className="relative aspect-video w-full overflow-hidden bg-muted">
               {event.coverImage ? (
@@ -147,13 +148,14 @@ export async function FeaturedEvents({data}: { data: GetEventValues[] }) {
                 </div>
               </div>
 
-              <div className="mt-5 flex items-center justify-between gap-3 border-t pt-4">
+   <Separator className="my-2 bg-slate-700"  />
+              <div className="mt-0 flex items-center justify-between gap-3  ">
                 <div>
-                  <p className="text-base font-semibold">
+                  <p className="text-base font-semibold text-primary ">
                     {event.fee === 0 ? "Free" : `৳${event.fee}`}
                   </p>
                   {event.deadline && (
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-red-500">
                       Register by {formatDate(event.deadline)}
                     </p>
                   )}

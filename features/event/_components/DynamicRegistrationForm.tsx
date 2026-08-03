@@ -1,10 +1,12 @@
 "use client";
 
+import { submitEventRegistration } from "@/actions/registrationActions";
+import { honoFetch } from "@/lib/hono-client";
 import Image from "next/image";
 import { useState } from "react";
+import { toast } from "sonner";
 import { FormField } from "../types";
-import { honoFetch } from "@/lib/hono-client";
-import { submitEventRegistration } from "@/actions/registrationActions";
+import { uploadImage } from "@/lib/cloudinaryUpload";
 
 interface Props {
   eventId: string;
@@ -64,6 +66,8 @@ export default function DynamicRegistrationForm({
   const [imagePreviews, setImagePreviews] = useState<Record<string, string>>(
     {},
   );
+  // File upload state
+  const [filesToUpload, setFilesToUpload] = useState<Record<string, File>>({});
 
   // ফি ক্যালকুলেশন
   const subTotal = fee + extraMembers.length * extraMemberFee;
@@ -73,12 +77,19 @@ export default function DynamicRegistrationForm({
     setFormData((prev) => ({ ...prev, [fieldId]: value }));
   };
 
-  const handleFileChange = (fieldId: string, file: File | null) => {
-    if (!file) return;
-    handleChange(fieldId, file.name);
-    const previewUrl = URL.createObjectURL(file);
-    setImagePreviews((prev) => ({ ...prev, [fieldId]: previewUrl }));
-  };
+const handleFileChange = (fieldId: string, file: File | null) => {
+  if (!file) {
+    const newFiles = { ...filesToUpload };
+    delete newFiles[fieldId];
+    setFilesToUpload(newFiles);
+    return;
+  }
+  handleChange(fieldId, file.name);
+  const previewUrl = URL.createObjectURL(file);
+  setImagePreviews((prev) => ({ ...prev, [fieldId]: previewUrl }));
+
+  setFilesToUpload((prev) => ({ ...prev, [fieldId]: file }));
+};
 
   const handleBaseMemberChange = (
     index: number,
@@ -124,18 +135,36 @@ export default function DynamicRegistrationForm({
     setCouponStatus("loading");
 
     try {
-      // Demo logic: "FEST20" দিলে ২০% ডিসকাউন্ট
-      await new Promise((res) => setTimeout(res, 800));
-      if (couponCode.toUpperCase() === "FEST20") {
-        const discount = (subTotal * 20) / 100;
-        setDiscountAmount(discount);
-        setCouponStatus("success");
-      } else {
-        setDiscountAmount(0);
+      // API রেসপন্স অনুযায়ী টাইপ আপডেট করা হয়েছে
+      const { status, response } = await honoFetch<{
+        success: boolean;
+        message: string;
+        data?: {
+          valid: boolean;
+          discountPercentage: number;
+        };
+      }>(`/api/coupons/verify/${couponCode.toUpperCase().trim()}`);
+
+      // ১. যদি স্ট্যাটাস ২০০ না হয়, অথবা success false হয়, অথবা data.valid false হয়
+      if (status !== 200 || !response?.success || !response?.data?.valid) {
         setCouponStatus("error");
+        setDiscountAmount(0);
+        toast.error(response?.message || "Invalid or expired coupon code.");
+        return;
       }
+
+      // ২. যদি কুপন ভ্যালিড হয় (Success Case)
+      // response.data.discountPercentage ব্যবহার করে ডিসকাউন্ট হিসাব করা হচ্ছে
+      const discountPercentage = response.data.discountPercentage;
+      const calculatedDiscount = (subTotal * discountPercentage) / 100;
+
+      setDiscountAmount(calculatedDiscount);
+      setCouponStatus("success");
+      toast.success(response?.message || "Coupon applied successfully!");
     } catch (error) {
       setCouponStatus("error");
+      setDiscountAmount(0);
+      toast.error("Something went wrong while applying the coupon.");
     }
   };
 
@@ -144,10 +173,11 @@ export default function DynamicRegistrationForm({
   //   setIsSubmitting(true);
 
   //   try {
-  //     // সব ডেটা `metadata` এর ভেতরে ঢোকানো হচ্ছে, ডেটাবেস স্কিমা অনুযায়ী
+  //     // সব ডেটা `metadata` এর ভেতরে গোছানো হচ্ছে
   //     const finalPayload = {
   //       eventId,
-  //       couponCode: couponStatus === "success" ? couponCode.toUpperCase() : null,
+  //       couponCode:
+  //         couponStatus === "success" ? couponCode.toUpperCase() : null,
   //       metadata: {
   //         commonDetails: formData,
   //         teamInfo: eventType === "team" ? { baseMembers, extraMembers } : null,
@@ -162,26 +192,20 @@ export default function DynamicRegistrationForm({
   //           : null,
   //     };
 
-  //     console.log("Final Payload to Submit:",finalPayload);
+  //     console.log("Final Payload to Submit via Server Action:", finalPayload);
 
-  //     const { status, response } = await honoFetch("/api/registrations/event", {
-  //       method: "POST",
-  //       body: JSON.stringify(finalPayload),
-  //     });
-  //     const responseData = response as { message?: string; success?: boolean };
-      
-  //     if (status !== 200 || !responseData.success) {
-  //       alert(
-  //         responseData?.message ||
-  //           "Registration failed. Please check your details and try again.",
-  //       );
+  //     // 🎯 ডাইরেক্ট Hono API কল বাদ দিয়ে এখন সার্ভার অ্যাকশন কল করা হচ্ছে
+  //     const result = await submitEventRegistration(finalPayload);
+
+  //     if (!result.success) {
+  //       toast.error(result.message);
   //       return;
   //     }
 
-  //     alert("Registration successful!");
-  //     console.log("API Success Response:", response);
+  //     toast.success(result.message);
+  //     console.log("API Success Response:", result.data);
 
-  //     // Reset
+  //     // Reset Form State
   //     setIsOpen(false);
   //     setStep(1);
   //     setFormData({});
@@ -194,12 +218,13 @@ export default function DynamicRegistrationForm({
   //       })),
   //     );
   //     setExtraMembers([]);
-  //     setPaymentData({ transactionId: "", senderNumber: ""});
+  //     setPaymentData({ transactionId: "", senderNumber: "" });
   //     setImagePreviews({});
   //     setCouponCode("");
   //     setDiscountAmount(0);
   //     setCouponStatus("idle");
   //   } catch (error) {
+  //     console.error(error);
   //     alert("Something went wrong!");
   //   } finally {
   //     setIsSubmitting(false);
@@ -212,13 +237,34 @@ export default function DynamicRegistrationForm({
     setIsSubmitting(true);
 
     try {
-      // সব ডেটা `metadata` এর ভেতরে গোছানো হচ্ছে
+      // 🚀 ১. ফাইল আপলোড প্রসেস
+      const finalFormData = { ...formData }; // formData এর একটি কপি বানাচ্ছি
+
+      const fileKeys = Object.keys(filesToUpload);
+      if (fileKeys.length > 0) {
+        toast.info("Uploading files, please wait...");
+
+        for (const fieldId of fileKeys) {
+          const file = filesToUpload[fieldId];
+          try {
+            // আপনার uploadImage ফাংশন কল করে ফাইল আপলোড করা হচ্ছে
+            const uploadedUrl = await uploadImage(file, "event_registrations");
+            finalFormData[fieldId] = uploadedUrl; // ফাইলের নামের বদলে Cloudinary URL বসিয়ে দিলাম
+          } catch (uploadError) {
+            toast.error(`Failed to upload ${file.name}.`);
+            setIsSubmitting(false);
+            return; // আপলোড ফেইল হলে ফর্ম সাবমিশন এখানেই বন্ধ হয়ে যাবে
+          }
+        }
+      }
+
+      // 🚀 ২. সব ডেটা `metadata` এর ভেতরে গোছানো হচ্ছে (finalFormData ব্যবহার করে)
       const finalPayload = {
         eventId,
         couponCode:
           couponStatus === "success" ? couponCode.toUpperCase() : null,
         metadata: {
-          commonDetails: formData,
+          commonDetails: finalFormData, // 💡 এখানে URL সহ ডাটা যাচ্ছে
           teamInfo: eventType === "team" ? { baseMembers, extraMembers } : null,
         },
         paymentInfo:
@@ -233,21 +279,22 @@ export default function DynamicRegistrationForm({
 
       console.log("Final Payload to Submit via Server Action:", finalPayload);
 
-      // 🎯 ডাইরেক্ট Hono API কল বাদ দিয়ে এখন সার্ভার অ্যাকশন কল করা হচ্ছে
+      // 🎯 ৩. সার্ভার অ্যাকশন কল করা হচ্ছে
       const result = await submitEventRegistration(finalPayload);
 
       if (!result.success) {
-        alert(result.message);
+        toast.error(result.message);
         return;
       }
 
-      alert(result.message);
+      toast.success(result.message);
       console.log("API Success Response:", result.data);
 
       // Reset Form State
       setIsOpen(false);
       setStep(1);
       setFormData({});
+      setFilesToUpload({}); // 💡 ফাইল স্টেট ক্লিয়ার
       setBaseMembers(
         Array.from({ length: eventType === "team" ? baseTeamSize : 0 }, () => ({
           name: "",
@@ -264,12 +311,12 @@ export default function DynamicRegistrationForm({
       setCouponStatus("idle");
     } catch (error) {
       console.error(error);
-      alert("Something went wrong!");
+      toast.error("Something went wrong!");
     } finally {
       setIsSubmitting(false);
     }
   };
-
+  
   return (
     <>
       <button
@@ -767,7 +814,6 @@ export default function DynamicRegistrationForm({
                           className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                         />
                       </div>
-                   
 
                       <div className="flex flex-col space-y-2">
                         <label className="text-sm font-bold text-gray-700">

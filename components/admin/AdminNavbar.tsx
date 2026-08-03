@@ -7,6 +7,7 @@ import { LogOut, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Suspense, useState } from "react";
+import LogoutButton from "../custom/logout";
 
 // Inner component handling the dynamic routing and state
 function AdminNavbarInner() {
@@ -54,15 +55,9 @@ function AdminNavbarInner() {
             })}
 
             <div className="border-t mt-4 pt-4 space-y-2">
-              {/* FIXED: Using asChild to prevent rendering a <button> inside an <a> tag */}
+          
 
-              <Button
-                variant="ghost"
-                className="w-full justify-start text-destructive hover:text-primary hover:bg-primary/10"
-              >
-                <LogOut size={16} className="mr-2" />
-                Logout
-              </Button>
+              <LogoutButton />
             </div>
           </div>
         </div>

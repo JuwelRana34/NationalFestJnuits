@@ -1,21 +1,24 @@
 "use client";
 
 import { revalidationAdminDashboard } from "@/actions/registrationActions";
+import { formatDate } from "@/lib/DateAndTimeFormater";
 import { honoFetch } from "@/lib/hono-client";
 import {
   CheckCircle2,
+  ClipboardList,
   Clock,
   Eye,
   Filter,
   Loader2,
+  Receipt,
   Search,
+  Tag,
   User,
   X,
   XCircle,
-  Receipt,
-  ClipboardList,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 // ==========================================
 // 💡 Types based on your Drizzle Schema
@@ -23,11 +26,23 @@ import { useEffect, useState } from "react";
 interface PaymentData {
   status: string;
   paidAmount?: number;
+  baseAmount?: number;
   transactionId?: string;
   paymentMethod?: string;
+  couponUsed?: string | null;
 }
 
-// 💡 মেটাডেটার জন্য প্রপার টাইপ ডিক্লেয়ারেশন (No more "any")
+interface CouponDetails {
+  code: string;
+  discountPercentage: number;
+}
+
+interface FinanceData {
+  baseAmount: number;
+  discountAmount: number;
+  paidAmount: number;
+}
+
 interface FormMetadata {
   commonDetails?: {
     name?: string;
@@ -40,22 +55,23 @@ interface FormMetadata {
   };
   couponId?: string;
   eventType?: string;
-  [key: string]: unknown; // ডায়নামিক অন্যান্য ফিল্ড অ্যালাউ করার জন্য
+  [key: string]: unknown;
 }
 
 interface RegistrationData {
   id: string;
   trackingNumber: string;
-  registermail?: string;
   selectionStatus: string;
   createdAt: string;
   couponId: string | null;
-  metadata: FormMetadata | string | null; // Database থেকে স্ট্রিং বা অবজেক্ট আসতে পারে
+  metadata: FormMetadata | string | null;
   event?: {
     title: string;
     eventType: string;
   };
   payments?: PaymentData[];
+  couponDetails?: CouponDetails | null;
+  finance?: FinanceData;
 }
 
 interface ApiResponse {
@@ -72,13 +88,13 @@ interface MappedRegistration {
   eventName: string;
   category: string;
   paymentStatus: string;
-  paidAmount: number | null;
   transactionId: string | null;
-  couponId: string | null;
   selectionStatus: string;
   date: string;
-  rawMetadata: FormMetadata; // "any" রিমুভ করা হয়েছে
+  rawMetadata: FormMetadata;
   rawPayments: PaymentData[];
+  finance: FinanceData | null;
+  couponDetails: CouponDetails | null;
 }
 
 // ==========================================
@@ -92,37 +108,62 @@ const formatKey = (key: string) => {
     .replace(/^./, (str) => str.toUpperCase());
 };
 
-// 💡 data prop-এ "unknown" ব্যবহার করা হয়েছে "any" এর বদলে
 const DynamicDataRenderer = ({ data }: { data: unknown }) => {
   if (data === null || data === undefined || data === "") {
-    return <span className="text-gray-400 italic text-sm">N/A</span>;
+    return <span className="text-slate-500 italic text-sm">N/A</span>;
   }
+  
   if (typeof data === "boolean") {
     return (
-      <span className="text-sm font-medium text-gray-900">
+      <span className="text-sm font-medium text-slate-200">
         {data ? "Yes" : "No"}
       </span>
     );
   }
+  
+  // 💡 যদি ডাটা অবজেক্ট বা অ্যারে না হয়, তখন আমরা চেক করব এটা URL কি না
   if (typeof data !== "object") {
+    const stringData = String(data);
+    
+    // URL চেক করার জন্য Regex (http অথবা https দিয়ে শুরু হতে হবে)
+    const isUrl = /^(https?:\/\/[^\s]+)$/i.test(stringData);
+
+    if (isUrl) {
+      return (
+        <a
+          href={stringData}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-sm font-medium text-indigo-400 hover:text-indigo-300 underline underline-offset-2 break-all transition-colors flex items-center gap-1 w-fit"
+        >
+          View Attachment
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+        </a>
+      );
+    }
+
     return (
-      <span className="text-sm font-medium text-gray-900 break-words">
-        {String(data)}
+      <span className="text-sm font-medium text-slate-200 break-words">
+        {stringData}
       </span>
     );
   }
 
   if (Array.isArray(data)) {
     if (data.length === 0)
-      return <span className="text-gray-400 text-sm">Empty</span>;
+      return <span className="text-slate-500 text-sm">Empty</span>;
     return (
       <div className="space-y-3 mt-1">
         {data.map((item, idx) => (
           <div
             key={idx}
-            className="p-4 bg-gray-50 border border-gray-100 rounded-lg"
+            className="p-4 bg-slate-800/50 border border-slate-700/50 rounded-lg"
           >
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3 block">
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3 block">
               Item #{idx + 1}
             </span>
             <DynamicDataRenderer data={item} />
@@ -132,10 +173,9 @@ const DynamicDataRenderer = ({ data }: { data: unknown }) => {
     );
   }
 
-  // Object এর জন্য Type Casting
   const entries = Object.entries(data as Record<string, unknown>);
   if (entries.length === 0)
-    return <span className="text-gray-400 text-sm">No details</span>;
+    return <span className="text-slate-500 text-sm">No details</span>;
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
@@ -145,10 +185,10 @@ const DynamicDataRenderer = ({ data }: { data: unknown }) => {
           <div
             key={key}
             className={`${
-              isObject ? "sm:col-span-2 border-t border-gray-100 pt-3 mt-1" : ""
+              isObject ? "sm:col-span-2 border-t border-slate-700/50 pt-3 mt-1" : ""
             }`}
           >
-            <p className="text-xs font-medium text-gray-500 mb-1">
+            <p className="text-xs font-medium text-slate-400 mb-1">
               {formatKey(key)}
             </p>
             {isObject ? (
@@ -181,15 +221,16 @@ export default function RegistrationManagementPage() {
   useEffect(() => {
     const fetchRegistrations = async () => {
       try {
-        const { status, response } =
-          await honoFetch<ApiResponse>("/api/registrations",{
+        const { status, response } = await honoFetch<ApiResponse>(
+          "/api/registrations",
+          {
             credentials: "include",
-          });
+          },
+        );
 
         if (status === 200 && response?.data && Array.isArray(response.data)) {
           const formattedData: MappedRegistration[] = response.data.map(
             (reg: RegistrationData) => {
-              // 💡 Type Safe Metadata Parsing
               let meta: FormMetadata = {};
               if (typeof reg.metadata === "string") {
                 try {
@@ -208,7 +249,6 @@ export default function RegistrationManagementPage() {
 
               return {
                 id: reg.id,
-                couponId: reg.couponId || meta?.couponId || null,
                 trackingId: reg.trackingNumber,
                 guestName:
                   meta?.commonDetails?.name ||
@@ -222,7 +262,6 @@ export default function RegistrationManagementPage() {
                 eventName: reg.event?.title || "Unknown Event",
                 category: reg.event?.eventType || "General",
                 paymentStatus: payment ? payment.status : "FREE",
-                paidAmount: payment?.paidAmount || null,
                 transactionId: payment?.transactionId || null,
                 selectionStatus: reg.selectionStatus,
                 date: new Date(reg.createdAt).toLocaleDateString("en-US", {
@@ -234,6 +273,8 @@ export default function RegistrationManagementPage() {
                 }),
                 rawMetadata: meta,
                 rawPayments: reg.payments || [],
+                finance: reg.finance || null,
+                couponDetails: reg.couponDetails || null,
               };
             },
           );
@@ -270,54 +311,6 @@ export default function RegistrationManagementPage() {
     return matchesSearch && matchesStatus && matchesEvent;
   });
 
-  // const handleUpdateStatus = async (id: string, newStatus: string) => {
-  //   if (window.confirm(`Are you sure you want to mark this as ${newStatus}?`)) {
-  //     // 💡 Optimistic UI Update: Selection Status এবং Payment Status দুটোই সাথে সাথে আপডেট হবে
-  //     setRegistrations((prev) =>
-  //       prev.map((reg) => {
-  //         if (reg.id === id) {
-  //           let newPaymentStatus = reg.paymentStatus;
-  //           if (newStatus === "VERIFIED") newPaymentStatus = "VERIFIED";
-  //           else if (newStatus === "REJECTED") newPaymentStatus = "REJECTED";
-
-  //           return {
-  //             ...reg,
-  //             selectionStatus: newStatus,
-  //             paymentStatus: newPaymentStatus,
-  //             // Modal-এ দেখানোর জন্য rawPayments-ও আপডেট করে দিচ্ছি
-  //             rawPayments: reg.rawPayments.map((payment, index) =>
-  //               index === 0
-  //                 ? { ...payment, status: newPaymentStatus }
-  //                 : payment,
-  //             ),
-  //           };
-  //         }
-  //         return reg;
-  //       }),
-  //     );
-
-  //     try {
-  //       const { status, response } = await honoFetch<ApiResponse>(
-  //         `/api/registrations/${id}/status`,
-  //         {
-  //           method: "PATCH",
-  //           body: JSON.stringify({ selectionStatus: newStatus }),
-  //           credentials:"include",
-  //         },
-  //       );
-
-  //       if (status !== 200 || !response?.success) {
-  //         throw new Error(response?.message || "Failed to update status.");
-  //       }
-  //      await revalidationAdminDashboard();
-  //     } catch (error) {
-  //       alert("Failed to update status in database.");
-  //       // রিয়েল-ওয়ার্ল্ড অ্যাপে এখানে API ফেইল করলে আবার fetchRegistrations() কল করে স্টেট রিস্টোর করা যায়।
-  //     }
-  //   }
-  // };
-
-  // 💡 শুধুমাত্র Payment Status আপডেটের জন্য
   const handlePaymentUpdate = async (id: string, newPaymentStatus: string) => {
     if (
       window.confirm(
@@ -356,14 +349,17 @@ export default function RegistrationManagementPage() {
             response?.message || "Failed to update payment status.",
           );
         }
+        toast.success(
+          `Payment status updated successfully to ${newPaymentStatus}.`,
+        );
         await revalidationAdminDashboard();
       } catch (error) {
-        alert("Failed to update payment status in database.");
+        toast.error("Failed to update payment status in database.");
+        console.error("Error updating payment status:", error);
       }
     }
   };
 
-  // 💡 শুধুমাত্র Selection Status আপডেটের জন্য
   const handleSelectionUpdate = async (
     id: string,
     newSelectionStatus: string,
@@ -397,38 +393,41 @@ export default function RegistrationManagementPage() {
             response?.message || "Failed to update selection status.",
           );
         }
+        toast.success(
+          `Selection status updated successfully to ${newSelectionStatus}.`,
+        );
         await revalidationAdminDashboard();
       } catch (error) {
-        alert("Failed to update selection status in database.");
+        toast.error("Failed to update selection status in database.");
+        console.error("Error updating selection status:", error);
       }
     }
   };
 
-
   return (
-    <div className="p-4 md:p-8 w-full max-w-7xl mx-auto space-y-6 bg-gray-50/50 min-h-screen">
+    <div className="p-4 md:p-8 w-full max-w-7xl mx-auto space-y-6 bg-[#0B0F19] min-h-screen text-slate-200 font-sans">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+          <h1 className="text-2xl md:text-3xl font-bold text-white">
             Registration Management
           </h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-slate-400 mt-1">
             Review, verify payments manually, and select candidates.
           </p>
         </div>
         <div className="flex gap-2">
-          <button className="px-4 py-2 bg-white border border-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors shadow-sm text-sm flex items-center gap-2">
+          <button className="px-4 py-2 bg-slate-800 border border-slate-700 text-slate-200 font-medium rounded-lg hover:bg-slate-700 transition-colors shadow-sm text-sm flex items-center gap-2">
             <Filter size={16} /> Export CSV
           </button>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col sm:flex-row justify-between gap-4">
+      <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-800 shadow-sm flex flex-col sm:flex-row justify-between gap-4">
         <div className="relative w-full sm:w-96">
           <Search
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"
             size={18}
           />
           <input
@@ -436,14 +435,14 @@ export default function RegistrationManagementPage() {
             placeholder="Search Name, Phone, TRK, or TrxID..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm"
+            className="w-full pl-10 pr-4 py-2.5 bg-slate-800/80 border border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm text-white placeholder-slate-500"
           />
         </div>
         <div className="flex gap-3 overflow-x-auto pb-1 sm:pb-0">
           <select
             value={eventFilter}
             onChange={(e) => setEventFilter(e.target.value)}
-            className="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 text-sm text-gray-700 min-w-[150px]"
+            className="px-4 py-2.5 bg-slate-800/80 border border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 text-sm text-slate-200 min-w-[150px] appearance-none"
           >
             <option value="ALL">All Events</option>
             {uniqueEvents.map((event) => (
@@ -455,11 +454,10 @@ export default function RegistrationManagementPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 text-sm text-gray-700"
+            className="px-4 py-2.5 bg-slate-800/80 border border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 text-sm text-slate-200 appearance-none"
           >
             <option value="ALL">All Status</option>
             <option value="PENDING">Pending</option>
-            {/* 💡 "SELECTED" এর বদলে "VERIFIED" দেওয়া হলো */}
             <option value="VERIFIED">Verified</option>
             <option value="REJECTED">Rejected</option>
           </select>
@@ -467,35 +465,29 @@ export default function RegistrationManagementPage() {
       </div>
 
       {/* Registrations Table */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+      <div className="bg-slate-900 rounded-xl border border-slate-800 shadow-lg overflow-hidden">
+        <div className="overflow-x-auto md:overflow-visible w-full">
+          <table className="w-full text-left border-collapse table-auto md:table-fixed">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-200 text-gray-500 text-xs uppercase tracking-wider">
-                <th className="p-4 font-medium whitespace-nowrap">
-                  Tracking & Date
-                </th>
-                <th className="p-4 font-medium whitespace-nowrap">
-                  Participant Info
-                </th>
-                <th className="p-4 font-medium whitespace-nowrap">Event</th>
-                <th className="p-4 font-medium whitespace-nowrap">
-                  Payment Details
-                </th>
-                <th className="p-4 font-medium whitespace-nowrap">Selection</th>
-                <th className="p-4 font-medium text-right whitespace-nowrap">
+              <tr className="bg-slate-800/50 border-b border-slate-700/50 text-slate-400 text-xs uppercase tracking-wider">
+                <th className="p-4 font-medium w-[140px]">Tracking & Date</th>
+                <th className="p-4 font-medium">Participant Info</th>
+                <th className="p-4 font-medium">Event</th>
+                <th className="p-4 font-medium">Payment Details</th>
+                <th className="p-4 font-medium w-[120px]">Selection</th>
+                <th className="p-4 font-medium text-right w-[160px]">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100 text-sm">
+            <tbody className="divide-y divide-slate-800/50 text-sm">
               {isLoading ? (
                 <tr>
                   <td colSpan={6} className="p-16 text-center">
-                    <div className="flex flex-col items-center justify-center text-gray-500">
+                    <div className="flex flex-col items-center justify-center text-slate-500">
                       <Loader2
                         size={32}
-                        className="animate-spin text-indigo-600 mb-4"
+                        className="animate-spin text-indigo-500 mb-4"
                       />
                       <p>Loading registrations data...</p>
                     </div>
@@ -505,138 +497,158 @@ export default function RegistrationManagementPage() {
                 filteredRegistrations.map((reg) => (
                   <tr
                     key={reg.id}
-                    className="hover:bg-gray-50/50 transition-colors group"
+                    className="hover:bg-slate-800/40 transition-colors group"
                   >
-                    <td className="p-4">
-                      <div className="font-mono font-bold text-indigo-600 uppercase">
+                    <td className="p-4 align-top">
+                      <div className="font-mono font-bold text-indigo-400 uppercase break-all">
                         {reg.trackingId}
                       </div>
-                      <div className="text-xs text-gray-500 mt-1">
-                        {reg.date}
+                      <div className="text-xs text-slate-500 mt-1 whitespace-nowrap">
+                        {formatDate(reg.date)}
                       </div>
                     </td>
-                    <td className="p-4">
-                      <div className="flex items-center gap-2 min-w-[150px]">
-                        <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 shrink-0">
-                          <User size={14} />
+                    <td className="p-4 align-top">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                        <div className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 shrink-0">
+                          <User size={16} />
                         </div>
-                        <div>
-                          <p className="font-semibold text-gray-900 capitalize">
+                        <div className="min-w-0">
+                          <p
+                            className="font-semibold text-white capitalize truncate"
+                            title={reg.guestName}
+                          >
                             {reg.guestName}
                           </p>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-slate-400 truncate">
                             {reg.guestPhone}
                           </p>
                         </div>
                       </div>
                     </td>
-                    <td className="p-4">
-                      <p className="text-gray-800 font-medium whitespace-nowrap">
+                    <td className="p-4 align-top">
+                      <p className="text-slate-200 font-medium break-words leading-tight">
                         {reg.eventName}
                       </p>
-                      <span className="inline-block px-2 py-0.5 mt-1 bg-gray-100 text-gray-600 text-[10px] rounded uppercase font-semibold tracking-wide">
+                      <span className="inline-block px-2 py-0.5 mt-1.5 bg-slate-800 text-slate-300 text-[10px] rounded border border-slate-700 uppercase font-semibold tracking-wide">
                         {reg.category}
                       </span>
                     </td>
 
-                    {/* Payment Details Column */}
-                    <td className="p-4">
+                    <td className="p-4 align-top">
                       <div className="flex flex-col items-start gap-1.5">
                         <span
-                          className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase whitespace-nowrap ${
+                          className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase whitespace-nowrap ${
                             reg.paymentStatus === "VERIFIED" ||
                             reg.paymentStatus === "FREE"
-                              ? "bg-green-50 text-green-700 border border-green-200"
+                              ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
                               : reg.paymentStatus === "REJECTED"
-                                ? "bg-red-50 text-red-700 border border-red-200"
-                                : "bg-yellow-50 text-yellow-700 border border-yellow-200"
+                                ? "bg-rose-500/10 text-rose-400 border border-rose-500/20"
+                                : "bg-amber-500/10 text-amber-400 border border-amber-500/20"
                           }`}
                         >
                           {reg.paymentStatus}
                         </span>
 
-                        {(reg.paidAmount !== null || reg.transactionId) && (
-                          <div className="flex flex-col gap-0.5 mt-1 border-l-2 border-gray-200 pl-2">
-                            <span className="text-[11px] font-medium text-gray-500">
-                              Amount:{" "}
-                              <span className="text-gray-900 font-bold">
-                                ৳{reg.paidAmount || 0}
+                        {reg.finance && (
+                          <div className="flex flex-col gap-0.5 mt-1 border-l-2 border-slate-700 pl-2.5">
+                            {reg.finance.discountAmount > 0 ? (
+                              <>
+                                <span className="text-[11px] text-slate-400">
+                                  Base:{" "}
+                                  <span className="line-through">
+                                    ৳{reg.finance.baseAmount}
+                                  </span>
+                                </span>
+                                <span className="text-[11px] text-emerald-400 font-medium flex items-center gap-1">
+                                  Discount: -৳{reg.finance.discountAmount}
+                                </span>
+                                <span className="text-[11px] font-medium text-slate-300 mt-0.5">
+                                  Paid:{" "}
+                                  <span className="text-white font-bold">
+                                    ৳{reg.finance.paidAmount}
+                                  </span>
+                                </span>
+                              </>
+                            ) : (
+                              <span className="text-[11px] font-medium text-slate-300 mt-0.5">
+                                Paid:{" "}
+                                <span className="text-white font-bold">
+                                  ৳{reg.finance.paidAmount}
+                                </span>
                               </span>
-                            </span>
-                            <span className="text-[11px] text-gray-500 font-mono">
+                            )}
+
+                            <span className="text-[11px] text-slate-500 font-mono mt-1 flex flex-wrap items-center gap-1">
                               Trx:{" "}
-                              <span className="font-semibold text-gray-800">
+                              <span className="font-semibold text-slate-300 break-all">
                                 {reg.transactionId || "N/A"}
                               </span>
                             </span>
                           </div>
                         )}
 
-                        {reg.couponId && (
-                          <span className="text-[10px] text-indigo-600 font-medium bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-100 mt-0.5">
-                            🎟️ {reg.couponId}
-                          </span>
+                        {reg.couponDetails && (
+                          <div className="mt-1 flex items-center gap-1 px-2 py-0.5 bg-indigo-500/10 border border-indigo-500/20 rounded text-[10px] text-indigo-300 font-medium w-max">
+                            <Tag size={10} />
+                            {reg.couponDetails.code} (-
+                            {reg.couponDetails.discountPercentage}%)
+                          </div>
                         )}
                       </div>
                     </td>
 
-                    <td className="p-4">
+                    <td className="p-4 align-top">
                       <span
-                        className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
+                        className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border whitespace-nowrap ${
                           reg.selectionStatus === "APPROVED"
-                            ? "bg-green-100 text-green-700"
+                            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
                             : reg.selectionStatus === "REJECTED"
-                              ? "bg-red-100 text-red-700"
-                              : "bg-orange-100 text-orange-700"
+                              ? "bg-rose-500/10 text-rose-400 border-rose-500/20"
+                              : "bg-blue-500/10 text-blue-400 border-blue-500/20"
                         }`}
                       >
                         {reg.selectionStatus === "APPROVED" && (
-                          <CheckCircle2 size={14} className="mr-1" />
+                          <CheckCircle2 size={14} className="mr-1.5 shrink-0" />
                         )}
                         {reg.selectionStatus === "REJECTED" && (
-                          <XCircle size={14} className="mr-1" />
+                          <XCircle size={14} className="mr-1.5 shrink-0" />
                         )}
                         {reg.selectionStatus === "PENDING" && (
-                          <Clock size={14} className="mr-1" />
+                          <Clock size={14} className="mr-1.5 shrink-0" />
                         )}
                         {reg.selectionStatus}
                       </span>
                     </td>
 
-                    <td className="p-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        {/* View Details Button */}
+                    <td className="p-4 text-right align-top">
+                      {/* 💡 অ্যাকশন বাটনগুলোকে ফ্লেক্স-র‍্যাপ করা হয়েছে যেন জায়গা কম পেলে ভেঙে যায় */}
+                      <div className="flex flex-wrap items-center justify-end gap-2">
                         <button
                           onClick={() => setSelectedReg(reg)}
-                          className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                          className="p-2 text-indigo-400 bg-indigo-500/10 hover:bg-indigo-500/20 rounded-lg transition-colors border border-transparent hover:border-indigo-500/30"
                           title="View Details"
                         >
                           <Eye size={16} />
                         </button>
 
-                        {/* 💡 Payment Actions (পেমেন্ট ভেরিফাই বা রিজেক্ট করার বাটন) */}
                         {reg.paymentStatus === "PENDING" && (
-                          <>
-                            <button
-                              onClick={() =>
-                                handlePaymentUpdate(reg.id, "VERIFIED")
-                              }
-                              className="p-2 text-emerald-600 bg-emerald-50 hover:bg-emerald-100 rounded-lg transition-colors"
-                              title="Verify Payment"
-                            >
-                              <Receipt size={16} />{" "}
-                              {/* Receipt আইকন import করে নিবেন */}
-                            </button>
-                          </>
+                          <button
+                            onClick={() =>
+                              handlePaymentUpdate(reg.id, "VERIFIED")
+                            }
+                            className="p-2 text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 rounded-lg transition-colors border border-transparent hover:border-emerald-500/30"
+                            title="Verify Payment"
+                          >
+                            <Receipt size={16} />
+                          </button>
                         )}
 
-                        {/* 💡 Selection Actions (ক্যান্ডিডেট সিলেক্ট বা রিজেক্ট করার বাটন) */}
                         {reg.selectionStatus !== "APPROVED" && (
                           <button
                             onClick={() =>
                               handleSelectionUpdate(reg.id, "APPROVED")
                             }
-                            className="p-2 text-green-600 bg-green-50 hover:bg-green-100 rounded-lg transition-colors"
+                            className="p-2 text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 rounded-lg transition-colors border border-transparent hover:border-emerald-500/30"
                             title="Approve Candidate"
                           >
                             <CheckCircle2 size={16} />
@@ -648,7 +660,7 @@ export default function RegistrationManagementPage() {
                             onClick={() =>
                               handleSelectionUpdate(reg.id, "REJECTED")
                             }
-                            className="p-2 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
+                            className="p-2 text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 rounded-lg transition-colors border border-transparent hover:border-rose-500/30"
                             title="Reject Candidate"
                           >
                             <XCircle size={16} />
@@ -660,9 +672,9 @@ export default function RegistrationManagementPage() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={6} className="p-10 text-center text-gray-500">
+                  <td colSpan={6} className="p-10 text-center text-slate-500">
                     <div className="flex flex-col items-center">
-                      <Search size={32} className="text-gray-300 mb-3" />
+                      <Search size={32} className="text-slate-600 mb-3" />
                       <p>No registrations found matching your criteria.</p>
                     </div>
                   </td>
@@ -673,17 +685,17 @@ export default function RegistrationManagementPage() {
         </div>
       </div>
 
-      {/* Dynamic Details Modal */}
+      {/* Dynamic Details Modal (Dark Mode) */}
       {selectedReg && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-gray-900/40 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
-            <div className="flex items-center justify-between p-5 md:p-6 border-b border-gray-100 bg-gray-50/50 shrink-0">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
+            <div className="flex items-center justify-between p-5 md:p-6 border-b border-slate-800 bg-slate-900/50 shrink-0">
               <div>
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-bold text-white">
                   Registration Details
                 </h2>
-                <p className="text-sm text-gray-500 mt-1 flex items-center gap-2">
-                  <span className="font-mono text-indigo-600 font-semibold">
+                <p className="text-sm text-slate-400 mt-1 flex items-center gap-2">
+                  <span className="font-mono text-indigo-400 font-semibold bg-indigo-500/10 px-2 py-0.5 rounded">
                     {selectedReg.trackingId}
                   </span>
                   <span>•</span>
@@ -692,80 +704,118 @@ export default function RegistrationManagementPage() {
               </div>
               <button
                 onClick={() => setSelectedReg(null)}
-                className="p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-700 rounded-full transition-colors"
+                className="p-2 text-slate-400 hover:bg-slate-800 hover:text-white rounded-full transition-colors"
               >
                 <X size={20} />
               </button>
             </div>
 
             <div className="p-5 md:p-6 space-y-8 overflow-y-auto flex-1 custom-scrollbar">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-white">
-                <div className="space-y-1">
-                  <p className="text-sm font-medium text-gray-500">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="space-y-1 bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
+                  <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
                     Participant
                   </p>
-                  <p className="font-semibold text-gray-900 text-lg capitalize">
+                  <p className="font-semibold text-white text-lg capitalize mt-1">
                     {selectedReg.guestName}
                   </p>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-slate-400">
                     {selectedReg.guestPhone}
                   </p>
                 </div>
-                <div className="space-y-1">
-                  <p className="text-sm font-medium text-gray-500">
+                <div className="space-y-1 bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
+                  <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
                     Event Info
                   </p>
-                  <p className="font-semibold text-gray-900">
+                  <p className="font-semibold text-white text-lg mt-1">
                     {selectedReg.eventName}
                   </p>
-                  <span className="inline-block px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded uppercase font-medium">
+                  <span className="inline-block px-2 py-0.5 bg-slate-700 text-slate-300 text-xs rounded border border-slate-600 uppercase font-medium mt-1">
                     {selectedReg.category}
                   </span>
                 </div>
               </div>
 
+              {/* Finance & Payment Info inside Modal */}
               {selectedReg.rawPayments &&
                 selectedReg.rawPayments.length > 0 && (
-                  <div className="border border-gray-100 rounded-xl p-5 bg-gray-50/50">
-                    <h3 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
-                      <Receipt size={16} className="text-gray-400" />
-                      Payment Information
+                  <div className="border border-slate-800 rounded-xl p-5 bg-slate-800/30">
+                    <h3 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
+                      <Receipt size={16} className="text-indigo-400" />
+                      Financial Breakdown
                     </h3>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mb-4 border-b border-slate-700/50 pb-4">
+                      <div>
+                        <p className="text-slate-500 text-xs mb-1">
+                          Base Amount
+                        </p>
+                        <p className="font-medium text-slate-300">
+                          ৳{selectedReg.finance?.baseAmount || 0}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-slate-500 text-xs mb-1">Discount</p>
+                        <p className="font-medium text-emerald-400">
+                          {selectedReg.finance &&
+                          selectedReg.finance.discountAmount > 0
+                            ? `-৳${selectedReg.finance.discountAmount}`
+                            : "৳0"}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-slate-500 text-xs mb-1">
+                          Paid Amount
+                        </p>
+                        <p className="font-bold text-white text-base">
+                          ৳{selectedReg.finance?.paidAmount || 0}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-slate-500 text-xs mb-1">
+                          Coupon Used
+                        </p>
+                        {selectedReg.couponDetails ? (
+                          <span className="inline-flex items-center gap-1 bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded text-[11px] font-medium">
+                            <Tag size={10} />
+                            {selectedReg.couponDetails.code} (-
+                            {selectedReg.couponDetails.discountPercentage}%)
+                          </span>
+                        ) : (
+                          <p className="font-medium text-slate-400">None</p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
                       {selectedReg.rawPayments.map((payment, i) => (
                         <div key={i} className="contents">
                           <div>
-                            <p className="text-gray-500 text-xs mb-1">
-                              Amount Paid
-                            </p>
-                            <p className="font-medium text-gray-900">
-                              {payment.paidAmount
-                                ? `৳${payment.paidAmount}`
-                                : "N/A"}
-                            </p>
-                          </div>
-                          <div>
-                            <p className="text-gray-500 text-xs mb-1">TrxID</p>
-                            <p className="font-mono font-medium text-gray-900">
+                            <p className="text-slate-500 text-xs mb-1">TrxID</p>
+                            <p className="font-mono font-medium text-slate-200">
                               {payment.transactionId || "N/A"}
                             </p>
                           </div>
                           <div>
-                            <p className="text-gray-500 text-xs mb-1">Method</p>
-                            <p className="font-medium text-gray-900 capitalize">
+                            <p className="text-slate-500 text-xs mb-1">
+                              Method
+                            </p>
+                            <p className="font-medium text-slate-200 capitalize">
                               {payment.paymentMethod?.replace("_", " ") ||
                                 "N/A"}
                             </p>
                           </div>
                           <div>
-                            <p className="text-gray-500 text-xs mb-1">Status</p>
+                            <p className="text-slate-500 text-xs mb-1">
+                              Status
+                            </p>
                             <p
-                              className={`font-semibold ${
+                              className={`font-semibold text-xs px-2 py-0.5 rounded inline-block ${
                                 payment.status === "VERIFIED"
-                                  ? "text-green-600"
+                                  ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
                                   : payment.status === "REJECTED"
-                                    ? "text-red-600"
-                                    : "text-yellow-600"
+                                    ? "bg-rose-500/10 text-rose-400 border border-rose-500/20"
+                                    : "bg-amber-500/10 text-amber-400 border border-amber-500/20"
                               }`}
                             >
                               {payment.status}
@@ -778,16 +828,16 @@ export default function RegistrationManagementPage() {
                 )}
 
               <div>
-                <h3 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2 pb-2 border-b border-gray-100">
-                  <ClipboardList size={18} className="text-indigo-500" />
+                <h3 className="text-sm font-bold text-white mb-4 flex items-center gap-2 pb-2 border-b border-slate-800">
+                  <ClipboardList size={18} className="text-indigo-400" />
                   Submitted Form Details
                 </h3>
-                <div className="bg-white rounded-xl">
+                <div className="bg-slate-900 rounded-xl">
                   {selectedReg.rawMetadata &&
                   Object.keys(selectedReg.rawMetadata).length > 0 ? (
                     <DynamicDataRenderer data={selectedReg.rawMetadata} />
                   ) : (
-                    <p className="text-sm text-gray-400 italic">
+                    <p className="text-sm text-slate-500 italic">
                       No additional details were provided.
                     </p>
                   )}
@@ -795,10 +845,10 @@ export default function RegistrationManagementPage() {
               </div>
             </div>
 
-            <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3 shrink-0">
+            <div className="p-4 border-t border-slate-800 bg-slate-900/50 flex justify-end gap-3 shrink-0">
               <button
                 onClick={() => setSelectedReg(null)}
-                className="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-5 py-2.5 text-sm font-medium text-slate-300 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 hover:text-white transition-colors"
               >
                 Close Details
               </button>

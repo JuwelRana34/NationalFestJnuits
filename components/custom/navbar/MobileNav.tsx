@@ -73,11 +73,11 @@ export default function MobileNav() {
             <MobileAuthSection closeMenu={() => setIsOpen(false)} />
           ) : (
             <Link
-              href="/login"
+              href="/signin"
               onClick={() => setIsOpen(false)}
               className="mt-4 text-secondary font-medium text-lg border border-secondary px-6 py-2 rounded"
             >
-              লগ-ইন
+              Login
             </Link>
           )}
         </div>
@@ -98,17 +98,17 @@ function MobileAuthSection({ closeMenu }: { closeMenu: () => void }) {
   return (
     <div className="flex flex-col justify-center items-center gap-2">
       <Link
-        href={`/dashboard`}
+        href={`/admin`}
         onClick={closeMenu}
         className={`text-lg font-medium ${
-          path === "/dashboard"
+          path === "/admin"
             ? "text-white bg-secondary px-4 py-2 rounded"
             : "text-slate-300"
         } transition-colors`}
       >
-        Profile ({user.name})
+        Dashboard Admin ({user.name})
       </Link>
-      <LogoutButton />
+      <LogoutButton/>
     </div>
   );
 }

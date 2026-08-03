@@ -57,7 +57,7 @@ export default function DashboardOverviewPage() {
 
         // 💎 Premium Unauthorized State (Client-side check)
         if (!token) {
-          router.push("/login");
+          router.push("/signin");
           return;
         }
 
