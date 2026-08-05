@@ -385,6 +385,12 @@ const handleFileChange = (fieldId: string, file: File | null) => {
                               <span className="text-rose-500">*</span>
                             )}
                           </label>
+                          {/* 💡 নতুন: Description দেখানোর অংশ */}
+                          {field.description && (
+                            <p className="text-xs text-primary/60 -mt-0.5 mb-1.5">
+                              {field.description}
+                            </p>
+                          )}
 
                           {field.type === "select" ? (
                             <select

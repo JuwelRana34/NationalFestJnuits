@@ -13,26 +13,27 @@ import {
   Ticket,
   User,
   XCircle,
-  UploadCloud, // সাবমিশন আইকনের জন্য
+  UploadCloud,
 } from "lucide-react";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
-// আপনার ডেট/টাইম ফরম্যাটার ইম্পোর্ট
+// Date/Time Formatter
 import { formatDate, formatTime } from "@/lib/DateAndTimeFormater";
+// Submission Form Component
 import DynamicSubmissionForm from "@/features/event/_components/ProjectSubmission";
 import { FormField } from "@/features/event/types";
 import { honoFetch } from "@/lib/hono-client";
 
-// সাবমিশন ফর্ম কম্পোনেন্টটি ইম্পোর্ট করুন (আপনার পাথ অনুযায়ী ঠিক করে নেবেন)
-;
-
-// 1. Result Data-এর জন্য টাইপস্ক্রিপ্ট ইন্টারফেস
 interface TrackingResult {
-  eventId: string; // সাবমিশনের জন্য eventId লাগবে
+  eventId: string;
   trackingNumber: string;
   category: string;
   selectionStatus: "PENDING" | "APPROVED" | "REJECTED";
+  payment?: {
+    status: "PENDING" | "VERIFIED" | "REJECTED";
+    amount: number;
+  };
   segment: {
     title: string;
     type: string;
@@ -44,17 +45,18 @@ interface TrackingResult {
     name: string;
     phone: string;
   };
-
-  // সাবমিশনের জন্য নতুন ফিল্ডসমূহ
   isSubmissionRequired: boolean;
   isSubmissionOpen: boolean;
+  hasSubmitted: boolean;
   submissionSchema: FormField[];
 }
+
 interface ApiResponse<T> {
   success: boolean;
   message?: string;
   data: T;
 }
+
 export default function EventTrackerPage() {
   const [trackingId, setTrackingId] = useState("");
   const [result, setResult] = useState<TrackingResult | null>(null);
@@ -74,15 +76,12 @@ export default function EventTrackerPage() {
       setSearched(false);
 
       try {
-        // 🎯 any এর পরিবর্তে ApiResponse<TrackingResult> ব্যবহার করা হলো
         const res = await honoFetch<ApiResponse<TrackingResult>>(
           `api/events/tracking/${cleanId}`,
           {
             method: "GET",
           },
         );
-
-        console.log("Tracking API Response:", res);
 
         if (res.status === 200 && res.response?.success && res.response?.data) {
           setResult(res.response.data);
@@ -102,47 +101,49 @@ export default function EventTrackerPage() {
     });
   };
 
-  const getStatusInfo = (status: string) => {
-    switch (status) {
+  // 💡 ডার্ক থিমের জন্য স্ট্যাটাস কালার আপডেট
+  const getStatusInfo = (status: string = "PENDING") => {
+    switch (status.toUpperCase()) {
       case "APPROVED":
+      case "VERIFIED":
         return {
-          color:
-            "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20",
+          bg: "bg-emerald-500/10",
+          color: "text-emerald-400 border-emerald-500/20",
           icon: <CheckCircle2 size={16} className="mr-1.5" />,
-          label: "APPROVED",
+          label: status.toUpperCase(),
         };
       case "REJECTED":
         return {
-          color:
-            "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20",
+          bg: "bg-rose-500/10",
+          color: "text-rose-400 border-rose-500/20",
           icon: <XCircle size={16} className="mr-1.5" />,
-          label: "Rejected",
+          label: "REJECTED",
         };
-      default: // PENDING
+      default:
         return {
-          color:
-            "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border-yellow-500/20",
+          bg: "bg-amber-500/10",
+          color: "text-amber-400 border-amber-500/20",
           icon: <Clock size={16} className="mr-1.5" />,
-          label: "Pending Review",
+          label: "PENDING",
         };
     }
   };
 
   return (
-    <div className="min-h-screen bg-background  pb-20">
+    <div className="min-h-screen bg-[#0B0F19] text-slate-200 pb-20 font-sans selection:bg-indigo-500/30">
       <div className="container max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {/* Header */}
         <div className="text-center mb-10 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-linear-to-r from-primary to-primary/60">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-cyan-400 tracking-tight">
             Event Status Tracker
           </h1>
-          <p className="text-muted-foreground mt-3 text-sm sm:text-base md:text-lg">
+          <p className="text-slate-400 mt-3 text-sm sm:text-base md:text-lg">
             Track your registration status and submit projects
           </p>
         </div>
 
         {/* Search Box */}
-        <div className="bg-card  rounded-2xl sm:rounded-3xl p-3 sm:p-5 shadow-sm mb-10 max-w-2xl mx-auto relative z-10 transition-all hover:shadow-md">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl sm:rounded-3xl p-3 sm:p-5 shadow-xl mb-10 max-w-2xl mx-auto relative z-10 transition-all">
           <div className="flex flex-col sm:flex-row gap-3">
             <input
               type="text"
@@ -150,12 +151,12 @@ export default function EventTrackerPage() {
               value={trackingId}
               onChange={(e) => setTrackingId(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-              className="flex-1 p-4  rounded-xl  border-input bg-background px-4  text-foreground outline-none focus:ring-2 focus:ring-primary transition-all uppercase"
+              className="flex-1 p-4 rounded-xl border border-slate-700 bg-slate-800 text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all uppercase"
             />
             <button
               onClick={handleSearch}
               disabled={loading || !trackingId.trim()}
-              className="h-12 sm:h-14 px-8 rounded-xl font-medium shadow-sm flex items-center justify-center gap-2 transition-all bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-70"
+              className="h-12 sm:h-14 px-8 rounded-xl font-bold shadow-md flex items-center justify-center gap-2 transition-all bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <Loader2 size={18} className="animate-spin" />
@@ -169,14 +170,14 @@ export default function EventTrackerPage() {
 
         {/* Error / Not Found */}
         {searched && !result && (
-          <div className="bg-red-500/10 border border-red-500/20 rounded-3xl p-8 sm:p-10 text-center max-w-2xl mx-auto transition-all animate-in fade-in zoom-in duration-300">
-            <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500">
+          <div className="bg-rose-500/10 border border-rose-500/20 rounded-3xl p-8 sm:p-10 text-center max-w-2xl mx-auto transition-all animate-in fade-in zoom-in duration-300 shadow-lg">
+            <div className="w-16 h-16 bg-rose-500/20 rounded-full flex items-center justify-center mx-auto mb-4 text-rose-400 shadow-inner">
               <XCircle size={32} />
             </div>
-            <h2 className="text-xl font-semibold text-red-600 dark:text-red-400">
+            <h2 className="text-xl font-bold text-rose-400">
               Registration Not Found!
             </h2>
-            <p className="text-red-500/80 mt-2 text-sm sm:text-base">
+            <p className="text-rose-400/80 mt-2 text-sm sm:text-base">
               Please check your tracking number and try again.
             </p>
           </div>
@@ -184,27 +185,27 @@ export default function EventTrackerPage() {
 
         {/* Result Card */}
         {result && (
-          <div className="bg-card  rounded-3xl overflow-hidden shadow-lg shadow-primary/5 transition-all animate-in fade-in slide-in-from-bottom-4 duration-500">
-            {/* Card Header */}
-            <div className="bg-linear-to-br from-primary/70 to-primary p-6 sm:p-8 relative overflow-hidden">
-              <div className="absolute top-0 right-32 p-8 opacity-10">
-                <LayoutGrid size={120} />
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl transition-all animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {/* Card Header (Gradient Dark) */}
+            <div className="bg-gradient-to-br from-indigo-900/40 via-slate-900 to-slate-900 p-6 sm:p-8 relative overflow-hidden border-b border-slate-800">
+              <div className="absolute top-0 right-10 md:right-32 p-8 opacity-5">
+                <LayoutGrid size={120} className="text-indigo-400" />
               </div>
-              <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
                 <div>
-                  <span className="inline-flex items-center rounded-full bg-white/20 text-white px-3 py-1 text-xs font-medium mb-3 backdrop-blur-md">
-                    <Tag size={12} className="mr-1.5" />
-                    {result.segment.type}
+                  <span className="inline-flex items-center rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-3 py-1 text-xs font-semibold mb-3 uppercase tracking-wider">
+                    <Tag size={12} className="mr-1.5 text-primary" />
+                    {result.category} Event
                   </span>
-                  <h2 className="text-2xl sm:text-3xl font-bold text-white">
+                  <h2 className="text-2xl sm:text-3xl font-bold text-white leading-tight">
                     {result.segment.title}
                   </h2>
                 </div>
-                <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 text-white text-center sm:text-right min-w-50">
-                  <p className="text-white/70 text-xs font-medium uppercase tracking-wider mb-1">
+                <div className="bg-slate-950/50 backdrop-blur-md border border-slate-700/50 rounded-2xl p-4 text-center sm:text-right min-w-[140px] shadow-inner">
+                  <p className="text-slate-400 text-[11px] font-bold uppercase tracking-widest mb-1">
                     Tracking ID
                   </p>
-                  <p className="text-xl text-slate-800 font-mono font-bold tracking-tight uppercase">
+                  <p className="text-xl text-indigo-400 font-mono font-black tracking-tight uppercase">
                     {result.trackingNumber}
                   </p>
                 </div>
@@ -216,50 +217,48 @@ export default function EventTrackerPage() {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Event Details */}
                 <div className="space-y-6 lg:col-span-1">
-                  <h3 className="text-lg font-semibold border-b pb-2">
+                  <h3 className="text-lg font-bold text-white border-b border-slate-800 pb-3">
                     Event Details
                   </h3>
-                  <div className="space-y-4">
-                    <div className="flex gap-3 text-muted-foreground">
-                      <Calendar
-                        size={18}
-                        className="text-primary mt-0.5 shrink-0"
-                      />
+                  <div className="space-y-5">
+                    <div className="flex gap-4 text-slate-400">
+                      <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center shrink-0 border border-slate-700">
+                        <Calendar size={16} className="text-indigo-400" />
+                      </div>
                       <div>
-                        <p className="text-xs font-medium uppercase tracking-wider">
+                        <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
                           Date & Time
                         </p>
-                        <p className="text-foreground font-medium mt-0.5">
-                          {formatDate(result.segment.date)} at{" "}
+                        <p className="text-slate-200 font-medium mt-0.5">
+                          {formatDate(result.segment.date)}{" "}
+                          <br className="hidden sm:block lg:hidden" /> at{" "}
                           {formatTime(result.segment.date)}
                         </p>
                       </div>
                     </div>
-                    <div className="flex gap-3 text-muted-foreground">
-                      <MapPin
-                        size={18}
-                        className="text-primary mt-0.5 shrink-0"
-                      />
+                    <div className="flex gap-4 text-slate-400">
+                      <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center shrink-0 border border-slate-700">
+                        <MapPin size={16} className="text-indigo-400" />
+                      </div>
                       <div>
-                        <p className="text-xs font-medium uppercase tracking-wider">
+                        <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
                           Venue
                         </p>
-                        <p className="text-foreground font-medium mt-0.5 leading-snug">
+                        <p className="text-slate-200 font-medium mt-0.5 leading-snug">
                           {result.segment.venue}
                         </p>
                       </div>
                     </div>
-                    <div className="flex gap-3 text-muted-foreground">
-                      <Ticket
-                        size={18}
-                        className="text-primary mt-0.5 shrink-0"
-                      />
+                    <div className="flex gap-4 text-slate-400">
+                      <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center shrink-0 border border-slate-700">
+                        <Ticket size={16} className="text-indigo-400" />
+                      </div>
                       <div>
-                        <p className="text-xs font-medium uppercase tracking-wider">
+                        <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
                           Category
                         </p>
-                        <p className="text-foreground font-medium mt-0.5">
-                          {result.category}
+                        <p className="text-slate-200 font-medium mt-0.5 capitalize">
+                          {result.category} Event
                         </p>
                       </div>
                     </div>
@@ -268,34 +267,32 @@ export default function EventTrackerPage() {
 
                 {/* Registrant Info */}
                 <div className="space-y-6 lg:col-span-1">
-                  <h3 className="text-lg font-semibold border-b pb-2">
+                  <h3 className="text-lg font-bold text-white border-b border-slate-800 pb-3">
                     Registrant Info
                   </h3>
-                  <div className="space-y-4">
-                    <div className="flex gap-3 text-muted-foreground">
-                      <User
-                        size={18}
-                        className="text-primary mt-0.5 shrink-0"
-                      />
+                  <div className="space-y-5">
+                    <div className="flex gap-4 text-slate-400">
+                      <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center shrink-0 border border-slate-700">
+                        <User size={16} className="text-indigo-400" />
+                      </div>
                       <div>
-                        <p className="text-xs font-medium uppercase tracking-wider">
+                        <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
                           Name
                         </p>
-                        <p className="text-foreground font-medium mt-0.5">
+                        <p className="text-slate-200 font-medium mt-0.5">
                           {result.user.name}
                         </p>
                       </div>
                     </div>
-                    <div className="flex gap-3 text-muted-foreground">
-                      <Phone
-                        size={18}
-                        className="text-primary mt-0.5 shrink-0"
-                      />
+                    <div className="flex gap-4 text-slate-400">
+                      <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center shrink-0 border border-slate-700">
+                        <Phone size={16} className="text-indigo-400" />
+                      </div>
                       <div>
-                        <p className="text-xs font-medium uppercase tracking-wider">
+                        <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
                           Phone
                         </p>
-                        <p className="text-foreground font-medium mt-0.5">
+                        <p className="text-slate-200 font-medium mt-0.5">
                           {result.user.phone}
                         </p>
                       </div>
@@ -303,62 +300,103 @@ export default function EventTrackerPage() {
                   </div>
                 </div>
 
-                {/* Current Status */}
+                {/* 🎯 Current Status */}
                 <div className="space-y-6 lg:col-span-1">
-                  <h3 className="text-lg font-semibold border-b pb-2">
+                  <h3 className="text-lg font-bold text-white border-b border-slate-800 pb-3">
                     Current Status
                   </h3>
-                  <div className={` ${result.selectionStatus === "APPROVED"? "bg-green-100" :
-                  
-                  `${result.selectionStatus === "REJECTED" ? "bg-red-100" : "bg-orange-50" }` 
-                
-                } rounded-2xl p-6 flex flex-col items-center justify-center text-center h-[calc(100%-3rem)] border border-border/50`}>
-                    <span
-                      className={`inline-flex items-center rounded-full border px-4 py-1.5 font-medium mb-3 ${getStatusInfo(result.selectionStatus).color}`}
+                  <div className="flex flex-col gap-4">
+                    {/* 1. Team Selection Status (Only for Team) */}
+                    {result.category === "team" && (
+                      <div
+                        className={`p-4 rounded-xl border ${getStatusInfo(result.selectionStatus).bg} shadow-inner`}
+                      >
+                        <p className="text-[11px] font-bold uppercase text-slate-400 mb-2 tracking-wider">
+                          Team Approval
+                        </p>
+                        <span
+                          className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-bold ${getStatusInfo(result.selectionStatus).color}`}
+                        >
+                          {getStatusInfo(result.selectionStatus).icon}
+                          {getStatusInfo(result.selectionStatus).label}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* 2. Payment Status (For All) */}
+                    <div
+                      className={`p-4 rounded-xl border ${getStatusInfo(result.payment?.status).bg} shadow-inner`}
                     >
-                      {getStatusInfo(result.selectionStatus).icon}
-                      {getStatusInfo(result.selectionStatus).label}
-                    </span>
-                    <p className="text-sm text-muted-foreground">
-                      {result.selectionStatus === "PENDING" &&
-                        "Your registration is currently under review by the administration."}
-                      {result.selectionStatus === "APPROVED" &&
-                        "Congratulations! Your registration has been approved."}
-                      {result.selectionStatus === "REJECTED" &&
-                        "Unfortunately, your registration could not be approved at this time."}
-                    </p>
+                      <p className="text-[11px] font-bold uppercase text-slate-400 mb-2 tracking-wider">
+                        Payment Status
+                      </p>
+                      <span
+                        className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-bold ${getStatusInfo(result.payment?.status).color}`}
+                      >
+                        {getStatusInfo(result.payment?.status).icon}
+                        {getStatusInfo(result.payment?.status).label}
+                      </span>
+                      {result.payment?.amount !== undefined && (
+                        <p className="text-sm font-medium mt-3 text-slate-300">
+                          Amount:{" "}
+                          <span className="text-white font-bold">
+                            ৳{result.payment.amount}
+                          </span>
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* === সাবমিশন পোর্টাল (শর্ত অনুযায়ী রেন্ডার হবে) === */}
-              {result.selectionStatus === "APPROVED" &&
-                result.isSubmissionRequired &&
-                result.isSubmissionOpen && (
-                  <div className="mt-12 pt-8 border-t border-border">
-                    <div className="mb-6 flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center">
-                        <UploadCloud size={20} />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-bold text-gray-900">
-                          Project Submission Portal
-                        </h3>
-                        <p className="text-sm text-gray-500">
-                          The submission portal is currently open. Please submit
-                          your project files below.
-                        </p>
-                      </div>
+              {/* === Submission Portal === */}
+              {result.isSubmissionRequired && result.isSubmissionOpen && (
+                <div className="mt-12 pt-8 border-t border-slate-800">
+                  <div className="mb-8 flex items-center gap-4">
+                    <div
+                      className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 border ${result.hasSubmitted ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" : "bg-indigo-500/20 text-indigo-400 border-indigo-500/30"}`}
+                    >
+                      {result.hasSubmitted ? (
+                        <CheckCircle2 size={24} />
+                      ) : (
+                        <UploadCloud size={24} />
+                      )}
                     </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-white">
+                        Project Submission Portal
+                      </h3>
+                      <p className="text-sm text-slate-400 mt-1">
+                        {result.hasSubmitted
+                          ? "You have already submitted your project files."
+                          : "The submission portal is currently open. Please submit your project files below."}
+                      </p>
+                    </div>
+                  </div>
 
-                    {/* Dynamic Submission Form Component */}
+                  {/* 💡 কন্ডিশনাল রেন্ডারিং: সাবমিট করে থাকলে সাকসেস মেসেজ দেখাবে */}
+                  {result.hasSubmitted ? (
+                    <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-2xl p-8 flex flex-col items-center justify-center text-center shadow-inner">
+                      <div className="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mb-4 border border-emerald-500/20">
+                        <CheckCircle2 size={32} />
+                      </div>
+                      <h3 className="text-xl font-bold text-emerald-400 mb-2">
+                        Project Submitted Successfully!
+                      </h3>
+                      <p className="text-emerald-400/80 max-w-md">
+                        We have successfully received your submission. Best of
+                        luck for the event!
+                      </p>
+                    </div>
+                  ) : (
                     <DynamicSubmissionForm
                       eventId={result.eventId}
-                      registrationId={result.trackingNumber}
+                      trackingNumber={result.trackingNumber}
                       submissionSchema={result.submissionSchema}
                     />
-                  </div>
-                )}
+                  )}
+                </div>
+              )}
             </div>
           </div>
         )}

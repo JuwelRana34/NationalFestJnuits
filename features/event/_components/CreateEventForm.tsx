@@ -9,6 +9,7 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { uploadImage } from "@/lib/cloudinaryUpload";
 import { FormValues, GetEventValues } from "../types";
 import { revalidateEvents } from "@/actions/eventActions";
+import { Textarea } from "@/components/ui/textarea";
 
 interface EventFormProps {
   initialData?: GetEventValues | null;
@@ -48,6 +49,7 @@ export default function EventForm({ initialData }: EventFormProps) {
           registrationSchema:
             initialData.registrationSchema?.map((field) => ({
               label: field.label,
+              description: field.description || "",
               type: field.type,
               required: field.required,
               options: field.options ? field.options.join(", ") : "",
@@ -59,6 +61,7 @@ export default function EventForm({ initialData }: EventFormProps) {
           submissionSchema:
             initialData.submissionSchema?.map((field) => ({
               label: field.label,
+              description: field.description || "",
               type: field.type,
               required: field.required,
               options: field.options ? field.options.join(", ") : "",
@@ -83,14 +86,27 @@ export default function EventForm({ initialData }: EventFormProps) {
           deadline: "",
           responsible: [],
           registrationSchema: [
-            { label: "name", type: "text", required: true, options: "" },
             {
-              label: "email", type: "text", required: true, options: "" 
+              label: "name",
+              description: "",
+              type: "text",
+              required: true,
+              options: "",
             },
             {
-              label: "phone", type: "text", required: true, options: ""
-            }
-            
+              label: "email",
+              description: "",
+              type: "text",
+              required: true,
+              options: "",
+            },
+            {
+              label: "phone",
+              description: "",
+              type: "text",
+              required: true,
+              options: "",
+            },
           ],
           isSubmissionOpen: false,
           submissionSchema: [],
@@ -141,6 +157,7 @@ export default function EventForm({ initialData }: EventFormProps) {
       const formattedSchema = data.registrationSchema.map((field) => ({
         id: field.label.toLowerCase().replace(/[\s_-]+/g, "_"),
         label: field.label,
+        description: field.description,
         type: field.type,
         required: field.required,
         ...(field.type === "select" && {
@@ -156,6 +173,7 @@ export default function EventForm({ initialData }: EventFormProps) {
         ? data.submissionSchema.map((field) => ({
             id: field.label.toLowerCase().replace(/[\s_-]+/g, "_"),
             label: field.label,
+            description: field.description,
             type: field.type,
             required: field.required,
             ...(field.type === "select" && {
@@ -315,7 +333,9 @@ export default function EventForm({ initialData }: EventFormProps) {
                   </label>
                   <p className="pl-1">or drag and drop</p>
                 </div>
-                <p className="text-xs text-slate-400">PNG, JPG, GIF up to 5MB</p>
+                <p className="text-xs text-slate-400">
+                  PNG, JPG, GIF up to 5MB
+                </p>
               </div>
             </div>
           </div>
@@ -529,7 +549,8 @@ export default function EventForm({ initialData }: EventFormProps) {
               <h3 className="text-lg font-semibold text-slate-300">
                 Registration Form Builder
               </h3>
-              ⚠️<span className="text-xs text-red-400 ml-2 inline-block animate-pulse">
+              ⚠️
+              <span className="text-xs text-red-400 ml-2 inline-block animate-pulse">
                 you must add email field & make it required for all events!
               </span>
             </div>
@@ -538,6 +559,7 @@ export default function EventForm({ initialData }: EventFormProps) {
               onClick={() =>
                 appendRegistration({
                   label: "",
+                  description: "",
                   type: "text",
                   required: false,
                   options: "",
@@ -567,6 +589,19 @@ export default function EventForm({ initialData }: EventFormProps) {
                       })}
                       placeholder="e.g. University Name"
                       className="w-full px-3 py-2 border border-slate-600 rounded-md text-sm outline-none focus:border-blue-500"
+                    />
+                  </div>
+
+                  {/* Description Input (নতুন ফিল্ড) */}
+                  <div className="w-full md:w-1/4">
+                    <label className="block text-xs font-medium text-slate-400 mb-1">
+                      Requirement Label
+                    </label>
+                    <Textarea
+                      rows={0}
+                      {...register(`registrationSchema.${index}.description`)}
+                      placeholder="Description / Hint (Optional)"
+                      className="w-full px-3 py-2 border border-slate-600 rounded-md outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-sm"
                     />
                   </div>
 
@@ -698,6 +733,17 @@ export default function EventForm({ initialData }: EventFormProps) {
                         })}
                         placeholder="e.g. GitHub Repository Link"
                         className="w-full px-3 py-2 border border-slate-500 rounded-md text-sm outline-none focus:border-indigo-500"
+                      />
+                    </div>
+                    <div className="w-full md:w-1/4">
+                      <label className="block text-xs font-medium text-slate-400 mb-1">
+                        Requirement Description
+                      </label>
+                      <Textarea
+                        rows={0}
+                        {...register(`submissionSchema.${index}.description`)}
+                        placeholder="Description / Hint (Optional)"
+                        className="w-full px-3 py-2 border border-slate-600 rounded-md outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-sm"
                       />
                     </div>
                     <div className="w-full md:w-1/4">

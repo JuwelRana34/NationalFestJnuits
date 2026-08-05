@@ -5,6 +5,7 @@ export type EventType = "solo" | "team" | "seminar";
 export interface FormField {
   id: string;
   label: string;
+  description?: string;
   type: FieldType;
   required: boolean;
   options?: string[];
@@ -13,6 +14,7 @@ export interface FormField {
 // React Hook Form-এর জন্য
 export interface FormFieldInput {
   label: string;
+  description?: string;
   type: FieldType;
   required: boolean;
   options: string;

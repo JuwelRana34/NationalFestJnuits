@@ -11,10 +11,14 @@ export async function uploadImage(file: File, folder = "events") {
   );
   formData.append("folder", folder);
 
+  const isPdf = file.type === "application/pdf";
+
+  const resourceType = isPdf ? "raw" : "auto";
+
   const res = await fetch(
     `https://api.cloudinary.com/v1_1/${
       process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
-    }/auto/upload`,
+    }/${resourceType}/upload`,
     {
       method: "POST",
       body: formData,
