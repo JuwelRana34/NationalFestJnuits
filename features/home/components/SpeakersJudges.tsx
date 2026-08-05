@@ -33,63 +33,77 @@ const speakers = [
 
 export default function SpeakersJudges() {
   return (
-    <section className="w-full py-24 px-6 md:px-12 font-sans">
+    <section className="w-full py-24 px-6 md:px-12 font-sans bg-black">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
+        {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-primary">
+          <h2 className="bg-linear-to-b from-fuchsia-400 via-violet-400 to-blue-400 bg-clip-text text-4xl font-bold tracking-tight text-transparent drop-shadow-[0_0_35px_rgba(139,92,246,0.35)] md:text-5xl">
             Speakers & Judges
           </h2>
 
-          <p className="text-lg max-w-2xl mx-auto text-muted-foreground">
+          <p className="mx-auto mt-4 max-w-2xl bg-linear-to-b from-indigo-100 to-indigo-300/80 bg-clip-text text-lg text-transparent">
             Learn from industry veterans, visionaries, and expert judges who
             will be guiding and evaluating your work.
           </p>
         </div>
-
         {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {speakers.map((speaker) => (
             <div
               key={speaker.id}
-              className="relative overflow-hidden bg-card border border-border rounded-md p-8 flex flex-col items-center text-center transition-all duration-300 hover:-translate-y-2 hover:shadow-lg group"
+              className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-8 text-center backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-cyan-400/30 hover:shadow-[0_0_45px_rgba(139,92,246,0.35)]"
             >
               {/* Glow effect */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-tr from-primary/10 to-secondary/10 blur-2xl" />
+              <div className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                <div className="absolute -left-10 -top-10 h-40 w-40 rounded-full bg-fuchsia-500/20 blur-3xl" />
+                <div className="absolute -right-10 -bottom-10 h-40 w-40 rounded-full bg-cyan-400/20 blur-3xl" />
+              </div>
 
               {/* Avatar */}
-              <div className="relative z-10 w-24 h-24 rounded-full overflow-hidden mb-5 border border-border">
-                <Image
-                  src={speaker.image}
-                  alt={speaker.name}
-                  className="w-full h-full object-cover"
-                  width={96}
-                  height={96}
-                  unoptimized
-                />
+              <div className="relative z-10 mb-5 flex justify-center">
+                <div className="h-24 w-24 overflow-hidden rounded-full border border-white/10 transition-all duration-300 group-hover:border-cyan-400/40 group-hover:shadow-[0_0_25px_rgba(34,211,238,0.45)]">
+                  <Image
+                    src={speaker.image}
+                    alt={speaker.name}
+                    width={96}
+                    height={96}
+                    unoptimized
+                    className="h-full w-full object-cover"
+                  />
+                </div>
               </div>
 
               {/* Name */}
-              <h3 className="text-xl font-semibold text-foreground mb-1">
+              <h3 className="mb-2 bg-linear-to-r from-white via-indigo-100 to-cyan-200 bg-clip-text text-xl font-semibold text-transparent">
                 {speaker.name}
               </h3>
 
               {/* Designation */}
-              <p className="text-sm text-muted-foreground mb-6 grow transition-colors duration-300 group-hover:text-primary">
+              <p className="mb-6 grow text-sm leading-relaxed text-white/65 transition-colors duration-300 group-hover:text-cyan-300">
                 {speaker.designation}
               </p>
 
               {/* Icons */}
-              <div className="flex items-center gap-4 mt-auto text-muted-foreground">
-                <Link href="#" className="hover:text-primary transition-colors">
+              <div className="mt-auto flex justify-center items-center gap-5 text-cyan-300">
+                <Link
+                  href="#"
+                  className="transition-all duration-300 hover:-translate-y-1 hover:text-white"
+                >
                   <MagnetIcon className="w-4 h-4" />
                 </Link>
 
-                <Link href="#" className="hover:text-primary transition-colors">
+                <Link
+                  href="#"
+                  className="transition-all duration-300 hover:-translate-y-1 hover:text-white"
+                >
                   <StarHalf className="w-4 h-4" />
                 </Link>
 
-                <Link href="#" className="hover:text-primary transition-colors">
+                <Link
+                  href="#"
+                  className="transition-all duration-300 hover:-translate-y-1 hover:text-white"
+                >
                   <PhoneMissed className="w-4 h-4" />
                 </Link>
               </div>

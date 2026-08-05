@@ -97,60 +97,59 @@ export default function EventSchedule() {
 
       <div className="relative z-10 max-w-3xl mx-auto">
         {/* Header */}
+        {/* Header */}
         <div className="text-center mb-12">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-transparent bg-clip-text bg-gradient-to-l from-primary to-secondary">
+            <h2 className="bg-linear-to-b from-fuchsia-400 via-violet-400 to-blue-400 bg-clip-text text-4xl font-bold tracking-tight text-transparent drop-shadow-[0_0_35px_rgba(139,92,246,0.35)] md:text-5xl">
               Event Schedule
             </h2>
 
-            <p className="max-w-xl mx-auto text-muted-foreground">
+            <p className="mx-auto mt-4 max-w-xl bg-linear-to-b from-indigo-100 to-indigo-300/80 bg-clip-text text-lg text-transparent">
               Plan your experience. Two days of expert keynotes, technical deep
               dives, and networking opportunities.
             </p>
           </motion.div>
         </div>
-
         {/* Tabs */}
         <div className="flex justify-center mb-12">
-          <div className="relative flex bg-card text-muted-foreground rounded-full p-1 shadow-sm border border-border">
+          <div className="relative flex rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-md shadow-[0_8px_30px_rgba(0,0,0,0.35)]">
             {[1, 2].map((day) => (
               <button
                 key={day}
                 onClick={() => setActiveDay(day as 1 | 2)}
-                className={`relative z-10 flex items-center gap-2 px-6 py-2.5 text-sm font-medium rounded-full transition-colors duration-200 ${
+                className={`relative z-10 flex items-center gap-2 rounded-full px-7 py-3 text-sm font-semibold transition-all duration-300 ${
                   activeDay === day
-                    ? "text-primary-foreground"
-                    : "hover:text-primary"
+                    ? "text-white"
+                    : "text-white/70 hover:text-cyan-300"
                 }`}
               >
                 {activeDay === day && (
                   <motion.div
                     layoutId="activeTab"
-                    className="absolute inset-0 bg-primary rounded-full"
                     transition={{
                       type: "spring",
                       stiffness: 400,
                       damping: 30,
                     }}
+                    className="absolute inset-0 rounded-full bg-linear-to-r from-fuchsia-500 via-violet-500 to-blue-500 shadow-[0_0_25px_rgba(139,92,246,0.55)]"
                   />
                 )}
 
                 <span className="relative z-20 flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
+                  <Calendar className="h-4 w-4" />
                   Day {day}
                 </span>
               </button>
             ))}
           </div>
         </div>
-
         {/* Timeline */}
         <div className="relative">
-          <div className="absolute left-6 sm:left-10 top-4 bottom-4 w-px bg-border hidden sm:block" />
+          <div className="absolute left-6 top-4 bottom-4 hidden w-px bg-linear-to-b from-fuchsia-500/20 via-violet-400/70 to-cyan-400/40 sm:left-10 sm:block" />
 
           <AnimatePresence mode="wait">
             <motion.div
@@ -173,6 +172,7 @@ export default function EventSchedule() {
 }
 
 // --- Timeline Item ---
+// --- Timeline Item ---
 function TimelineItem({ event, index }: { event: EventItem; index: number }) {
   const Icon = event.icon;
 
@@ -182,44 +182,51 @@ function TimelineItem({ event, index }: { event: EventItem; index: number }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="relative flex flex-col sm:flex-row items-start group"
+      className="group relative flex flex-col items-start sm:flex-row"
     >
-      {/* LEFT SIDE (FIXED ALIGNMENT) */}
-      <div className="hidden sm:flex items-center gap-6 mr-6 relative z-10">
+      {/* Desktop Timeline */}
+      <div className="relative z-10 mr-6 hidden items-center gap-6 sm:flex">
         {/* Time */}
-        <div className="w-20 text-right text-sm font-semibold text-primary">
+        <div className="w-24 bg-linear-to-r from-fuchsia-400 via-violet-400 to-cyan-300 bg-clip-text text-right text-sm font-bold tracking-wide text-transparent">
           {event.time}
         </div>
 
         {/* Icon */}
         <div className="relative">
-          <div className="w-10 h-10 bg-card border border-border rounded-full flex items-center justify-center group-hover:border-primary transition-colors duration-300 shadow-sm">
-            <Icon className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors duration-300" />
+          {/* Glow */}
+          <div className="absolute inset-0 rounded-full bg-violet-500/20 blur-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
+          <div className="relative flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 backdrop-blur-md transition-all duration-300 group-hover:-translate-y-0.5 group-hover:border-cyan-400/40 group-hover:shadow-[0_0_30px_rgba(139,92,246,0.45)]">
+            <Icon className="h-5 w-5 text-cyan-300 transition-colors duration-300 group-hover:text-white" />
           </div>
         </div>
       </div>
 
-      {/* CARD */}
-      <div className="flex-1 w-full sm:ml-11">
-        {/* Mobile time */}
-        <div className="flex sm:hidden items-center gap-2 mb-3 text-sm font-semibold text-primary">
-          <Clock className="w-4 h-4" />
+      {/* Content */}
+      <div className="w-full flex-1 sm:ml-11">
+        {/* Mobile Time */}
+        <div className="mb-3 flex items-center gap-2 bg-linear-to-r from-fuchsia-400 via-violet-400 to-cyan-300 bg-clip-text text-sm font-semibold text-transparent sm:hidden">
+          <Clock className="h-4 w-4 text-cyan-300" />
           {event.time}
         </div>
 
-        <div className="bg-card border border-border rounded-md p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
-          <h3 className="text-xl font-semibold text-foreground mb-1">
+        {/* Card */}
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md shadow-[0_8px_35px_rgba(0,0,0,0.35)] transition-all duration-300 hover:-translate-y-1 hover:border-cyan-400/30 hover:shadow-[0_0_40px_rgba(139,92,246,0.35)]">
+          {/* Title */}
+          <h3 className="mb-2 bg-linear-to-r from-white via-indigo-100 to-cyan-200 bg-clip-text text-xl font-semibold text-transparent">
             {event.title}
           </h3>
 
+          {/* Speaker */}
           {event.speaker && (
-            <div className="flex items-center gap-2 text-sm text-primary mb-3 font-medium">
-              <User className="w-4 h-4" />
+            <div className="mb-4 flex items-center gap-2 text-sm font-medium text-cyan-300">
+              <User className="h-4 w-4" />
               {event.speaker}
             </div>
           )}
 
-          <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">
+          {/* Description */}
+          <p className="text-sm leading-relaxed text-white/65 sm:text-base">
             {event.description}
           </p>
         </div>
