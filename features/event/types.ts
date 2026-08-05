@@ -1,4 +1,4 @@
-export type FieldType = "text" | "number" | "url" | "select" | "file";
+export type FieldType = "text" | "number" | "url" | "select" | "file" | "email" | "tel" | "date" ;
 
 export type EventType = "solo" | "team" | "seminar";
 
