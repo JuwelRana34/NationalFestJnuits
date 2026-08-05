@@ -1,11 +1,11 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { honoFetch } from "@/lib/hono-client";
 import { deleteImage } from "@/lib/ImageDelete";
 import { useEffect, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
-// আপনার আলাদা করে রাখা টাইপগুলো ইম্পোর্ট করা হলো
 import { uploadImage } from "@/lib/cloudinaryUpload";
 import { FormValues, GetEventValues } from "../types";
 import { revalidateEvents } from "@/actions/eventActions";
@@ -45,7 +45,6 @@ export default function EventForm({ initialData }: EventFormProps) {
 
           responsible: initialData.responsible || [],
 
-          // Data Mapping: DB Array -> Form String
           registrationSchema:
             initialData.registrationSchema?.map((field) => ({
               label: field.label,
@@ -57,7 +56,6 @@ export default function EventForm({ initialData }: EventFormProps) {
 
           isSubmissionOpen: initialData.isSubmissionOpen,
 
-          // Data Mapping: DB Array -> Form String
           submissionSchema:
             initialData.submissionSchema?.map((field) => ({
               label: field.label,
@@ -67,7 +65,7 @@ export default function EventForm({ initialData }: EventFormProps) {
               options: field.options ? field.options.join(", ") : "",
             })) || [],
 
-          coverImage: null, // এডিট মোডে ফাইল ইনপুট ফাঁকা থাকে
+          coverImage: null,
         }
       : {
           title: "",
@@ -96,14 +94,14 @@ export default function EventForm({ initialData }: EventFormProps) {
             {
               label: "email",
               description: "",
-              type: "text",
+              type: "email",
               required: true,
               options: "",
             },
             {
               label: "phone",
               description: "",
-              type: "text",
+              type: "tel",
               required: true,
               options: "",
             },
@@ -153,7 +151,6 @@ export default function EventForm({ initialData }: EventFormProps) {
     setIsSubmitting(true);
 
     try {
-      // Form String -> DB Array Conversion
       const formattedSchema = data.registrationSchema.map((field) => ({
         id: field.label.toLowerCase().replace(/[\s_-]+/g, "_"),
         label: field.label,
@@ -168,7 +165,6 @@ export default function EventForm({ initialData }: EventFormProps) {
         }),
       }));
 
-      // Form String -> DB Array Conversion
       const formattedSubmissionSchema = data.isSubmissionOpen
         ? data.submissionSchema.map((field) => ({
             id: field.label.toLowerCase().replace(/[\s_-]+/g, "_"),
@@ -187,33 +183,21 @@ export default function EventForm({ initialData }: EventFormProps) {
 
       let coverImageUrl = initialData?.coverImage ?? "";
 
-      // যদি ইউজার নতুন কোনো ছবি সিলেক্ট করে থাকে
       if (data.coverImage && data.coverImage.length > 0) {
         try {
-          // ১. প্রথমে নতুন ছবিটি আপলোড করুন
           coverImageUrl = await uploadImage(data.coverImage[0], "events");
 
-          // ২. আপলোড সফল হলে এবং এটি Edit Mode হলে, পুরনো ছবিটি ডিলিট করে দিন
           if (isEditing && initialData?.coverImage) {
-            // deleteImage ফাংশনটি ইম্পোর্ট করে নিতে ভুলবেন না!
             await deleteImage(initialData.coverImage);
-            console.log("Old image scheduled for deletion.");
           }
         } catch (err) {
           console.error(err);
-
-          if (err instanceof Error) {
-            console.error(err.message);
-            console.error(err.stack);
-          }
-
           alert(err instanceof Error ? err.message : "Upload failed");
           setIsSubmitting(false);
-          return; // আপলোড ফেইল করলে ফর্ম সাবমিট বন্ধ করে দিবে
+          return;
         }
       }
 
-      // Payload for API
       const payload = {
         ...(isEditing && initialData?.id ? { id: initialData.id } : {}),
         title: data.title,
@@ -238,8 +222,6 @@ export default function EventForm({ initialData }: EventFormProps) {
           extraMemberFee: data.extraMemberFee,
         }),
       };
-
-      console.log("Sending Payload:", payload);
 
       const endpoint = isEditing
         ? `/api/events/${initialData.id}`
@@ -266,7 +248,6 @@ export default function EventForm({ initialData }: EventFormProps) {
             : "Event created successfully!",
         );
         await revalidateEvents(initialData?.slug);
-
       } else {
         alert("Failed to save event.");
       }
@@ -279,21 +260,18 @@ export default function EventForm({ initialData }: EventFormProps) {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto  rounded p-2 md:p-6 bg-white/10 backdrop-blur-2xl my-10 shadow-sm">
-      <h2 className="text-2xl font-bold  mb-6 border-b border-slate-400 pb-4">
+    <div className="w-full max-w-7xl mx-auto rounded p-2 md:p-6 bg-white/10 backdrop-blur-2xl my-10 shadow-sm">
+      <h2 className="text-2xl font-bold mb-6 border-b border-slate-400 pb-4">
         {isEditing ? "Edit Event" : "Create New Event"}
       </h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-        {/* =====================
-            1. Basic Information 
-        ====================== */}
-        <div className=" p-4 md:p-6 rounded-lg  grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="p-4 md:p-6 rounded-lg grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-slate-300 mb-1">
               Event Cover Image (Optional)
             </label>
-            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2  border-dashed rounded-lg border-slate-400 hover:bg-slate-800 transition-colors">
+            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-lg border-slate-400 hover:bg-slate-800 transition-colors">
               <div className="space-y-1 text-center">
                 {imagePreview ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -318,7 +296,7 @@ export default function EventForm({ initialData }: EventFormProps) {
                   </svg>
                 )}
                 <div className="flex text-sm text-gray-400 justify-center">
-                  <label className="relative cursor-pointer  rounded-md font-medium text-primary hover:text-blue-500 focus-within:outline-none">
+                  <label className="relative cursor-pointer rounded-md font-medium text-primary hover:text-blue-500 focus-within:outline-none">
                     <span>
                       {isEditing && imagePreview
                         ? "Change file"
@@ -472,7 +450,7 @@ export default function EventForm({ initialData }: EventFormProps) {
               control={control}
               render={({ field }) => (
                 <div
-                  className={`flex items-center justify-between ${field.value ? "bg-green-700" : "bg-red-700"} rounded-md  p-4`}
+                  className={`flex items-center justify-between ${field.value ? "bg-green-700" : "bg-red-700"} rounded-md p-4`}
                 >
                   <p className="text-sm text-slate-200 font-medium">
                     {field.value ? "Event is Active" : "Event is Inactive"}
@@ -487,10 +465,7 @@ export default function EventForm({ initialData }: EventFormProps) {
           </div>
         </div>
 
-        {/* =====================
-            2. Responsible / Organizers
-        ====================== */}
-        <div className=" p-6 rounded-lg  ">
+        <div className="p-6 rounded-lg">
           <div className="flex justify-between items-center mb-4">
             <div>
               <h3 className="text-lg font-semibold text-orange-500">
@@ -504,7 +479,7 @@ export default function EventForm({ initialData }: EventFormProps) {
               type="button"
               onClick={() => appendResponsible({ name: "", phone: "" })}
               variant="outline"
-              className=" hover:bg-cyan-600"
+              className="hover:bg-cyan-600"
             >
               + Add Organizer
             </Button>
@@ -514,7 +489,7 @@ export default function EventForm({ initialData }: EventFormProps) {
             {responsibleFields.map((item, index) => (
               <div
                 key={item.id}
-                className="flex flex-wrap sm:flex-nowrap gap-4 items-center  p-3 rounded-lg border border-slate-700"
+                className="flex flex-wrap sm:flex-nowrap gap-4 items-center p-3 rounded-lg border border-slate-700"
               >
                 <input
                   {...register(`responsible.${index}.name`, { required: true })}
@@ -540,9 +515,6 @@ export default function EventForm({ initialData }: EventFormProps) {
           </div>
         </div>
 
-        {/* =====================
-            3. Registration Form Builder 
-        ====================== */}
         <div className="bg-slate-800 p-6 rounded-lg border border-slate-600">
           <div className="flex justify-between items-center mb-4">
             <div>
@@ -577,7 +549,7 @@ export default function EventForm({ initialData }: EventFormProps) {
               return (
                 <div
                   key={item.id}
-                  className="flex flex-wrap md:flex-nowrap gap-4  p-4 rounded-lg border border-slate-600 shadow-sm items-start"
+                  className="flex flex-wrap md:flex-nowrap gap-4 p-4 rounded-lg border border-slate-600 shadow-sm items-start"
                 >
                   <div className="w-full md:w-1/3">
                     <label className="block text-xs font-medium text-slate-400 mb-1">
@@ -592,13 +564,11 @@ export default function EventForm({ initialData }: EventFormProps) {
                     />
                   </div>
 
-                  {/* Description Input (নতুন ফিল্ড) */}
                   <div className="w-full md:w-1/4">
                     <label className="block text-xs font-medium text-slate-400 mb-1">
                       Requirement Label
                     </label>
                     <Textarea
-                      rows={0}
                       {...register(`registrationSchema.${index}.description`)}
                       placeholder="Description / Hint (Optional)"
                       className="w-full px-3 py-2 border border-slate-600 rounded-md outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-sm"
@@ -614,6 +584,9 @@ export default function EventForm({ initialData }: EventFormProps) {
                       className="w-full px-3 py-2 border border-slate-600 rounded-md text-sm outline-none focus:border-blue-500"
                     >
                       <option value="text">Text</option>
+                      <option value="email">Email</option>
+                      <option value="tel">Phone Number (Tel)</option>
+                      <option value="date">Date</option>
                       <option value="number">Number</option>
                       <option value="url">Link / URL</option>
                       <option value="select">Dropdown (Select)</option>
@@ -661,10 +634,7 @@ export default function EventForm({ initialData }: EventFormProps) {
           </div>
         </div>
 
-        {/* =====================
-            4. Submission Form Builder 
-        ====================== */}
-        <div className=" p-6 rounded-lg border border-slate-600 bg-slate-900">
+        <div className="p-6 rounded-lg border border-slate-600 bg-slate-900">
           <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-4 gap-4">
             <div>
               <h3 className="text-lg font-semibold text-indigo-300">
@@ -678,7 +648,7 @@ export default function EventForm({ initialData }: EventFormProps) {
               name="isSubmissionOpen"
               control={control}
               render={({ field }) => (
-                <div className="flex items-center gap-3 bg-slate-700 px-4 py-2 rounded-lg  shadow-sm">
+                <div className="flex items-center gap-3 bg-slate-700 px-4 py-2 rounded-lg shadow-sm">
                   <span className="text-sm font-medium text-slate-300">
                     Require Submission?
                   </span>
@@ -718,6 +688,8 @@ export default function EventForm({ initialData }: EventFormProps) {
               )}
 
               {submissionFieldsList.map((item, index) => {
+                const currentSubType = watch(`submissionSchema.${index}.type`);
+
                 return (
                   <div
                     key={item.id}
@@ -740,25 +712,50 @@ export default function EventForm({ initialData }: EventFormProps) {
                         Requirement Description
                       </label>
                       <Textarea
-                        rows={0}
                         {...register(`submissionSchema.${index}.description`)}
                         placeholder="Description / Hint (Optional)"
                         className="w-full px-3 py-2 border border-slate-600 rounded-md outline-none focus:ring-2 focus:ring-blue-500 bg-transparent text-sm"
                       />
                     </div>
+
+                    {/* 💡 এখানে সব ধরণের টাইপ যুক্ত করা হয়েছে */}
                     <div className="w-full md:w-1/4">
                       <label className="block text-xs font-medium text-slate-400 mb-1">
                         Expected Type
                       </label>
                       <select
                         {...register(`submissionSchema.${index}.type`)}
-                        className="w-full px-3 py-2 border border-slate-500 rounded-md text-sm outline-none focus:border-indigo-500"
+                        className="w-full px-3 py-2 border border-slate-500 rounded-md text-sm outline-none focus:border-indigo-500 text-slate-400"
                       >
-                        <option value="url">Link / URL</option>
-                        <option value="file">File Upload (PDF/ZIP)</option>
                         <option value="text">Short Text</option>
+                        <option value="email">Email</option>
+                        <option value="tel">Phone Number (Tel)</option>
+                        <option value="date">Date</option>
+                        <option value="number">Number</option>
+                        <option value="url">Link / URL</option>
+                        <option value="select">Dropdown (Select)</option>
+                        <option value="file">
+                          File Upload (PDF/ZIP/Image)
+                        </option>
                       </select>
                     </div>
+
+                    {/* 💡 Select টাইপ হলে অপশন লেখার বক্স দেখাবে */}
+                    {currentSubType === "select" && (
+                      <div className="w-full md:w-1/3">
+                        <label className="block text-xs font-medium text-slate-400 mb-1">
+                          Options (Comma separated)
+                        </label>
+                        <input
+                          {...register(`submissionSchema.${index}.options`, {
+                            required: true,
+                          })}
+                          placeholder="Option 1, Option 2"
+                          className="w-full px-3 py-2 border border-slate-500 rounded-md text-sm outline-none focus:border-indigo-500 text-slate-700"
+                        />
+                      </div>
+                    )}
+
                     <div className="w-full md:w-auto flex items-center mt-6 gap-4">
                       <label className="flex items-center text-sm text-slate-400 cursor-pointer">
                         <input
