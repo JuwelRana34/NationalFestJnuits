@@ -889,11 +889,13 @@ import {
   User,
   X,
   XCircle,
-  UploadCloud, // 💡 নতুন আইকন যুক্ত করা হয়েছে
+  UploadCloud,
+  LinkIcon, // 💡 নতুন আইকন যুক্ত করা হয়েছে
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import Papa from "papaparse";
+import Link from "next/link";
 
 // ==========================================
 // 💡 Types based on your Drizzle Schema
@@ -905,6 +907,7 @@ interface PaymentData {
   transactionId?: string;
   paymentMethod?: string;
   couponUsed?: string | null;
+  screenshot?: string | null;
 }
 
 interface CouponDetails {
@@ -916,6 +919,7 @@ interface FinanceData {
   baseAmount: number;
   discountAmount: number;
   paidAmount: number;
+  screenshot: string | null;
 }
 
 // 💡 সাবমিশন ডাটার ইন্টারফেস
@@ -1469,7 +1473,7 @@ export default function RegistrationManagementPage() {
                             {reg.guestPhone}
                           </p>
                           <p className="text-xs text-slate-400 truncate">
-                            {reg.rawMetadata.commonDetails?.email ||"N/A"}
+                            {reg.rawMetadata.commonDetails?.email || "N/A"}
                           </p>
                         </div>
                       </div>
@@ -1734,6 +1738,21 @@ export default function RegistrationManagementPage() {
                           </span>
                         ) : (
                           <p className="font-medium text-slate-400">None</p>
+                        )}
+                      </div>
+                      <div>
+                        <p className="text-slate-500 text-xs mb-1">
+                          payment ss
+                        </p>
+                        {selectedReg.finance?.screenshot ? (
+                          <span className="inline-flex items-center gap-1 bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded text-[11px] font-medium">
+                            <LinkIcon size={10} />
+                            <Link href={selectedReg.finance?.screenshot || "#"} target="_blank" rel="noopener noreferrer">
+                              {"click to view"}
+                            </Link> 
+                          </span>
+                        ) : (
+                          <p className="font-medium text-slate-400">N/A</p>
                         )}
                       </div>
                     </div>
