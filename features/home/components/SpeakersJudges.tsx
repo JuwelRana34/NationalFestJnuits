@@ -1,35 +1,11 @@
 "use client";
 
+import { Speakers } from "@/app/constant/data";
 import { MagnetIcon, PhoneMissed, StarHalf } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-const speakers = [
-  {
-    id: 1,
-    name: "Dr. Sarah Chen",
-    designation: "Chief AI Scientist, TechCorp",
-    image: "https://i.pravatar.cc/150?img=47",
-  },
-  {
-    id: 2,
-    name: "Marcus Rodriguez",
-    designation: "VP of Engineering, StartupX",
-    image: "https://i.pravatar.cc/150?img=11",
-  },
-  {
-    id: 3,
-    name: "Aisha Patel",
-    designation: "Lead UI/UX Designer, CreativeStudio",
-    image: "https://i.pravatar.cc/150?img=5",
-  },
-  {
-    id: 4,
-    name: "David Kim",
-    designation: "Partner, Venture Capital",
-    image: "https://i.pravatar.cc/150?img=33",
-  },
-];
+
 
 export default function SpeakersJudges() {
   return (
@@ -49,7 +25,7 @@ export default function SpeakersJudges() {
         </div>
         {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {speakers.map((speaker) => (
+          {Speakers.map((speaker) => (
             <div
               key={speaker.id}
               className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-8 text-center backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-cyan-400/30 hover:shadow-[0_0_45px_rgba(139,92,246,0.35)]"

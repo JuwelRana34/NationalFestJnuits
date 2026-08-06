@@ -34,7 +34,7 @@ export const honoFetch = async <T>(
   let fetchResponse: Response;
 
   if (process.env.NODE_ENV === "development") {
-    fetchResponse = await fetch(`https://festapi.jnuits.org.bd/${path}`, {
+    fetchResponse = await fetch(`http://localhost:8787${path}`, {
       ...fetchOptions,
       headers: fetchHeaders,
     });

@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 
 // Types for Filters to avoid magic strings
 type EventTypeFilter = "all" | "solo" | "team" | "seminar";
@@ -48,7 +49,7 @@ export default function EventManagementPage() {
           success: boolean;
           data: GetEventValues[];
         }>("/api/events");
-        
+
         if (isMounted) {
           if (status === 200 && response?.success) {
             setEvents(response.data);
@@ -98,24 +99,42 @@ export default function EventManagementPage() {
   }, [events, searchQuery, typeFilter, statusFilter]);
 
   // 5. Action Handlers
-  const handleDelete = async (id: string, title: string, coverImage: string | null) => {
+  const handleDelete = async (
+    id: string,
+    title: string,
+    coverImage: string | null,
+  ) => {
     if (window.confirm(`Are you sure you want to delete "${title}"?`)) {
-      const { status } = await honoFetch(`/api/events/${id}`, {
-        method: "DELETE",
-      });
+      try {
+        const { status, response } = await honoFetch<{
+          success: boolean;
+          message: string;
+        }>(`api/registrations/${id}`, {
+          method: "DELETE",
+          credentials: "include",
+        });
 
-      if (status !== 200) {
-        alert("Failed to delete the event. Please try again.");
-        return;
+        if (status !== 200 || !response?.success) {
+          alert(
+            response?.message ||
+              "Failed to delete the event. Please try again.",
+          );
+          return;
+        }
+
+        // ইভেন্ট ডিলিট হলে সাথে ছবিটাও ডিলিট করা হচ্ছে
+        if (coverImage) {
+          await deleteImage(coverImage);
+          console.log(`Deleted cover image: ${coverImage}`);
+        }
+
+        // UI থেকে সাথে সাথে ইভেন্ট সরিয়ে দেওয়া
+        setEvents((prev) => prev.filter((e) => e.id !== id));
+        toast.success("Event deleted successfully!");
+      } catch (error) {
+        console.error("Delete Error:", error);
+        toast.error("An error occurred while deleting the event.");
       }
-
-      if (coverImage) {
-        await deleteImage(coverImage);
-        console.log(`Deleted cover image: ${coverImage}`);
-      }
-
-      setEvents(prev => prev.filter(e => e.id !== id));
-      alert(`Event deleted! (Demo ID: ${id})`);
     }
   };
 
@@ -252,7 +271,9 @@ export default function EventManagementPage() {
                       <td className="p-4">
                         <div className="flex items-center gap-1.5 text-gray-700">
                           <Users size={14} className="text-indigo-500" />
-                          <span className="font-medium">{event.registrationCount}</span>
+                          <span className="font-medium">
+                            {event.registrationCount}
+                          </span>
                         </div>
                       </td>
                       <td className="p-4">
@@ -276,7 +297,13 @@ export default function EventManagementPage() {
                             <Edit size={16} />
                           </Link>
                           <button
-                            onClick={() => handleDelete(event.id, event.title, event.coverImage)}
+                            onClick={() =>
+                              handleDelete(
+                                event.id,
+                                event.title,
+                                event.coverImage,
+                              )
+                            }
                             className="p-2 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors focus:opacity-100"
                             title="Delete Event"
                           >
