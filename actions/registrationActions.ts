@@ -30,6 +30,15 @@ interface RegisterPayload {
   } | null;
 }
 
+interface RegistrationResponseData {
+  id: string;
+  trackingNumber: string; // 👈 টাইপস্ক্রিপ্ট এখন এটা চিনতে পারবে
+  eventId: string;
+  selectionStatus: string;
+  createdAt: string;
+  [key: string]: string; // অন্যান্য ফিল্ডের জন্য
+}
+
 export async function submitEventRegistration(payload: RegisterPayload) {
   try {
     const { status, response } = await honoFetch("/api/registrations/event", {
@@ -40,7 +49,7 @@ export async function submitEventRegistration(payload: RegisterPayload) {
     const responseData = response as {
       message?: string;
       success?: boolean;
-      data?: DashboardData;
+      data?: RegistrationResponseData;
     };
 
     if (status !== 200 || !responseData.success) {
@@ -59,7 +68,7 @@ export async function submitEventRegistration(payload: RegisterPayload) {
     return {
       success: true,
       message: "Registration successful!",
-      data: responseData.data as DashboardData,
+      data: responseData.data as RegistrationResponseData,
     };
   } catch (error) {
     console.error("Registration Server Action Error:", error);
