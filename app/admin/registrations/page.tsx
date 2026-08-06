@@ -1193,21 +1193,24 @@ export default function RegistrationManagementPage() {
     new Set(registrations.map((reg) => reg.eventName)),
   );
 
-  const filteredRegistrations = registrations.filter((reg) => {
-    const matchesSearch =
-      reg.guestName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      reg.trackingId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      reg.guestPhone.includes(searchQuery) ||
-      (reg.transactionId &&
-        reg.transactionId.toLowerCase().includes(searchQuery.toLowerCase()));
+const filteredRegistrations = registrations.filter((reg) => {
+  const matchesSearch =
+    reg.guestName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    reg.trackingId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    reg.guestPhone.includes(searchQuery) ||
+    (reg.transactionId &&
+      reg.transactionId.toLowerCase().includes(searchQuery.toLowerCase()));
 
-    const matchesStatus =
-      statusFilter === "ALL" || reg.selectionStatus === statusFilter;
+  // 💡 ফিক্স: paymentStatus এবং selectionStatus দুটিতেই চেক করা হচ্ছে
+  const matchesStatus =
+    statusFilter === "ALL" ||
+    reg.selectionStatus === statusFilter ||
+    reg.paymentStatus === statusFilter;
 
-    const matchesEvent = eventFilter === "ALL" || reg.eventName === eventFilter;
+  const matchesEvent = eventFilter === "ALL" || reg.eventName === eventFilter;
 
-    return matchesSearch && matchesStatus && matchesEvent;
-  });
+  return matchesSearch && matchesStatus && matchesEvent;
+});
 
   const handlePaymentUpdate = async (id: string, newPaymentStatus: string) => {
     if (
@@ -1408,7 +1411,9 @@ export default function RegistrationManagementPage() {
           >
             <option value="ALL">All Status</option>
             <option value="PENDING">Pending</option>
-            <option value="VERIFIED">Verified</option>
+            <option value="VERIFIED">Payment Verified</option>{" "}
+            {/* 💡 পেমেন্টের জন্য */}
+            <option value="APPROVED">Selection Approved</option>
             <option value="REJECTED">Rejected</option>
           </select>
         </div>
@@ -1747,9 +1752,13 @@ export default function RegistrationManagementPage() {
                         {selectedReg.finance?.screenshot ? (
                           <span className="inline-flex items-center gap-1 bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded text-[11px] font-medium">
                             <LinkIcon size={10} />
-                            <Link href={selectedReg.finance?.screenshot || "#"} target="_blank" rel="noopener noreferrer">
+                            <Link
+                              href={selectedReg.finance?.screenshot || "#"}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
                               {"click to view"}
-                            </Link> 
+                            </Link>
                           </span>
                         ) : (
                           <p className="font-medium text-slate-400">N/A</p>
