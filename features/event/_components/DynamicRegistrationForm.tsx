@@ -1716,6 +1716,14 @@
 //   );
 // }
 
+
+
+
+
+
+
+
+
 "use client";
 
 import { submitEventRegistration } from "@/actions/registrationActions";
@@ -1755,7 +1763,9 @@ export default function DynamicRegistrationForm({
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState<1 | 2>(1);
-
+  const [successData, setSuccessData] = useState<{
+    trackingNumber: string;
+  } | null>(null);
   // Form states
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
@@ -1800,6 +1810,34 @@ export default function DynamicRegistrationForm({
   const subTotal = fee + extraMembers.length * extraMemberFee;
   const totalPayable = Math.max(0, subTotal - discountAmount);
 
+  // 👇 এই ফাংশনটি নতুন যোগ করো 👇
+  const handleCloseModal = () => {
+    setIsOpen(false);
+    setTimeout(() => {
+      setStep(1);
+      setSuccessData(null);
+      setFormData({});
+      setFilesToUpload({});
+      setFormErrors({});
+      setBaseMembers(
+        Array.from({ length: eventType === "team" ? baseTeamSize : 0 }, () => ({
+          name: "",
+          email: "",
+          phone: "",
+          studentId: "",
+        })),
+      );
+      setExtraMembers([]);
+      setPaymentData({ transactionId: "", senderNumber: "" });
+      setPaymentScreenshot(null);
+      setPaymentScreenshotPreview(null);
+      setPaymentErrors({});
+      setImagePreviews({});
+      setCouponCode("");
+      setDiscountAmount(0);
+      setCouponStatus("idle");
+    }, 300); // অ্যানিমেশন শেষ হওয়ার জন্য
+  };
   // === Input Handlers with Real-time Error Clearing ===
   const handleChange = (fieldId: string, value: string) => {
     setFormData((prev) => ({ ...prev, [fieldId]: value }));
@@ -2163,38 +2201,46 @@ export default function DynamicRegistrationForm({
 
       toast.success(result.message);
 
-      // Reset All States
-      setIsOpen(false);
-      setStep(1);
-      setFormData({});
-      setFilesToUpload({});
-      setFormErrors({});
-      setBaseMembers(
-        Array.from({ length: eventType === "team" ? baseTeamSize : 0 }, () => ({
-          name: "",
-          email: "",
-          phone: "",
-          studentId: "",
-        })),
-      );
-      setExtraMembers([]);
+     setSuccessData({
+       trackingNumber: result.data?.trackingNumber || "N/A",
+     });
 
-      // Reset Payment States
-      setPaymentData({ transactionId: "", senderNumber: "" });
-      setPaymentScreenshot(null);
-      setPaymentScreenshotPreview(null);
-      setPaymentErrors({});
-
-      setImagePreviews({});
-      setCouponCode("");
-      setDiscountAmount(0);
-      setCouponStatus("idle");
     } catch {
       toast.error("Something went wrong!");
     } finally {
       setIsSubmitting(false);
     }
   };
+
+
+  // 👇 return ( এর ঠিক আগে এটি বসাও 👇
+  const renderSuccessView = () => (
+    <div className="text-center py-10 px-4 sm:px-8 animate-in fade-in zoom-in duration-300">
+      <div className="mx-auto w-20 h-20 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-emerald-500/10">
+        <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+      <h2 className="text-3xl font-black text-white mb-3">Registration Successful!</h2>
+      <p className="text-slate-400 mb-8 max-w-md mx-auto leading-relaxed">
+        Thank you for registering. Please save your tracking number below. You will also receive a confirmation email shortly.
+      </p>
+
+      <div className="bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl mb-8 max-w-sm mx-auto shadow-inner">
+        <p className="text-xs text-slate-500 mb-2 uppercase tracking-widest font-bold">Your Tracking Number</p>
+        <p className="text-3xl sm:text-4xl font-mono font-black text-indigo-400 select-all tracking-tight">
+          {successData?.trackingNumber}
+        </p>
+      </div>
+
+      <button
+        onClick={handleCloseModal}
+        className="bg-slate-800 hover:bg-slate-700 text-white px-10 py-3.5 rounded-xl font-semibold transition-all shadow-sm active:scale-95"
+      >
+        Done & Close
+      </button>
+    </div>
+  );
 
   return (
     <>
@@ -2208,28 +2254,32 @@ export default function DynamicRegistrationForm({
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm transition-opacity">
           <div className="relative mt-20 w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl custom-scrollbar">
-            <button
-              onClick={() => setIsOpen(false)}
-              className="absolute right-4 top-4 rounded-full p-2 text-rose-400 hover:bg-rose-500/20 hover:text-rose-300 transition-colors z-10"
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+            {!successData && (
+              <button
+                onClick={handleCloseModal} // 👈 setIsOpen(false) এর বদলে handleCloseModal দাও
+                className="absolute right-4 top-4 rounded-full p-2 text-rose-400 hover:bg-rose-500/20 hover:text-rose-300 transition-colors z-10"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            )}
 
             <div className="p-6 sm:p-8">
               {/* === STEP 1 === */}
-              {step === 1 && (
+              {successData ? (
+                renderSuccessView()
+              ) : step === 1 ? (
                 <form
                   onSubmit={handleStep1Submit}
                   className="space-y-8"
@@ -2491,11 +2541,7 @@ export default function DynamicRegistrationForm({
                     </button>
                   </div>
                 </form>
-              )}
-
-              {/* === STEP 2: PAYMENT FORM === */}
-              {step === 2 && (
-                <form
+              ) : ( <form
                   onSubmit={handleFinalSubmit}
                   className="space-y-6"
                   noValidate
@@ -2696,7 +2742,8 @@ export default function DynamicRegistrationForm({
                     )}
                   </button>
                 </form>
-              )}
+              )
+              }
             </div>
           </div>
         </div>

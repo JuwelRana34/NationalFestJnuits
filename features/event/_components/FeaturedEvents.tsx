@@ -61,9 +61,7 @@ function countdownLabel(daysLeft: number) {
   return `${daysLeft} days left`;
 }
 
-
-export async function FeaturedEvents({data}: { data: GetEventValues[] }) {
-
+export async function FeaturedEvents({ data }: { data: GetEventValues[] }) {
   const featuredEvents = data || [];
 
   return (
@@ -130,8 +128,6 @@ export async function FeaturedEvents({data}: { data: GetEventValues[] }) {
                 {event.title}
               </h3>
 
-             
-
               <div className="mt-4 flex flex-col gap-2 text-sm text-foreground/80">
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 shrink-0 text-muted-foreground" />
@@ -146,22 +142,26 @@ export async function FeaturedEvents({data}: { data: GetEventValues[] }) {
                 </div>
               </div>
 
-   <Separator className="my-2 bg-slate-700"  />
+              <Separator className="my-2 bg-slate-700" />
               <div className="mt-0 flex items-center justify-between gap-3  ">
                 <div>
-                  <p className="text-base font-semibold text-primary ">
+                  <p className=" text-2xl  font-bold text-white">
                     {event.fee === 0 ? "Free" : `৳${event.fee}`}
                   </p>
+
                   {event.deadline && (
-                    <p className="text-xs text-red-500">
-                      Register by {formatDate(event.deadline)}
+                    <p className="mt-1 text-xs text-white/60">
+                      Register by{" "}
+                      <span className="font-medium text-cyan-300">
+                        {formatDate(event.deadline)}
+                      </span>
                     </p>
                   )}
                 </div>
 
-                <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-primary/10 px-3 py-1.5 text-sm font-medium text-primary transition group-hover:bg-primary group-hover:text-primary-foreground">
+                <span className="inline-flex shrink-0 items-center gap-2 rounded-full bg-linear-to-r from-fuchsia-500 via-violet-500 to-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_0_20px_rgba(139,92,246,0.35)] transition-all duration-300 group-hover:scale-105 group-hover:shadow-[0_0_30px_rgba(139,92,246,0.6)]">
                   Details
-                  <ArrowRight className="h-3.5 w-3.5" />
+                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </span>
               </div>
             </div>
