@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     siteName: "JnUITS JnU AI & IT Fest 2026",
     images: [
       {
-        url: "https://res.cloudinary.com/dp4fgwjik/image/upload/v1776816318/WhatsApp_Image_2026-04-22_at_6.02.24_AM_hnszse.jpg",
+        url: "https://res.cloudinary.com/dbwbwwteo/image/upload/v1786029922/ChatGPT_Image_Aug_6_2026_09_24_46_PM_hrzm6x.png",
         width: 1200,
         height: 630,
         alt: "JnU AI & IT Fest 2026 Banner",
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     description:
       "Join the brightest minds at the JnU AI & IT Fest 2026 hosted by JnUITS. Register your team for programming contests, project showcases, and esports tournaments.",
     images: [
-      "https://res.cloudinary.com/dp4fgwjik/image/upload/v1776816318/WhatsApp_Image_2026-04-22_at_6.02.24_AM_hnszse.jpg",
+      "https://res.cloudinary.com/dbwbwwteo/image/upload/v1786029922/ChatGPT_Image_Aug_6_2026_09_24_46_PM_hrzm6x.png",
     ],
   },
 };
