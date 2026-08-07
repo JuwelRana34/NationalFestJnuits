@@ -1,5 +1,6 @@
 "use client";
 
+import { revalidateEvents } from "@/actions/eventActions";
 import { GetEventValues } from "@/features/event/types";
 import { formatDate } from "@/lib/DateAndTimeFormater";
 import { honoFetch } from "@/lib/hono-client";
@@ -128,9 +129,12 @@ export default function EventManagementPage() {
           console.log(`Deleted cover image: ${coverImage}`);
         }
 
+        await revalidateEvents(); 
+
         // UI থেকে সাথে সাথে ইভেন্ট সরিয়ে দেওয়া
-        setEvents((prev) => prev.filter((e) => e.id !== id));
         toast.success("Event deleted successfully!");
+        setEvents((prev) => prev.filter((e) => e.id !== id));
+        
       } catch (error) {
         console.error("Delete Error:", error);
         toast.error("An error occurred while deleting the event.");
