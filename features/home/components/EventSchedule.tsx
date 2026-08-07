@@ -57,34 +57,7 @@ const scheduleData: ScheduleData = {
       icon: Code,
     },
   ],
-  2: [
-    {
-      id: "2-1",
-      time: "09:30 AM",
-      title: "Advanced Animations Masterclass",
-      speaker: "Sarah Lee, Motion Designer",
-      description:
-        "Bringing interfaces to life with Framer Motion. We'll cover layout animations, micro-interactions, and performance.",
-      icon: Sparkles,
-    },
-    {
-      id: "2-2",
-      time: "11:00 AM",
-      title: "Accessibility (A11y) Deep Dive",
-      speaker: "Alex Chen, A11y Advocate",
-      description:
-        "Ensuring your applications are usable by everyone. Legal requirements, ARIA patterns, and testing strategies.",
-      icon: User,
-    },
-    {
-      id: "2-3",
-      time: "01:30 PM",
-      title: "Closing Remarks & Networking",
-      description:
-        "Final thoughts, roadmap reveals, and open networking sessions with industry leaders.",
-      icon: MapPin,
-    },
-  ],
+  
 };
 
 export default function EventSchedule() {
@@ -117,7 +90,7 @@ export default function EventSchedule() {
         {/* Tabs */}
         <div className="flex justify-center mb-12">
           <div className="relative flex rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-md shadow-[0_8px_30px_rgba(0,0,0,0.35)]">
-            {[1, 2].map((day) => (
+            {[1].map((day) => (
               <button
                 key={day}
                 onClick={() => setActiveDay(day as 1 | 2)}
