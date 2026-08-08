@@ -54,7 +54,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
         
         /* Text & Strong */
         prose-p:text-slate-300 prose-p:leading-relaxed md:prose-p:text-justify
-        prose-strong:text-orange-400 prose-strong:font-semibold
+        prose-strong:text-indigo-400 prose-strong:font-semibold
         
         /* Links */
         prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline hover:prose-a:text-cyan-800 prose-a:transition-all

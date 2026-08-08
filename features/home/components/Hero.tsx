@@ -230,7 +230,7 @@ import heroImage from "@/public/hero5.png";
 import Link from "next/link";
 
 // 30 Aug 2026, 9:00 AM Bangladesh time
-const EVENT_DATE = new Date("2026-08-30T09:00:00+06:00").getTime();
+const EVENT_DATE = new Date("2026-08-15T23:59:59+06:00").getTime();
 
 function useCountdown(target: number) {
   const [timeLeft, setTimeLeft] = useState({
@@ -399,12 +399,14 @@ export default function Hero() {
                     <span className="absolute inset-0 -translate-x-full bg-white/20 transition-transform duration-500 group-hover:translate-x-0" />
                   </button>
                 </Link>
-                <button
-                  type="button"
-                  className="rounded-full border border-white/20 bg-white/5 px-8 py-3 text-sm font-semibold text-white/90 backdrop-blur-md transition-all duration-200 hover:border-cyan-300/50 hover:bg-white/10"
-                >
-                  Learn More
-                </button>
+                <Link prefetch={false} href="/committee">
+                  <button
+                    type="button"
+                    className="rounded-full border border-white/20 bg-white/5 px-8 py-3 text-sm font-semibold text-white/90 backdrop-blur-md transition-all duration-200 hover:border-cyan-300/50 hover:bg-white/10"
+                  >
+                    Learn More
+                  </button>
+                </Link>
               </div>
             </div>
           </div>
