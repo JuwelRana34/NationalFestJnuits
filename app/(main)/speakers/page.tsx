@@ -1,12 +1,9 @@
 import SpeakersJudges from "@/features/home/components/SpeakersJudges";
 
-
-
 export default function page() {
-    return (
-        <div>
-            <SpeakersJudges />
-            
-        </div>
-    );
+  return (
+    <div>
+      <SpeakersJudges isComingSoon={false} />
+    </div>
+  );
 }
