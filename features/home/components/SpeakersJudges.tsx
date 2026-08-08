@@ -17,7 +17,6 @@ export default function SpeakersJudges({
     <section className="w-full py-24 px-6 md:px-12 font-sans ">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        {/* Header */}
         <div className="text-center mb-16">
           <h2 className="bg-linear-to-b from-fuchsia-400 via-violet-400 to-blue-400 bg-clip-text text-4xl font-bold tracking-tight text-transparent drop-shadow-[0_0_35px_rgba(139,92,246,0.35)] md:text-5xl">
             Speakers & Judges
@@ -28,6 +27,7 @@ export default function SpeakersJudges({
             will be guiding and evaluating your work.
           </p>
         </div>
+
         {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Active Speaker Cards */}
