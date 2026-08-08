@@ -12,7 +12,7 @@ export default function Segments() {
       ),
       description:
         "Top 15 shortlisted teams showcase their student-built applications and AI-powered solutions.",
-      fee: "BDT 1,500 - 2,000 / Team",
+      fee: "BDT 2,000 / Team",
       members: "2-3 Members",
       glowBg: "bg-cyan-500/20",
       hoverBorder: "hover:border-cyan-400/50",
@@ -30,7 +30,7 @@ export default function Segments() {
       ),
       description:
         "Transform prompts into professional promotional advertisements. Top 10 showcased live.",
-      fee: "BDT 200 - 300 / Team",
+      fee: "BDT 300 / Team",
       members: "2-5 Members",
       glowBg: "bg-amber-500/20",
       hoverBorder: "hover:border-amber-400/50",
