@@ -45,12 +45,6 @@ export default async function HomePage() {
               Explore our All events.
             </p>
           </div>
-          {/* <Link
-            href="/events"
-            className="text-sm font-medium text-primary hover:underline"
-          >
-            View All →
-          </Link> */}
         </div>
 
         <Suspense fallback={<FeaturedEventsSkeleton />}>
@@ -60,18 +54,7 @@ export default async function HomePage() {
         {/* CampusAmbassador  */}
         <div className="mt-16">
           <Suspense fallback={<div>Loading Campus Ambassador Program...</div>}>
-          <CampusAmbassadorCard
-            title={"Campus Ambassador Program 2026"}
-            description={
-              "Represent your campus, lead the tech community, and unlock exclusive perks, swag, and leadership opportunities with JnUITS."
-            }
-            imageUrl={
-              "https://res.cloudinary.com/dbwbwwteo/image/upload/v1786036013/ChatGPT_Image_Aug_6_2026_11_06_02_PM_xfdosu.png"
-            }
-            googleFormUrl={"https://forms.gle/your-google-form-link"}
-            isOpen={true}
-            deadline={"2026-08-30T23:59:59"}
-          />
+            <CampusAmbassadorCard />
           </Suspense>
         </div>
       </section>
