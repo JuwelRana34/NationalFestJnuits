@@ -230,7 +230,7 @@ import heroImage from "@/public/hero5.png";
 import Link from "next/link";
 
 // 30 Aug 2026, 9:00 AM Bangladesh time
-const EVENT_DATE = new Date("2026-08-30T09:00:00+06:00").getTime();
+const EVENT_DATE = new Date("2026-08-15T23:59:59+06:00").getTime();
 
 function useCountdown(target: number) {
   const [timeLeft, setTimeLeft] = useState({
