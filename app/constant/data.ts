@@ -24,10 +24,10 @@ export const NaveItems = [
     title: "Speakers & Judges",
     Path: "/speakers",
   },
-  {
-    title: "Committee",
-    Path: "/committee",
-  },
+  // {
+  //   title: "Committee",
+  //   Path: "/committee",
+  // },
 ];
 
 export const DashboardNavItems = [
