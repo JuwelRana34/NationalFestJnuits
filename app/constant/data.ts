@@ -28,6 +28,10 @@ export const NaveItems = [
     title: "Committee",
     Path: "/committee",
   },
+  {
+    title: "Anouncements",
+    Path: "/announcement",
+  },
 ];
 
 export const DashboardNavItems = [
@@ -76,7 +80,6 @@ const speakers = [
 
 export const Speakers = speakers;
 
-
 export const demoSubmissionSchema: FormField[] = [
   {
     id: "github_repo",
@@ -103,7 +106,6 @@ export const demoSubmissionSchema: FormField[] = [
     required: true,
   },
 ];
-
 
 export const ambassadorPrograms = [
   {
