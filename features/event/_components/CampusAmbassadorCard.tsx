@@ -85,22 +85,25 @@ function CampusAmbassadorCard({
             fill
             className="object-cover object-center group-hover:scale-105 transition-transform duration-500 opacity-90"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
+          <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
 
-          <div className="absolute top-4 right-4">
+          <div
+            className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5
+    ${
+      true
+        ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
+        : "border-rose-500/30 bg-rose-500/10 text-rose-400"
+    }
+  `}
+          >
             <span
-              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-md border shadow-lg ${
-                isRegistrationOpen
-                  ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
-                  : "bg-rose-500/10 text-rose-400 border-rose-500/30"
+              className={`h-2 w-2 rounded-full animate-pulse ${
+                true ? "bg-emerald-400" : "bg-rose-400"
               }`}
-            >
-              <span
-                className={`w-2 h-2 rounded-full animate-pulse ${
-                  isRegistrationOpen ? "bg-emerald-400" : "bg-rose-400"
-                }`}
-              ></span>
-              {isRegistrationOpen ? "Applications Open" : "Closed"}
+            />
+
+            <span className="text-sm font-medium">
+              {true ? "Applications Open" : "Applications Closed"}
             </span>
           </div>
 
@@ -142,8 +145,9 @@ function CampusAmbassadorCard({
               </span>
             </div>
 
-            {deadline && isRegistrationOpen && (
-              <div className="flex items-center gap-1.5 text-xs text-amber-400/90 pt-1">
+            {/* {deadline && isRegistrationOpen && ( */}
+
+            {/* <div className="flex items-center gap-1.5 text-xs text-amber-400/90 pt-1">
                 <Calendar size={13} />
                 <span>
                   Deadline:{" "}
@@ -153,25 +157,26 @@ function CampusAmbassadorCard({
                     year: "numeric",
                   })}
                 </span>
-              </div>
-            )}
+              </div> */}
+
+            {/* )} */}
           </div>
 
           <div className="pt-4 border-t border-slate-900 mt-4 shrink-0">
-            {isRegistrationOpen ? (
-              <a
-                href={googleFormUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 py-3 px-6 bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] text-white font-semibold rounded-xl transition-all shadow-lg shadow-indigo-600/20 text-sm group/btn"
-              >
-                <span>Apply Now</span>
-                <ExternalLink
-                  size={16}
-                  className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform"
-                />
-              </a>
-            ) : (
+            {/* {isRegistrationOpen ? ( */}
+            <a
+              href={googleFormUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full flex items-center justify-center gap-2 py-3 px-6 bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] text-white font-semibold rounded-xl transition-all shadow-lg shadow-indigo-600/20 text-sm group/btn"
+            >
+              <span>Apply Now</span>
+              <ExternalLink
+                size={16}
+                className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform"
+              />
+            </a>
+            {/* ) : (
               <button
                 disabled
                 className="w-full flex items-center justify-center gap-2 py-3 px-6 bg-slate-900 border border-slate-800 text-slate-500 font-medium rounded-xl cursor-not-allowed text-sm select-none"
@@ -179,7 +184,7 @@ function CampusAmbassadorCard({
                 <ShieldAlert size={16} />
                 <span>Registration Closed</span>
               </button>
-            )}
+            )} */}
           </div>
         </div>
       </div>
