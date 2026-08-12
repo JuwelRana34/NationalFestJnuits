@@ -523,7 +523,7 @@ export default function EventForm({ initialData }: EventFormProps) {
               </h3>
               ⚠️
               <span className="text-xs text-red-400 ml-2 inline-block animate-pulse">
-                you must add email field & make it required for all events!
+                you must add email,phone and name field & make it required for solo/workshop/seminar events optinal for team events!
               </span>
             </div>
             <Button

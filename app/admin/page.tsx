@@ -66,7 +66,7 @@ export default function DashboardOverviewPage() {
 
         // Handle Unauthorized from API response
         if (status === 401 || status === 403) {
-          router.push("/login");
+          router.push("/signin");
           return;
         }
 
