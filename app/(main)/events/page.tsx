@@ -5,6 +5,7 @@ import {
   FeaturedEventsSkeleton,
 } from "@/features/event/_components/FeaturedEvents";
 import { GetEventValues } from "@/features/event/types";
+import Image from "next/image";
 import { Suspense } from "react";
 
 export default async function HomePage() {
@@ -12,8 +13,19 @@ export default async function HomePage() {
  
    if (!eventData || eventData.length === 0) {
     return (
-      <div className="flex items-center justify-center h-screen"> 
-      events not found!
+      <div className="flex flex-col items-center justify-center h-screen"> 
+      <Image
+       src={"/notFound.jpg"}
+        alt="Not Found"
+        width={400}
+        height={400}
+        className="object-contain rounded-lg opacity-80 "
+        unoptimized
+        
+      />
+     <p className="text-lg font-medium text-red-500">
+        events not found!
+      </p>
       </div>
     );
   }
