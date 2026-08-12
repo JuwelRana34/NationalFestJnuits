@@ -21,7 +21,7 @@ export async function getEvents() {
     }
     return eventData;
   } catch (error) {
-    console.error("Error fetching events:", error);
+    console.error("Error fetching events data:", error);
     return [];
   }
 }
