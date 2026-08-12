@@ -176,13 +176,13 @@ export function FeaturedEventsSkeleton() {
       {Array.from({ length: 3 }).map((_, i) => (
         <div
           key={i}
-          className="animate-pulse overflow-hidden rounded-xl border bg-card"
+          className="animate-pulse overflow-hidden rounded-xl border bg-slate-800"
         >
-          <div className="aspect-video w-full bg-muted" />
+          <div className="aspect-video w-full bg-slate-700" />
           <div className="space-y-3 p-5">
-            <div className="h-5 w-3/4 rounded bg-muted" />
-            <div className="h-4 w-full rounded bg-muted" />
-            <div className="h-4 w-2/3 rounded bg-muted" />
+            <div className="h-5 w-3/4 rounded bg-slate-600" />
+            <div className="h-4 w-full rounded bg-slate-600" />
+            <div className="h-4 w-2/3 rounded bg-slate-600" />
           </div>
         </div>
       ))}
