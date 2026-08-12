@@ -1,12 +1,10 @@
-import { connection } from "next/server";
-import Link from "next/link";
-import Image from "next/image";
-import { Calendar, MapPin, ArrowRight, Clock } from "lucide-react";
-import { formatDate, formatTime } from "@/lib/DateAndTimeFormater";
-import { honoFetch } from "@/lib/hono-client";
-import { GetEventValues } from "../types";
-import { promise } from "zod/v4/mini";
 import { Separator } from "@/components/ui/separator";
+import { formatDate, formatTime } from "@/lib/DateAndTimeFormater";
+import { ArrowRight, Calendar, Clock, MapPin } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { connection } from "next/server";
+import { GetEventValues } from "../types";
 
 const ACCENTS = [
   {
@@ -63,7 +61,7 @@ function countdownLabel(daysLeft: number) {
 
 export async function FeaturedEvents({ data }: { data: GetEventValues[] }) {
   const featuredEvents = data || [];
-
+  await connection();
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {featuredEvents.map((event) => {
