@@ -1,40 +1,25 @@
+import { getEvents } from "@/actions/eventActions";
 import CampusAmbassadorCard from "@/features/event/_components/CampusAmbassadorCard";
 import {
   FeaturedEvents,
   FeaturedEventsSkeleton,
 } from "@/features/event/_components/FeaturedEvents";
 import { GetEventValues } from "@/features/event/types";
-import { honoFetch } from "@/lib/hono-client";
-import { cacheLife, cacheTag } from "next/cache";
 import { Suspense } from "react";
 
 export default async function HomePage() {
-  "use cache";
-  cacheLife("hours");
-  cacheTag("events");
-  let eventData: GetEventValues[] = [];
-
-  try {
-    const { status, response } = await honoFetch<{
-      success: boolean;
-      data: GetEventValues[];
-    }>("/api/events");
-
-    if (status === 200 && response) {
-      eventData = response.data;
-    }
-  } catch (error) {
-    console.error("Error fetching events:", error);
+  const eventData: GetEventValues[] = await getEvents();
+ 
+   if (!eventData || eventData.length === 0) {
     return (
-      <p className="text-red-500">
-        Failed to load events. Please try again later.
-      </p>
+      <div className="flex items-center justify-center h-screen"> 
+      events not found!
+      </div>
     );
   }
 
   return (
     <main>
-      {/* Featured Events — dynamic (uses Date.now via getDaysLeft) */}
       <section className="container mx-auto px-6 py-16 sm:py-20">
         <div className="mb-10   text-center">
           <div>
