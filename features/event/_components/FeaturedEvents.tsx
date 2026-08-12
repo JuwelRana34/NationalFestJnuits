@@ -1,12 +1,10 @@
-import { connection } from "next/server";
-import Link from "next/link";
-import Image from "next/image";
-import { Calendar, MapPin, ArrowRight, Clock } from "lucide-react";
-import { formatDate, formatTime } from "@/lib/DateAndTimeFormater";
-import { honoFetch } from "@/lib/hono-client";
-import { GetEventValues } from "../types";
-import { promise } from "zod/v4/mini";
 import { Separator } from "@/components/ui/separator";
+import { formatDate, formatTime } from "@/lib/DateAndTimeFormater";
+import { ArrowRight, Calendar, Clock, MapPin } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { connection } from "next/server";
+import { GetEventValues } from "../types";
 
 const ACCENTS = [
   {
@@ -63,7 +61,7 @@ function countdownLabel(daysLeft: number) {
 
 export async function FeaturedEvents({ data }: { data: GetEventValues[] }) {
   const featuredEvents = data || [];
-
+  await connection();
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {featuredEvents.map((event) => {
@@ -178,13 +176,13 @@ export function FeaturedEventsSkeleton() {
       {Array.from({ length: 3 }).map((_, i) => (
         <div
           key={i}
-          className="animate-pulse overflow-hidden rounded-xl border bg-card"
+          className="animate-pulse overflow-hidden rounded-xl border bg-slate-800"
         >
-          <div className="aspect-video w-full bg-muted" />
+          <div className="aspect-video w-full bg-slate-700" />
           <div className="space-y-3 p-5">
-            <div className="h-5 w-3/4 rounded bg-muted" />
-            <div className="h-4 w-full rounded bg-muted" />
-            <div className="h-4 w-2/3 rounded bg-muted" />
+            <div className="h-5 w-3/4 rounded bg-slate-600" />
+            <div className="h-4 w-full rounded bg-slate-600" />
+            <div className="h-4 w-2/3 rounded bg-slate-600" />
           </div>
         </div>
       ))}
