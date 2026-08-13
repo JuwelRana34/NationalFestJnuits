@@ -1,10 +1,11 @@
 import { Separator } from "@/components/ui/separator";
 import { formatDate, formatTime } from "@/lib/DateAndTimeFormater";
-import { ArrowRight, Calendar, Clock, MapPin } from "lucide-react";
+import { ArrowRight, Calendar, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { connection } from "next/server";
 import { GetEventValues } from "../types";
+import FeaturedEventCountdownBadge from "./FeaturedEventCountdownBadge";
 
 const ACCENTS = [
   {
@@ -40,25 +41,6 @@ function getAccent(seed: string) {
   return ACCENTS[hash % ACCENTS.length];
 }
 
-function getDaysLeft(deadline: string) {
-  const diffMs = new Date(deadline).setHours(23, 59, 59, 999) - Date.now();
-  return Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-}
-
-function countdownStyle(daysLeft: number) {
-  if (daysLeft <= 2)
-    return "bg-red-50 text-red-700 dark:bg-red-500/15 dark:text-red-300";
-  if (daysLeft <= 7)
-    return "bg-amber-50 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300";
-  return "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300";
-}
-
-function countdownLabel(daysLeft: number) {
-  if (daysLeft <= 0) return "Last day";
-  if (daysLeft === 1) return "1 day left";
-  return `${daysLeft} days left`;
-}
-
 export async function FeaturedEvents({ data }: { data: GetEventValues[] }) {
   const featuredEvents = data || [];
   await connection();
@@ -66,9 +48,6 @@ export async function FeaturedEvents({ data }: { data: GetEventValues[] }) {
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {featuredEvents.map((event) => {
         const accent = getAccent(event.slug ?? event.title);
-        const daysLeft = event.deadline ? getDaysLeft(event.deadline) : null;
-        const showCountdown =
-          event.isActive && daysLeft !== null && daysLeft >= 0;
 
         return (
           <Link
@@ -104,20 +83,10 @@ export async function FeaturedEvents({ data }: { data: GetEventValues[] }) {
                   {event.eventType}
                 </span>
 
-                {showCountdown && (
-                  <span
-                    className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold backdrop-blur ${countdownStyle(daysLeft!)}`}
-                  >
-                    <Clock className="h-3 w-3" />
-                    {countdownLabel(daysLeft!)}
-                  </span>
-                )}
-
-                {!event.isActive && (
-                  <span className="rounded-full bg-white/90 px-2.5 py-1 text-xs font-semibold text-neutral-700 backdrop-blur">
-                    Closed
-                  </span>
-                )}
+                <FeaturedEventCountdownBadge
+                  deadline={event.deadline}
+                  isActive={event.isActive}
+                />
               </div>
             </div>
 
