@@ -2,7 +2,7 @@ import { fetchSingleEvent } from "@/features/event/_components/actions";
 import { EventDetailsContent } from "@/features/event/_components/EventDetailsContent";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 type Props = {
   params: Promise<{
@@ -13,6 +13,10 @@ type Props = {
 // 🎯 এটি আর async ফাংশন থাকবে না!
 export default async function EventDetailsPage({ params }: Props) {
   const { slug } = await params;
+
+  if (slug === "brainchild-season-20") {
+    redirect("https://brainchild.jnuits.org.bd/");
+  }
 
   const { data, success } = await fetchSingleEvent(slug);
   const eventData = data ?? null;
