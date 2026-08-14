@@ -2071,7 +2071,9 @@ export default function DynamicRegistrationForm({
         success: boolean;
         message: string;
         data?: { valid: boolean; discountPercentage: number };
-      }>(`/api/coupons/verify/${couponCode.toUpperCase().trim()}`);
+      }>(
+        `/api/coupons/verify/${couponCode.toUpperCase().trim()}?eventId=${eventId}`,
+      );
 
       if (status !== 200 || !response?.success || !response?.data?.valid) {
         setCouponStatus("error");

@@ -1,13 +1,18 @@
 "use client"; // components/CouponTable.tsx
 
 import React from "react";
-import { Edit2, Trash2, Tag, Percent, Hash } from "lucide-react";
+import { Edit2, Trash2, Tag, Percent, Hash, Calendar } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Coupon } from "@/app/admin/cuponManagement/page";
 
-
 interface CouponTableProps {
-  coupons: Coupon[];
+  coupons: (Coupon & {
+    couponEvents?: {
+      eventId: string;
+      eventTitle?: string;
+      event?: { title: string };
+    }[];
+  })[];
   onEdit: (coupon: Coupon) => void;
   onDelete: (id: string) => void;
   onToggleStatus: (coupon: Coupon) => void;
@@ -19,6 +24,8 @@ export default function CouponTable({
   onDelete,
   onToggleStatus,
 }: CouponTableProps) {
+  console.log("Rendering CouponTable with coupons:", coupons);
+
   if (coupons.length === 0) {
     return (
       <div className="bg-zinc-950 rounded-xl border border-zinc-800 p-12 text-center">
@@ -39,6 +46,7 @@ export default function CouponTable({
             <tr>
               <th className="px-6 py-4 font-medium">Code</th>
               <th className="px-6 py-4 font-medium">Discount</th>
+              <th className="px-6 py-4 font-medium">Applicable Events</th>
               <th className="px-6 py-4 font-medium">Usage (Used / Max)</th>
               <th className="px-6 py-4 font-medium">Status</th>
               <th className="px-6 py-4 font-medium text-right">Actions</th>
@@ -49,6 +57,10 @@ export default function CouponTable({
               // Check if coupon is fully used
               const isExhausted =
                 coupon.maxUses !== null && coupon.usedCount >= coupon.maxUses;
+
+              // ইভেন্ট বাইন্ডিং চেক করা
+              const eventsList = coupon.couponEvents || [];
+              const isGlobal = eventsList.length === 0;
 
               return (
                 <tr
@@ -70,7 +82,30 @@ export default function CouponTable({
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    {/* ✅ Displaying usedCount and maxUses elegantly */}
+                    {/* ✅ ইভেন্টের টাইটেল বা নামগুলো দেখানোর অংশ */}
+                    <div className="flex items-center gap-1.5 text-zinc-300">
+                      <Calendar className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                      {isGlobal ? (
+                        <span className="bg-indigo-500/10 text-indigo-400 text-xs px-2 py-0.5 rounded-full border border-indigo-500/20">
+                          Global (All Events)
+                        </span>
+                      ) : (
+                        <div className="flex flex-wrap gap-1">
+                          {eventsList.map((item, idx) => (
+                            <span
+                              key={idx}
+                              className="text-xs bg-zinc-800 text-zinc-300 px-2 py-0.5 rounded border border-zinc-700"
+                            >
+                              {item.eventTitle ||
+                                item.event?.title ||
+                                "Selected Event"}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
                     <div
                       className={`flex items-center gap-1.5 font-medium ${isExhausted ? "text-red-400" : "text-zinc-400"}`}
                     >
