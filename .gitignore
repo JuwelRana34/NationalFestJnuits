@@ -51,3 +51,8 @@ next-env.d.ts
 bundled
 
 api-contract
+
+
+# developer
+data.js
+bulk-upload.js
