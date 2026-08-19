@@ -49,11 +49,11 @@ export default async function HomePage() {
         </Suspense>
 
         {/* CampusAmbassador  */}
-        <div className="mt-16">
+        {/* <div className="mt-16">
           <Suspense fallback={<div>Loading Campus Ambassador Program...</div>}>
             <CampusAmbassadorCard />
           </Suspense>
-        </div>
+        </div> */}
       </section>
     </main>
   );
