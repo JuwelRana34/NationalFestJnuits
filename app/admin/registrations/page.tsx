@@ -266,7 +266,7 @@ export default function RegistrationManagementPage() {
           },
         );
 
-         console.log("Fetch Registrations Response:", { status, response });
+        console.log("Fetch Registrations Response:", { status, response });
 
         if (status === 200 && response?.data && Array.isArray(response.data)) {
           const formattedData: MappedRegistration[] = response.data.map(
@@ -293,7 +293,9 @@ export default function RegistrationManagementPage() {
                 teamInfo: meta?.teamInfo,
                 guestName:
                   meta?.commonDetails?.name ||
-                  meta?.commonDetails?.email?.split("@")[0] || meta?.teamInfo?.baseMembers?.[0]?.name || "Guest User",
+                  meta?.commonDetails?.email?.split("@")[0] ||
+                  meta?.teamInfo?.baseMembers?.[0]?.name ||
+                  "Guest User",
                 guestPhone:
                   meta?.commonDetails?.phone ||
                   meta?.teamInfo?.baseMembers?.[0]?.phone ||
@@ -335,24 +337,24 @@ export default function RegistrationManagementPage() {
     new Set(registrations.map((reg) => reg.eventName)),
   );
 
-const filteredRegistrations = registrations.filter((reg) => {
-  const matchesSearch =
-    reg.guestName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    reg.trackingId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    reg.guestPhone.includes(searchQuery) ||
-    (reg.transactionId &&
-      reg.transactionId.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredRegistrations = registrations.filter((reg) => {
+    const matchesSearch =
+      reg.guestName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      reg.trackingId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      reg.guestPhone.includes(searchQuery) ||
+      (reg.transactionId &&
+        reg.transactionId.toLowerCase().includes(searchQuery.toLowerCase()));
 
-  // 💡 ফিক্স: paymentStatus এবং selectionStatus দুটিতেই চেক করা হচ্ছে
-  const matchesStatus =
-    statusFilter === "ALL" ||
-    reg.selectionStatus === statusFilter ||
-    reg.paymentStatus === statusFilter;
+    // 💡 ফিক্স: paymentStatus এবং selectionStatus দুটিতেই চেক করা হচ্ছে
+    const matchesStatus =
+      statusFilter === "ALL" ||
+      reg.selectionStatus === statusFilter ||
+      reg.paymentStatus === statusFilter;
 
-  const matchesEvent = eventFilter === "ALL" || reg.eventName === eventFilter;
+    const matchesEvent = eventFilter === "ALL" || reg.eventName === eventFilter;
 
-  return matchesSearch && matchesStatus && matchesEvent;
-});
+    return matchesSearch && matchesStatus && matchesEvent;
+  });
 
   const handlePaymentUpdate = async (id: string, newPaymentStatus: string) => {
     if (
@@ -448,7 +450,7 @@ const filteredRegistrations = registrations.filter((reg) => {
   };
 
   // ==========================================
-  // 💡 Export CSV Handler (Using Papa Parse)
+  // 💡 Advanced Export CSV Handler
   // ==========================================
   const handleExportCSV = () => {
     if (filteredRegistrations.length === 0) {
@@ -456,28 +458,101 @@ const filteredRegistrations = registrations.filter((reg) => {
       return;
     }
 
-    // Papa Parse-এর জন্য অবজেক্টের একটি অ্যারে তৈরি করছি (কী (key) গুলোই হবে হেডার)
-    const exportData = filteredRegistrations.map((reg) => ({
-      "Tracking ID": reg.trackingId,
-      "Registration Date": reg.date,
-      "Participant Name": reg.guestName,
-      "Email Address": reg.rawMetadata.commonDetails?.email || "N/A",
-      "Phone Number": reg.guestPhone,
-      "Event Name": reg.eventName,
-      Category: reg.category,
-      "Payment Status": reg.paymentStatus,
-      "Base Amount": reg.finance?.baseAmount || 0,
-      Discount: reg.finance?.discountAmount || 0,
-      "Paid Amount": reg.finance?.paidAmount || 0,
-      "Transaction ID": reg.transactionId || "N/A",
-      "Coupon Used": reg.couponDetails?.code || "None",
-      "Selection Status": reg.selectionStatus,
-    }));
+    const exportData = filteredRegistrations.map((reg) => {
+      // ১. বেসিক এবং ফাইন্যান্স ডাটা
+      const row: Record<string, string | number | boolean | null | undefined> =
+        {
+          "Tracking ID": reg.trackingId,
+          "Registration Date": reg.date,
+          "Event Name": reg.eventName,
+          Category: reg.category,
+          "Participant Name": reg.guestName,
+          "Email Address":
+            reg.rawMetadata?.commonDetails?.email ||
+            reg.rawMetadata?.teamInfo?.baseMembers?.[0]?.email ||
+            "N/A",
+          "Phone Number": reg.guestPhone,
+          "Payment Status": reg.paymentStatus,
+          "Base Amount": reg.finance?.baseAmount || 0,
+          Discount: reg.finance?.discountAmount || 0,
+          "Paid Amount": reg.finance?.paidAmount || 0,
+          "Transaction ID": reg.transactionId || "N/A",
+          "Coupon Used": reg.couponDetails?.code || "None",
+          "Selection Status": reg.selectionStatus,
+          "Payment Screenshot": reg.finance?.screenshot || "N/A",
+        };
 
-    // Papa.unparse() দিয়ে JSON Data থেকে সরাসরি পারফেক্ট CSV স্ট্রিং জেনারেট
+      // ২. Team Info: Base Members এক্সট্র্যাক্ট করা
+      if (reg.rawMetadata?.teamInfo?.baseMembers) {
+        reg.rawMetadata.teamInfo.baseMembers.forEach((member, index) => {
+          row[`Base Member ${index + 1} Name`] = member.name || "N/A";
+          row[`Base Member ${index + 1} Email`] = member.email || "N/A";
+          row[`Base Member ${index + 1} Phone`] = member.phone || "N/A";
+          row[`Base Member ${index + 1} Student ID`] =
+            member.studentId || "N/A";
+        });
+      }
+
+      // ৩. Team Info: Extra Members এক্সট্র্যাক্ট করা
+      if (reg.rawMetadata?.teamInfo?.extraMembers) {
+        reg.rawMetadata.teamInfo.extraMembers.forEach((member, index) => {
+          row[`Extra Member ${index + 1} Name`] = member.name || "N/A";
+          row[`Extra Member ${index + 1} Email`] = member.email || "N/A";
+          row[`Extra Member ${index + 1} Phone`] = member.phone || "N/A";
+          row[`Extra Member ${index + 1} Student ID`] =
+            member.studentId || "N/A";
+        });
+      }
+
+      // ৪. ফর্মের অন্যান্য ডায়নামিক ডাটা (যেমন registrationData)
+      Object.entries(reg.rawMetadata || {}).forEach(([key, value]) => {
+        if (
+          key !== "teamInfo" &&
+          key !== "commonDetails" &&
+          key !== "couponId" &&
+          key !== "eventType"
+        ) {
+          // নেস্টেড অবজেক্ট থাকলে সেটাকেও ফ্ল্যাট করে দিবে
+          if (
+            typeof value === "object" &&
+            value !== null &&
+            !Array.isArray(value)
+          ) {
+            Object.entries(value).forEach(([subKey, subVal]) => {
+              const columnName = `${formatKey(key)} - ${formatKey(subKey)}`;
+              row[columnName] =
+                typeof subVal === "object"
+                  ? JSON.stringify(subVal)
+                  : String(subVal);
+            });
+          } else {
+            row[formatKey(key)] =
+              typeof value === "object" ? JSON.stringify(value) : String(value);
+          }
+        }
+      });
+
+      // ৫. Submission Data এক্সট্র্যাক্ট করা (যদি থাকে)
+      if (reg.rawSubmissions && reg.rawSubmissions.length > 0) {
+        reg.rawSubmissions.forEach((sub, idx) => {
+          Object.entries(sub.submissionData || {}).forEach(
+            ([subKey, subVal]) => {
+              const columnName = `Submission ${idx + 1}: ${formatKey(subKey)}`;
+              row[columnName] =
+                typeof subVal === "object"
+                  ? JSON.stringify(subVal)
+                  : String(subVal);
+            },
+          );
+        });
+      }
+
+      return row;
+    });
+
+    // Papa Parse স্বয়ংক্রিয়ভাবে সমস্ত ভিন্ন ভিন্ন অবজেক্টের কী (Key) গুলোকে মিলিয়ে কলাম তৈরি করবে
     const csvContent = Papa.unparse(exportData);
 
-    // Blob তৈরি করে ডাউনলোডের ব্যবস্থা করা
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -493,7 +568,7 @@ const filteredRegistrations = registrations.filter((reg) => {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
 
-    toast.success("CSV file downloaded successfully!");
+    toast.success("CSV file exported successfully with all data!");
   };
 
   return (
@@ -617,10 +692,16 @@ const filteredRegistrations = registrations.filter((reg) => {
                             {reg.guestName}
                           </p>
                           <p className="text-xs text-slate-400 truncate">
-                            {reg.rawMetadata?.commonDetails?.phone || reg.rawMetadata?.teamInfo?.baseMembers?.[0]?.phone || "N/A"}
+                            {reg.rawMetadata?.commonDetails?.phone ||
+                              reg.rawMetadata?.teamInfo?.baseMembers?.[0]
+                                ?.phone ||
+                              "N/A"}
                           </p>
                           <p className="text-xs text-slate-400 truncate">
-                            {reg.rawMetadata.commonDetails?.email ||reg.rawMetadata?.teamInfo?.baseMembers?.[0]?.email || "N/A"}
+                            {reg.rawMetadata.commonDetails?.email ||
+                              reg.rawMetadata?.teamInfo?.baseMembers?.[0]
+                                ?.email ||
+                              "N/A"}
                           </p>
                         </div>
                       </div>
