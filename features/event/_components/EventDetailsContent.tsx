@@ -18,6 +18,7 @@ import MarkdownRenderer from "@/components/custom/MarkdownRenderer";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { ShineBorder } from "@/components/ui/shine-border";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDate, formatTime } from "@/lib/DateAndTimeFormater";
 import { GetEventValues, Segment } from "../types";
@@ -25,7 +26,6 @@ import CountdownLabel, {
   RegistrationClosedBadge,
   RegistrationClosedMessage,
 } from "./CountdownLabel";
-import { ShineBorder } from "@/components/ui/shine-border";
 
 type Props = {
   eventData: GetEventValues | null;
@@ -120,6 +120,8 @@ export async function EventDetailsContent({
     return slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
   };
 
+  const countShow = ["ai-ad-venture", "ai-it-olympiad","test-2"];
+
   const details = [
     {
       icon: Wallet,
@@ -167,12 +169,12 @@ export async function EventDetailsContent({
               >
                 {event.eventType}
               </Badge>
-
-              <CountdownLabel
-                deadline={event.deadline}
-                isActive={event.isActive}
-              />
-
+              {countShow.includes(event.slug) ?"": (
+                <CountdownLabel
+                  deadline={event.deadline}
+                  isActive={event.isActive}
+                />
+              )}
               <RegistrationClosedBadge event={event} />
             </div>
 
@@ -269,7 +271,6 @@ export async function EventDetailsContent({
               </Card>
             ))}
           </section>
-
 
           {/* 🎯 Prize Breakdown Section (Filtered & Special Rewards) */}
           {showPrizeSection && (
@@ -473,10 +474,6 @@ export function EventDetailsSkeleton() {
     </div>
   );
 }
-
-
-
-
 
 // import {
 //   Calendar,
@@ -924,4 +921,3 @@ export function EventDetailsSkeleton() {
 //     </div>
 //   );
 // }
-
