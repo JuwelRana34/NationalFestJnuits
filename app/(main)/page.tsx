@@ -1,8 +1,6 @@
 import { Segments, SpeakersJudges } from "@/components/custom/DynamicMotion";
-import CampusAmbassadorList from "@/features/event/_components/CampusAmbassadorCard";
 import Hero from "@/features/home/components/Hero";
 import Link from "next/link";
-import { Suspense } from "react";
 
 export default function JnUITFestLanding() {
   return (
@@ -17,9 +15,9 @@ export default function JnUITFestLanding() {
       <Segments />
       {/* <EventSchedule /> */}
       <SpeakersJudges isComingSoon={true} isShowMore={true} />
-      <Suspense fallback={<div>Loading Campus Ambassador Program...</div>}>
+      {/* <Suspense fallback={<div>Loading Campus Ambassador Program...</div>}>
       <CampusAmbassadorList />
-      </Suspense>
+      </Suspense> */}
       {/* Footer */}
       <footer className="bg-slate-950 text-slate-300 py-12 px-6 md:px-12 border-t border-slate-800">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
@@ -58,7 +56,6 @@ export default function JnUITFestLanding() {
                   Speakers
                 </Link>
               </li>
-         
             </ul>
           </div>
 
@@ -107,8 +104,7 @@ export default function JnUITFestLanding() {
 
         {/* Footer Bottom */}
         <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-slate-800 text-sm text-center text-slate-500">
-          &copy; 2026 Jagannath University IT Society. All
-          rights reserved.
+          &copy; 2026 Jagannath University IT Society. All rights reserved.
         </div>
       </footer>
     </div>

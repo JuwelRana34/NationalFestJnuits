@@ -1,4 +1,4 @@
-import { FormField, GetEventValues } from "@/features/event/types";
+import { FormField, GetEventValues, Segment } from "@/features/event/types";
 
 export const HeroSection = {
   title: "National AI & IT Summit 2026",
@@ -72,10 +72,31 @@ const speakers = [
     image:
       "https://res.cloudinary.com/dbwbwwteo/image/upload/v1786019083/event_registrations/WhatsApp_Image_2026-07-31_at_6.56.57_PM_x2psew.jpg",
   },
+  {
+    id: 3,
+    name: "Ananya Zaman",
+    designation: "Founder, PCB Store",
+    image:
+      "https://res.cloudinary.com/dbwbwwteo/image/upload/v1787236863/event_registrations/AnanyaZaman_tampqu.png",
+  },
+  {
+    id: 4,
+    name: "Sajeeb Ahamed",
+    designation: "Vice President of Engineering, Ollyo",
+    image:
+      "https://res.cloudinary.com/dbwbwwteo/image/upload/v1787236861/event_registrations/Sajeeb_Ahamed_h95t1f.jpg",
+  },
+  {
+    id: 5,
+    name: "Zunaid Kazi, PhD",
+    designation:
+      "Technologist, researcher, and AI strategist. Founder and CEO of Knowtomation.",
+    image:
+      "https://res.cloudinary.com/dbwbwwteo/image/upload/v1787236861/event_registrations/zunaid-kazi_kd1i9u.jpg",
+  },
 ];
 
 export const Speakers = speakers;
-
 
 export const demoSubmissionSchema: FormField[] = [
   {
@@ -103,7 +124,6 @@ export const demoSubmissionSchema: FormField[] = [
     required: true,
   },
 ];
-
 
 export const ambassadorPrograms = [
   {
@@ -164,3 +184,48 @@ As a Department Ambassador, you will work closely with the core organizing commi
     deadline: "2026-08-15T23:59:59",
   },
 ];
+
+
+
+
+export const prizePoolData: Segment[] = [
+  {
+    segmentName: "brainchild-season-20",
+    prizes: [
+      { position: "Champion", amount: 15000, currency: "BDT" },
+      { position: "1st Runner Up", amount: 10000, currency: "BDT" },
+      { position: "2nd Runner Up", amount: 5000, currency: "BDT" },
+    ],
+  },
+  {
+    segmentName: "ai-ad-venture",
+    prizes: [
+      { position: "Champion", amount: 10000, currency: "BDT" },
+      { position: "1st Runner Up", amount: 5000, currency: "BDT" },
+      { position: "2nd Runner Up", amount: 3000, currency: "BDT" },
+    ],
+  },
+  {
+    segmentName: "ai-it-olympiad",
+    prizes: [
+      { position: "Champion", amount: 5000, currency: "BDT" },
+      { position: "1st Runner Up", amount: 3000, currency: "BDT" },
+      { position: "2nd Runner Up", amount: 2000, currency: "BDT" },
+    ],
+  },
+  {
+    segmentName: "ai-it-olympiad",
+    prizes: [
+      { position: "Champion", amount: 5000, currency: "BDT" },
+      { position: "1st Runner Up", amount: 3000, currency: "BDT" },
+      { position: "2nd Runner Up", amount: 2000, currency: "BDT" },
+    ],
+  },
+];
+
+export const specialRewards = {
+  totalPool: "1.1M+",
+  giftHampers: "60K",
+  aiTokens: "1M+",
+  categories: ["People's Choice", "Best Team", "Other performance criteria"],
+};
