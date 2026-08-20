@@ -41,6 +41,8 @@ function getAccent(seed: string) {
   return ACCENTS[hash % ACCENTS.length];
 }
 
+const countShow = ["ai-ad-venture", "ai-it-olympiad"];
+
 export async function FeaturedEvents({ data }: { data: GetEventValues[] }) {
   const featuredEvents = data || [];
   await connection();
@@ -82,11 +84,12 @@ export async function FeaturedEvents({ data }: { data: GetEventValues[] }) {
                 >
                   {event.eventType}
                 </span>
-
-                <FeaturedEventCountdownBadge
-                  deadline={event.deadline}
-                  isActive={event.isActive}
-                />
+                {countShow.includes(event.slug)?"": (
+                  <FeaturedEventCountdownBadge
+                    deadline={event.deadline}
+                    isActive={event.isActive}
+                  />
+                )}
               </div>
             </div>
 
