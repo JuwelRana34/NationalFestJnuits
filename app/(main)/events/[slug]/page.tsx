@@ -1,3 +1,4 @@
+import { prizePoolData, specialRewards } from "@/app/constant/data";
 import { fetchSingleEvent } from "@/features/event/_components/actions";
 import { EventDetailsContent } from "@/features/event/_components/EventDetailsContent";
 import { ArrowLeft } from "lucide-react";
@@ -35,7 +36,11 @@ export default async function EventDetailsPage({ params }: Props) {
         Back to Events
       </Link>
 
-      <EventDetailsContent eventData={data} />
+      <EventDetailsContent
+        eventData={data}
+        prizeData={prizePoolData}
+        specialRewards={specialRewards}
+      />
     </main>
   );
 }

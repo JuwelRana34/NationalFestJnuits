@@ -1,4 +1,12 @@
-export type FieldType = "text" | "number" | "url" | "select" | "file" | "email" | "tel" | "date" ;
+export type FieldType =
+  | "text"
+  | "number"
+  | "url"
+  | "select"
+  | "file"
+  | "email"
+  | "tel"
+  | "date";
 
 export type EventType = "solo" | "team" | "seminar";
 
@@ -103,3 +111,15 @@ export interface FormValues {
 
   isActive: boolean;
 }
+
+// prizepull
+export type Prize = {
+  position: string;
+  amount: number;
+  currency: string;
+};
+
+export type Segment = {
+  segmentName: string;
+  prizes: Prize[];
+};
