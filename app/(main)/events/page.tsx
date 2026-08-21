@@ -1,5 +1,4 @@
 import { getEvents } from "@/actions/eventActions";
-import CampusAmbassadorCard from "@/features/event/_components/CampusAmbassadorCard";
 import {
   FeaturedEvents,
   FeaturedEventsSkeleton,
@@ -10,22 +9,19 @@ import { Suspense } from "react";
 
 export default async function HomePage() {
   const eventData: GetEventValues[] = await getEvents();
- 
-   if (!eventData || eventData.length === 0) {
+
+  if (!eventData || eventData.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen"> 
-      <Image
-       src={"/notFound.jpg"}
-        alt="Not Found"
-        width={400}
-        height={400}
-        className="object-contain rounded-lg opacity-80 "
-        unoptimized
-        
-      />
-     <p className="text-lg font-medium text-red-500">
-        events not found!
-      </p>
+      <div className="flex flex-col items-center justify-center h-screen">
+        <Image
+          src={"/notFound.jpg"}
+          alt="Not Found"
+          width={400}
+          height={400}
+          className="object-contain rounded-lg opacity-80 "
+          unoptimized
+        />
+        <p className="text-lg font-medium text-red-500">events not found!</p>
       </div>
     );
   }
@@ -43,7 +39,6 @@ export default async function HomePage() {
             </p>
           </div>
         </div>
-
         <Suspense fallback={<FeaturedEventsSkeleton />}>
           <FeaturedEvents data={eventData} />
         </Suspense>

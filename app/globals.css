@@ -48,6 +48,8 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
   --animate-shine: shine var(--duration) infinite linear;
+   --animate-scroll: scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite;
+
   @keyframes shine {
   0% {
     background-position: 0% 0%;
@@ -59,6 +61,13 @@
     background-position: 0% 0%;
     }
   }
+
+  @keyframes scroll {
+    to {
+      transform: translate(calc(-50% - 0.5rem));
+    }
+  }
+
 }
 
 :root {
@@ -147,7 +156,7 @@
 
 @layer utilities {
   .text-gradient {
-    @apply tracking-tight text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary;
+    @apply tracking-tight text-transparent bg-clip-text bg-linear-to-r from-fuchsia-500 via-violet-400 to-cyan-300;
   }
 
   .bg-gradient {

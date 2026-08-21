@@ -134,8 +134,8 @@ export default function EventTrackerPage() {
       <div className="container max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {/* Header */}
         <div className="text-center mb-10 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-cyan-400 tracking-tight">
-            Event Status Tracker
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold bg-clip-text text-transparent bg-linear-to-r from-indigo-500 to-emerald-500 tracking-tight">
+            registration Status Tracker
           </h1>
           <p className="text-slate-400 mt-3 text-sm sm:text-base md:text-lg">
             Track your registration status and submit projects

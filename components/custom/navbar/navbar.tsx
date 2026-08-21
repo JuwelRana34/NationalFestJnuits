@@ -18,11 +18,11 @@ export default function Navbar() {
           <Image
             src="/Logo.png"
             alt="JnUITS Logo"
-            width={300}
-            height={300}
+            width={700}
+            height={700}
             unoptimized
             priority
-            className="h-12 w-12 md:h-14 md:w-14"
+            className="h-20 w-20 md:h-36 md:w-36"
           />
         </Link>
 
