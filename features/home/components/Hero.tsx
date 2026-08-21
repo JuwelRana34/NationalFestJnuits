@@ -114,12 +114,13 @@ export default function Hero() {
         <div className="relative mx-auto flex w-full max-w-6xl flex-col items-start gap-8">
           {/* ---------- Left aligned: text ---------- */}
           <div className="flex w-full max-w-2xl flex-col items-start justify-start text-left md:pt-2">
-            <span className="mb-2 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.25em] text-cyan-200/90 backdrop-blur-md opacity-0 animate-[fadeInUp_0.7s_ease-out_0.1s_forwards]">
+            {/* <span className="mb-2 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.25em] text-cyan-200/90 backdrop-blur-md opacity-0 animate-[fadeInUp_0.7s_ease-out_0.1s_forwards]">
               <span className="h-1.5  w-1.5 animate-pulse rounded-full bg-cyan-400" />
-              Jagannath University Presents
-            </span>
+              Pubali Bank PLC Presents
+            </span> */}
 
-            <h1 className="bg-linear-to-b from-fuchsia-400 via-violet-400 to-blue-400 bg-clip-text text-4xl font-bold text-transparent drop-shadow-[0_0_35px_rgba(139,92,246,0.35)] opacity-0 animate-[fadeInUp_0.7s_ease-out_0.25s_forwards] sm:text-4xl md:text-5xl lg:text-6xl">
+            <h1 className="bg-linear-to-r from-fuchsia-400 via-violet-400 to-blue-400 bg-clip-text text-4xl font-bold text-transparent drop-shadow-[0_0_35px_rgba(139,92,246,0.35)] opacity-0 animate-[fadeInUp_0.7s_ease-out_0.25s_forwards] sm:text-4xl md:text-5xl lg:text-5xl">
+              Pubali Bank PLC Presents <br />
               JnU AI & IT Fest 2026
             </h1>
 

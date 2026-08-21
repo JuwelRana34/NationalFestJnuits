@@ -1,4 +1,4 @@
-import { FormField, GetEventValues, Segment } from "@/features/event/types";
+import { FormField, Segment } from "@/features/event/types";
 
 export const HeroSection = {
   title: "National AI & IT Summit 2026",
@@ -94,6 +94,28 @@ const speakers = [
     image:
       "https://res.cloudinary.com/dbwbwwteo/image/upload/v1787236861/event_registrations/zunaid-kazi_kd1i9u.jpg",
   },
+
+  {
+    id: 6,
+    name: "Rezwan Habib",
+    designation: "Head of Business at DBL Lifestyles Limited",
+    image:
+      "https://res.cloudinary.com/dbwbwwteo/image/upload/v1787283350/event_registrations/RezwanHabib_iw2bqr.jpg",
+  },
+  {
+    id: 7,
+    name: "Kingkor Ahsan",
+    designation: "Writer, CEO, Havas Bangladesh",
+    image:
+      "https://res.cloudinary.com/dbwbwwteo/image/upload/v1787283352/event_registrations/Kingkor_ashan_dxuch5.png",
+  },
+  {
+    id: 8,
+    name: "Nazmul Huda",
+    designation: "AVP, Compliance & HR, Startup Bangladesh Limited",
+    image:
+      "https://res.cloudinary.com/dbwbwwteo/image/upload/v1787283350/event_registrations/NazmulHuda_gtohhn.jpg",
+  },
 ];
 
 export const Speakers = speakers;
@@ -185,9 +207,6 @@ As a Department Ambassador, you will work closely with the core organizing commi
   },
 ];
 
-
-
-
 export const prizePoolData: Segment[] = [
   {
     segmentName: "brainchild-season-20",
@@ -229,3 +248,196 @@ export const specialRewards = {
   aiTokens: "1M+",
   categories: ["People's Choice", "Best Team", "Other performance criteria"],
 };
+
+export type Partner = {
+  name: string;
+  role: string;
+  imageUrl?: string;
+};
+
+export const partnersData: Partner[] = [
+  {
+    name: "PCB Store",
+    role: "Tech Partner",
+    imageUrl: "/sponsors/pcb.png",
+  },
+  {
+    name: "Youth Connect Foundation",
+    role: "Organizing Partner",
+    imageUrl: "/sponsors/youthConnect.png",
+  },
+  {
+    name: "Poridhi.io",
+    role: "Knowledge Partner",
+    imageUrl: "/sponsors/poridhi.png",
+  },
+  {
+    name: "Nexus Multimedia",
+    role: "Olympiad Partner",
+    imageUrl: "/sponsors/nexuxMultimidia.png",
+  },
+  {
+    name: "IEEE JnU",
+    role: "Organizing Partner",
+    imageUrl: "/sponsors/IEEE.jpg",
+  },
+  {
+    name: "Tech World",
+    role: "Magazine Partner",
+    imageUrl: "/sponsors/tw-logo.png",
+  },
+  {
+    name: "iFix",
+    role: "Segment Sponsor",
+    imageUrl: "/sponsors/ifix.png",
+  },
+  {
+    name: "আমাদের সময়",
+    role: "Media Partner",
+    imageUrl: "/sponsors/amaderSomoi.jpg",
+  },
+  {
+    name: "BIIN",
+    role: "Strategic Partner",
+  },
+];
+
+
+export type RoadshowInstitution = {
+  name: string;
+  imageUrl?: string;
+  role: string;
+};
+
+export const roadshowInstitutions: RoadshowInstitution[] = [
+  {
+    name: "American International University-Bangladesh",
+    imageUrl: "",
+    role: "𝗥𝗼𝗮𝗱𝘀𝗵𝗼𝘄 𝗜𝗻𝘀𝘁𝗶𝘁𝘂𝘁𝗶𝗼𝗻𝘀",
+  },
+  {
+    name: "BRAC University",
+    imageUrl: "",
+    role: "𝗥𝗼𝗮𝗱𝘀𝗵𝗼𝘄 𝗜𝗻𝘀𝘁𝗶𝘁𝘂𝘁𝗶𝗼𝗻𝘀",
+  },
+  {
+    name: "Daffodil International University",
+    imageUrl: "",
+    role: "𝗥𝗼𝗮𝗱𝘀𝗵𝗼𝘄 𝗜𝗻𝘀𝘁𝗶𝘁𝘂𝘁𝗶𝗼𝗻𝘀",
+  },
+  {
+    name: "Dhaka International University",
+    imageUrl: "",
+    role: "𝗥𝗼𝗮𝗱𝘀𝗵𝗼𝘄 𝗜𝗻𝘀𝘁𝗶𝘁𝘂𝘁𝗶𝗼𝗻𝘀",
+  },
+  {
+    name: "East West University",
+    imageUrl: "",
+    role: "𝗥𝗼𝗮𝗱𝘀𝗵𝗼𝘄 𝗜𝗻𝘀𝘁𝗶𝘁𝘂𝘁𝗶𝗼𝗻𝘀",
+  },
+  {
+    name: "International University of Business Agriculture and Technology",
+    imageUrl: "",
+    role: "𝗥𝗼𝗮𝗱𝘀𝗵𝗼𝘄 𝗜𝗻𝘀𝘁𝗶𝘁𝘂𝘁𝗶𝗼𝗻𝘀",
+  },
+  {
+    name: "Jagannath University",
+    imageUrl: "",
+    role: "𝗥𝗼𝗮𝗱𝘀𝗵𝗼𝘄 𝗜𝗻𝘀𝘁𝗶𝘁𝘂𝘁𝗶𝗼𝗻𝘀",
+  },
+  {
+    name: "Khulna University",
+    imageUrl: "",
+    role: "𝗥𝗼𝗮𝗱𝘀𝗵𝗼𝘄 𝗜𝗻𝘀𝘁𝗶𝘁𝘂𝘁𝗶𝗼𝗻𝘀",
+  },
+  {
+    name: "Noakhali Science and Technology University",
+    imageUrl: "",
+    role: "𝗥𝗼𝗮𝗱𝘀𝗵𝗼𝘄 𝗜𝗻𝘀𝘁𝗶𝘁𝘂𝘁𝗶𝗼𝗻𝘀",
+  },
+  {
+    name: "Rajshahi University of Engineering & Technology",
+    imageUrl: "",
+    role: "𝗥𝗼𝗮𝗱𝘀𝗵𝗼𝘄 𝗜𝗻𝘀𝘁𝗶𝘁𝘂𝘁𝗶𝗼𝗻𝘀",
+  },
+  {
+    name: "United International University",
+    imageUrl: "",
+    role: "𝗥𝗼𝗮𝗱𝘀𝗵𝗼𝘄 𝗜𝗻𝘀𝘁𝗶𝘁𝘂𝘁𝗶𝗼𝗻𝘀",
+  },
+  {
+    name: "University of Frontier Technology, Bangladesh",
+    imageUrl: "",
+    role: "𝗥𝗼𝗮𝗱𝘀𝗵𝗼𝘄 𝗜𝗻𝘀𝘁𝗶𝘁𝘂𝘁𝗶𝗼𝗻𝘀",
+  },
+  {
+    name: "Chittagong University of Engineering & Technology",
+    imageUrl: "",
+    role: "𝗥𝗼𝗮𝗱𝘀𝗵𝗼𝘄 𝗜𝗻𝘀𝘁𝗶𝘁𝘂𝘁𝗶𝗼𝗻𝘀",
+  },
+  {
+    name: "University of Asia Pacific",
+    imageUrl: "",
+    role: "𝗥𝗼𝗮𝗱𝘀𝗵𝗼𝘄 𝗜𝗻𝘀𝘁𝗶𝘁𝘂𝘁𝗶𝗼𝗻𝘀",
+  },
+  {
+    name: "Green University of Bangladesh",
+    imageUrl: "",
+    role: "𝗥𝗼𝗮𝗱𝘀𝗵𝗼𝘄 𝗜𝗻𝘀𝘁𝗶𝘁𝘂𝘁𝗶𝗼𝗻𝘀",
+  },
+  {
+    name: "Independent University, Bangladesh",
+    imageUrl: "",
+    role: "𝗥𝗼𝗮𝗱𝘀𝗵𝗼𝘄 𝗜𝗻𝘀𝘁𝗶𝘁𝘂𝘁𝗶𝗼𝗻𝘀",
+  },
+  {
+    name: "Bangladesh University of Professionals",
+    imageUrl: "",
+    role: "𝗥𝗼𝗮𝗱𝘀𝗵𝗼𝘄 𝗜𝗻𝘀𝘁𝗶𝘁𝘂𝘁𝗶𝗼𝗻𝘀",
+  },
+  {
+    name: "University of Dhaka",
+    imageUrl: "",
+    role: "𝗥𝗼𝗮𝗱𝘀𝗵𝗼𝘄 𝗜𝗻𝘀𝘁𝗶𝘁𝘂𝘁𝗶𝗼𝗻𝘀",
+  },
+  {
+    name: "Presidency University",
+    imageUrl: "",
+    role: "𝗥𝗼𝗮𝗱𝘀𝗵𝗼𝘄 𝗜𝗻𝘀𝘁𝗶𝘁𝘂𝘁𝗶𝗼𝗻𝘀",
+  },
+  {
+    name: "Uttara University",
+    imageUrl: "",
+    role: "𝗥𝗼𝗮𝗱𝘀𝗵𝗼𝘄 𝗜𝗻𝘀𝘁𝗶𝘁𝘂𝘁𝗶𝗼𝗻𝘀",
+  },
+  {
+    name: "Islamic University, Kushtia",
+    imageUrl: "",
+    role: "𝗥𝗼𝗮𝗱𝘀𝗵𝗼𝘄 𝗜𝗻𝘀𝘁𝗶𝘁𝘂𝘁𝗶𝗼𝗻𝘀",
+  },
+  {
+    name: "NITER",
+    imageUrl: "",
+    role: "𝗥𝗼𝗮𝗱𝘀𝗵𝗼𝘄 𝗜𝗻𝘀𝘁𝗶𝘁𝘂𝘁𝗶𝗼𝗻𝘀",
+  },
+  {
+    name: "Barishal Engineering College",
+    imageUrl: "",
+    role: "𝗥𝗼𝗮𝗱𝘀𝗵𝗼𝘄 𝗜𝗻𝘀𝘁𝗶𝘁𝘂𝘁𝗶𝗼𝗻𝘀",
+  },
+  {
+    name: "Govt. Shahid Suhrawardy College",
+    imageUrl: "",
+    role: "𝗥𝗼𝗮𝗱𝘀𝗵𝗼𝘄 𝗜𝗻𝘀𝘁𝗶𝘁𝘂𝘁𝗶𝗼𝗻𝘀",
+  },
+  {
+    name: "Shaheed Bir Uttam Lt. Anwar Girls College",
+    imageUrl: "",
+    role: "𝗥𝗼𝗮𝗱𝘀𝗵𝗼𝘄 𝗜𝗻𝘀𝘁𝗶𝘁𝘂𝘁𝗶𝗼𝗻𝘀",
+  },
+  {
+    name: "Abu Jar Gifari (B.O.U)",
+    imageUrl: "",
+    role: "𝗥𝗼𝗮𝗱𝘀𝗵𝗼𝘄 𝗜𝗻𝘀𝘁𝗶𝘁𝘂𝘁𝗶𝗼𝗻𝘀",
+  },
+];
