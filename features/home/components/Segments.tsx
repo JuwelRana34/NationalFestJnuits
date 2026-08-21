@@ -80,11 +80,11 @@ export default function Segments() {
       title: "𝗔𝗜 & 𝗜𝗧 𝗢𝗹𝘆𝗺𝗽𝗶𝗮𝗱",
       subtitle: "Unleash Your Tech Potential",
       icon: (
-        <Bot  className="w-8 h-8 text-fuchsia-400 group-hover:text-fuchsia-300 transition-colors" />
+        <Bot className="w-8 h-8 text-fuchsia-400 group-hover:text-fuchsia-300 transition-colors" />
       ),
       description:
-        "Keynote speeches and panel discussions with industry leaders and AI researchers.",
-      fee: "Entry Pass Required",
+        "A national-level technology challenge designed for the next generation of tech enthusiasts.",
+      fee: "fee: BDT 200",
       members: "Individual",
       glowBg: "bg-fuchsia-500/20",
       hoverBorder: "hover:border-fuchsia-400/50",
