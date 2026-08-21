@@ -1,6 +1,6 @@
 "use client";
 
-import { Cpu, Lightbulb, Mic2, Wrench } from "lucide-react";
+import { Bot, Cpu, Lightbulb, Mic2, Wrench } from "lucide-react";
 
 export default function Segments() {
   const segments = [
@@ -76,6 +76,24 @@ export default function Segments() {
       badgeText: "text-fuchsia-300",
       badgeBorder: "border-fuchsia-500/20",
     },
+    {
+      title: "𝗔𝗜 & 𝗜𝗧 𝗢𝗹𝘆𝗺𝗽𝗶𝗮𝗱",
+      subtitle: "Unleash Your Tech Potential",
+      icon: (
+        <Bot  className="w-8 h-8 text-fuchsia-400 group-hover:text-fuchsia-300 transition-colors" />
+      ),
+      description:
+        "Keynote speeches and panel discussions with industry leaders and AI researchers.",
+      fee: "Entry Pass Required",
+      members: "Individual",
+      glowBg: "bg-fuchsia-500/20",
+      hoverBorder: "hover:border-fuchsia-400/50",
+      hoverShadow: "hover:shadow-[0_0_40px_rgba(232,121,249,0.25)]",
+      iconBg:
+        "bg-fuchsia-950/50 border-fuchsia-500/20 group-hover:border-fuchsia-400/40 group-hover:shadow-[0_0_20px_rgba(232,121,249,0.4)]",
+      badgeText: "text-fuchsia-300",
+      badgeBorder: "border-fuchsia-500/20",
+    },
   ];
 
   return (
@@ -84,6 +102,7 @@ export default function Segments() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="container relative mx-auto px-6 max-w-7xl z-10">
+        
         {/* Header Section */}
         <div className="text-center mb-20">
           <h2 className="bg-linear-to-b from-indigo-100 via-purple-200 to-cyan-200 bg-clip-text text-4xl font-bold tracking-tight text-transparent drop-shadow-[0_0_25px_rgba(167,139,250,0.3)] md:text-5xl mb-6">
