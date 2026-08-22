@@ -1,6 +1,7 @@
 import { prizePoolData, specialRewards } from "@/app/constant/data";
 import { fetchSingleEvent } from "@/features/event/_components/actions";
 import { EventDetailsContent } from "@/features/event/_components/EventDetailsContent";
+import { el } from "date-fns/locale";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
@@ -17,6 +18,10 @@ export default async function EventDetailsPage({ params }: Props) {
 
   if (slug === "brainchild-season-20") {
     redirect("https://brainchild.jnuits.org.bd/");
+  }else if (slug === "techcare-zone") {
+    redirect(
+      "https://docs.google.com/forms/d/e/1FAIpQLSeJe2zz_582UQRK7f6B4zsBt1hOTIypR1uYq1ADTXlH6R-lfw/viewform",
+    );
   }
 
   const { data, success } = await fetchSingleEvent(slug);
