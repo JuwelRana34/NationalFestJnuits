@@ -22,6 +22,10 @@ export default async function EventDetailsPage({ params }: Props) {
     redirect(
       "https://docs.google.com/forms/d/e/1FAIpQLSeJe2zz_582UQRK7f6B4zsBt1hOTIypR1uYq1ADTXlH6R-lfw/viewform",
     );
+  }else if (slug === "robo-soccer") {
+    redirect(
+      "https://docs.google.com/forms/d/e/1FAIpQLScIZUFIfN7OFgK-Hyw6UCPc8gFygAMjJIi4kOSz_7m9FrD72w/viewform",
+    );
   }
 
   const { data, success } = await fetchSingleEvent(slug);
