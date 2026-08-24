@@ -272,7 +272,7 @@ export const partnersData: Partner[] = [
     imageUrl: "/sponsors/poridhi.png",
   },
   {
-    name: "Nexus Multimedia",
+    name: "Nexaus cloud",
     role: "Olympiad Partner",
     imageUrl: "/sponsors/nexuxMultimidia.png",
   },
@@ -299,6 +299,7 @@ export const partnersData: Partner[] = [
   {
     name: "BIIN",
     role: "Strategic Partner",
+    imageUrl: "/sponsors/BIIN.png",
   },
 ];
 
