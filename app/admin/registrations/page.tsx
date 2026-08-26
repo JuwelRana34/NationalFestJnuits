@@ -551,7 +551,16 @@ export default function RegistrationManagementPage() {
     });
 
     // Papa Parse স্বয়ংক্রিয়ভাবে সমস্ত ভিন্ন ভিন্ন অবজেক্টের কী (Key) গুলোকে মিলিয়ে কলাম তৈরি করবে
-    const csvContent = Papa.unparse(exportData);
+ 
+    const allHeaders = Array.from(
+      new Set(exportData.flatMap((row) => Object.keys(row))),
+    );
+
+    // Papa Parse কে নির্দিষ্ট করে সবগুলো কলাম (fields) পাস করা
+    const csvContent = Papa.unparse({
+      fields: allHeaders,
+      data: exportData,
+    });
 
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
