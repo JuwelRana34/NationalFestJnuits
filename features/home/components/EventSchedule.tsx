@@ -5,10 +5,13 @@ import {
   Clock,
   Code,
   Coffee,
+  Cpu,
   MapPin,
   Mic,
   Sparkles,
+  Trophy,
   User,
+  Users,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import React, { useState } from "react";
@@ -32,32 +35,137 @@ const scheduleData: ScheduleData = {
   1: [
     {
       id: "1-1",
-      time: "09:00 AM",
-      title: "Registration & Breakfast",
+      time: "08:45 AM – 09:00 AM",
+      title: "Seating & Opening Inception",
+      speaker:
+        "Prof. Dr. Md. Abu Layek — Chairman, Dept. of CSE; Convenor, JnU AI & IT Fest 2026 & Moderator, JnUITS",
       description:
-        "Check-in, grab your badge, and enjoy some morning refreshments before the kickoff.",
-      icon: Coffee,
-    },
-    {
-      id: "1-2",
-      time: "10:00 AM",
-      title: "Opening Keynote: Future of Web UI",
-      speaker: "Jane Doe, Head of Design",
-      description:
-        "A comprehensive look at where design systems and frontend architectures are heading over the next 5 years.",
+        "Audience seating, National Anthem, Opening Remarks & Welcome Note.",
       icon: Mic,
     },
+
+    {
+      id: "1-2",
+      time: "09:00 AM – 09:30 AM",
+      title: "Keynote Session 1",
+      speaker:
+        "Zunaid Kazi, PhD — Technologist, Researcher & AI Strategist; Founder & CEO, Knowtomation",
+      description: "AI Implementation in Education.",
+      icon: Mic,
+    },
+
     {
       id: "1-3",
-      time: "11:30 AM",
-      title: "Component Driven Architecture",
-      speaker: "John Smith, Lead Engineer",
+      time: "09:30 AM – 10:00 AM",
+      title: "Keynote Session 2",
+      speaker: "Sajib Ahammed — VP of Engineering, Ollyo",
       description:
-        "Building scalable, accessible, and maintainable UI libraries using Next.js and Tailwind CSS.",
+        "AI-Native Engineering: How AI is Changing the Way We Build.",
       icon: Code,
     },
+
+    {
+      id: "1-4",
+      time: "10:00 AM – 10:15 AM",
+      title: "Transition & Stage Prep",
+      description: "Stage preparation and transition between sessions.",
+      icon: Clock,
+    },
+
+    {
+      id: "1-5",
+      time: "10:15 AM – 11:30 AM",
+      title: "Panel Discussion",
+      speaker:
+        "Rezwan Habib (Head of Business, DBL Lifestyles Ltd.) • Kingkor Ahsan (Writer & CEO, Havas Bangladesh) • Nazmul Huda (AVP, Compliance & HR, Startup Bangladesh Ltd.) • Md. Abdul Quayyum (Head of Communications, UNDP Bangladesh) • Moderator: Moon M Rajib",
+      description: "Navigating Careers in the Era of AI & IT.",
+      icon: Users,
+    },
+
+    {
+      id: "1-6",
+      time: "11:30 AM – 11:45 AM",
+      title: "Short Break / Buffer",
+      description: "Short refreshment and transition break.",
+      icon: Coffee,
+    },
+
+    {
+      id: "1-7",
+      time: "11:45 AM – 12:45 PM",
+      title: "Industry Talk & Interactive Session",
+      speaker:
+        "Nabila Khalid — VP & Head of Brand & Communication, Prime Bank PLC",
+      description: "AI & IT in Corporate Career.",
+      icon: Mic,
+    },
+
+    {
+      id: "1-8",
+      time: "12:45 PM – 01:30 PM",
+      title: "AI Ad-Venture (Final Judging & Showcase)",
+      speaker: "Invited Judges & Faculty Members",
+      description:
+        "Live evaluation and presentation of shortlisted AI-generated promo videos.",
+      icon: Trophy,
+    },
+
+    {
+      id: "1-9",
+      time: "01:30 PM – 02:00 PM",
+      title: "Prayer & Lunch Break",
+      description: "Prayer and lunch break.",
+      icon: Coffee,
+    },
+
+    {
+      id: "1-10",
+      time: "02:00 PM – 02:30 PM",
+      title: "Tech Talk 1",
+      speaker: "M Manjur Mahmud — President, DataSoft Systems Bangladesh Ltd.",
+      description: "AI in the Near Future.",
+      icon: Cpu,
+    },
+
+    {
+      id: "1-11",
+      time: "02:30 PM – 03:00 PM",
+      title: "Tech Talk 2",
+      speaker: "Ananya Zaman — Founder, PCB Store & PC Helpline BD",
+      description: "Hardware, PC & AI.",
+      icon: Cpu,
+    },
+
+    {
+      id: "1-12",
+      time: "03:00 PM – 03:15 PM",
+      title: "Chief Guest Address",
+      speaker: "Mohammad Ali — Managing Director & CEO, Pubali Bank PLC",
+      description: "Guest of Honor Speech.",
+      icon: Mic,
+    },
+
+    {
+      id: "1-13",
+      time: "03:15 PM – 03:20 PM",
+      title: "Address by Patron",
+      speaker:
+        "Prof. Dr. Sabina Sharmin — Honorable Treasurer, Jagannath University",
+      description: "Patron Speech.",
+      icon: Mic,
+    },
+
+    {
+      id: "1-14",
+      time: "03:20 PM – 04:30 PM",
+      title: "Grand Closing, Speech by Chief Patron & Award Ceremony",
+      speaker:
+        "Prof. Dr. Md. Rais Uddin — Honorable Vice-Chancellor, Jagannath University (Along with Deans, Convenor, and Guests)",
+      description:
+        "Chief Patron Speech, Crest & Token of Appreciation Handover, Prize Distribution for all Segments & Photo Session.",
+      icon: Trophy,
+    },
   ],
-  
 };
 
 export default function EventSchedule() {
