@@ -1,4 +1,4 @@
-import { Segments, SpeakersJudges } from "@/components/custom/DynamicMotion";
+import { EventSchedule, Segments, SpeakersJudges } from "@/components/custom/DynamicMotion";
 import { InfinitePartnerAndSponsors } from "@/features/event/_components/InfiniteScroll";
 import Hero from "@/features/home/components/Hero";
 import { partnersData } from "../constant/data";
@@ -27,7 +27,8 @@ export default function JnUITFestLanding() {
         title="Sponsors & partners"
       />
       {/* <InfinitePartnerAndSponsors data={roadshowInstitutions} direction="left" title="Roadshow Institutions" /> */}
-      {/* <EventSchedule /> */}
+     
+      <EventSchedule />
       <SpeakersJudges isComingSoon={true} isShowMore={true} />
       {/* <Suspense fallback={<div>Loading Campus Ambassador Program...</div>}>
       <CampusAmbassadorList />
