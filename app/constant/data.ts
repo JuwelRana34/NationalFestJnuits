@@ -156,8 +156,7 @@ const speakers = [
     id: 14,
     name: "Zakir Hossain",
     designation: "Senior Software Engineer, BlueCloud Inc., Florida USA",
-    image:
-      "",
+    image:"",
   },
 ];
 
