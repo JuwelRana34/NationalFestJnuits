@@ -116,6 +116,49 @@ const speakers = [
     image:
       "https://res.cloudinary.com/dbwbwwteo/image/upload/v1787283350/event_registrations/NazmulHuda_gtohhn.jpg",
   },
+  {
+    id: 9,
+    name: "Rashed Rony",
+    designation: "Former General Secretary- Jagannath University IT Society ",
+    image:
+      "https://res.cloudinary.com/dbwbwwteo/image/upload/v1787911591/event_registrations/drive-download-20260828T100531Z-1-001/IMG-20260823-WA0011_u8qdfg.jpg",
+  },
+  {
+    id: 10,
+    name: "Arafat Rahman",
+    designation: "Senior Software Egnineer, BlueCloud Inc., Florida USA",
+    image:
+      "https://res.cloudinary.com/dbwbwwteo/image/upload/v1787911591/event_registrations/drive-download-20260828T100531Z-1-001/Arafat_Rahman_mv8tlv.png",
+  },
+  {
+    id: 11,
+    name: "Radia Rayan Chowdhury",
+    designation:
+      "Research Data Scientist- Teesside University, UK Technology & Innovation Secretary, Youth Connect Foundation",
+    image:
+      "https://res.cloudinary.com/dbwbwwteo/image/upload/v1787911590/event_registrations/drive-download-20260828T100531Z-1-001/RadiaRayanChowdhury_xq54n7.jpg",
+  },
+  {
+    id: 12,
+    name: "NASRAT SHARIF AVEEK",
+    designation: "Mobile Engineer, Electrolux Group CoE, Malaysia",
+    image:
+      "https://res.cloudinary.com/dbwbwwteo/image/upload/v1787911591/event_registrations/drive-download-20260828T100531Z-1-001/Nasrat_sharif_Aveek_cauclj.png",
+  },
+  {
+    id: 13,
+    name: "Pavel Sarwar",
+    designation: "SCo-Founder, Youth Hub Foundation Berhad, Malaysia",
+    image:
+      "https://res.cloudinary.com/dbwbwwteo/image/upload/v1787911591/event_registrations/drive-download-20260828T100531Z-1-001/Pavel_Sarwar_rqbg5p.png",
+  },
+  {
+    id: 14,
+    name: "Zakir Hossain",
+    designation: "Senior Software Engineer, BlueCloud Inc., Florida USA",
+    image:
+      "",
+  },
 ];
 
 export const Speakers = speakers;
