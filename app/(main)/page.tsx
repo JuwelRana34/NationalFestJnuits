@@ -33,7 +33,7 @@ export default function JnUITFestLanding() {
       />
       {/* <InfinitePartnerAndSponsors data={roadshowInstitutions} direction="left" title="Roadshow Institutions" /> */}
 
-      {/* <EventSchedule /> */}
+      <EventSchedule />
       <SpeakersJudges isComingSoon={true} isShowMore={true} />
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2  p-2">
         <div className="group relative overflow-hidden rounded-3xl bg-slate-900 p-2 shadow-2xl">
