@@ -8,6 +8,7 @@ import {
   Cpu,
   MapPin,
   Mic,
+  Music,
   Sparkles,
   Trophy,
   User,
@@ -31,7 +32,7 @@ type ScheduleData = {
 };
 
 // --- Dummy Data ---
-const scheduleData: ScheduleData = {
+export const scheduleData: ScheduleData = {
   1: [
     {
       id: "1-1",
@@ -43,7 +44,6 @@ const scheduleData: ScheduleData = {
         "Audience seating, National Anthem, Opening Remarks & Welcome Note.",
       icon: Mic,
     },
-
     {
       id: "1-2",
       time: "09:00 AM – 09:30 AM",
@@ -53,7 +53,6 @@ const scheduleData: ScheduleData = {
       description: "AI Implementation in Education.",
       icon: Mic,
     },
-
     {
       id: "1-3",
       time: "09:30 AM – 10:00 AM",
@@ -63,7 +62,6 @@ const scheduleData: ScheduleData = {
         "AI-Native Engineering: How AI is Changing the Way We Build.",
       icon: Code,
     },
-
     {
       id: "1-4",
       time: "10:00 AM – 10:15 AM",
@@ -71,17 +69,15 @@ const scheduleData: ScheduleData = {
       description: "Stage preparation and transition between sessions.",
       icon: Clock,
     },
-
     {
       id: "1-5",
       time: "10:15 AM – 11:30 AM",
       title: "Panel Discussion",
       speaker:
-        "Rezwan Habib (Head of Business, DBL Lifestyles Ltd.) • Kingkor Ahsan (Writer & CEO, Havas Bangladesh) • Nazmul Huda (AVP, Compliance & HR, Startup Bangladesh Ltd.) • Md. Abdul Quayyum (Head of Communications, UNDP Bangladesh) • Moderator: Moon M Rajib",
+        "Rezwan Habib (Head of Business, DBL Lifestyles Ltd.) • Kingkor Ahsan (Writer & CEO, Havas Bangladesh) • Mohammad Masudur Rahman (Chief Technical Advisor, a2i) • Nazmul Huda (AVP, Compliance & HR, Startup Bangladesh Ltd.) • Sousan Suha (Youth Engagement Analyst, UNDP Bangladesh) • Md. Abdul Quayyum (Head of Communications, UNDP Bangladesh) • Moderator: Moon M Rajib",
       description: "Navigating Careers in the Era of AI & IT.",
       icon: Users,
     },
-
     {
       id: "1-6",
       time: "11:30 AM – 11:45 AM",
@@ -89,7 +85,6 @@ const scheduleData: ScheduleData = {
       description: "Short refreshment and transition break.",
       icon: Coffee,
     },
-
     {
       id: "1-7",
       time: "11:45 AM – 12:45 PM",
@@ -99,7 +94,6 @@ const scheduleData: ScheduleData = {
       description: "AI & IT in Corporate Career.",
       icon: Mic,
     },
-
     {
       id: "1-8",
       time: "12:45 PM – 01:30 PM",
@@ -109,7 +103,6 @@ const scheduleData: ScheduleData = {
         "Live evaluation and presentation of shortlisted AI-generated promo videos.",
       icon: Trophy,
     },
-
     {
       id: "1-9",
       time: "01:30 PM – 02:00 PM",
@@ -117,25 +110,22 @@ const scheduleData: ScheduleData = {
       description: "Prayer and lunch break.",
       icon: Coffee,
     },
-
     {
       id: "1-10",
       time: "02:00 PM – 02:30 PM",
-      title: "Tech Talk 1",
+      title: "Keynote Session 3",
       speaker: "M Manjur Mahmud — President, DataSoft Systems Bangladesh Ltd.",
       description: "AI in the Near Future.",
       icon: Cpu,
     },
-
     {
       id: "1-11",
       time: "02:30 PM – 03:00 PM",
-      title: "Tech Talk 2",
+      title: "Keynote Session 4",
       speaker: "Ananya Zaman — Founder, PCB Store & PC Helpline BD",
       description: "Hardware, PC & AI.",
       icon: Cpu,
     },
-
     {
       id: "1-12",
       time: "03:00 PM – 03:15 PM",
@@ -144,7 +134,6 @@ const scheduleData: ScheduleData = {
       description: "Guest of Honor Speech.",
       icon: Mic,
     },
-
     {
       id: "1-13",
       time: "03:15 PM – 03:20 PM",
@@ -154,7 +143,6 @@ const scheduleData: ScheduleData = {
       description: "Patron Speech.",
       icon: Mic,
     },
-
     {
       id: "1-14",
       time: "03:20 PM – 04:30 PM",
@@ -164,6 +152,13 @@ const scheduleData: ScheduleData = {
       description:
         "Chief Patron Speech, Crest & Token of Appreciation Handover, Prize Distribution for all Segments & Photo Session.",
       icon: Trophy,
+    },
+    {
+      id: "1-15",
+      time: "04:30 PM – Onwards",
+      title: "Cultural Program",
+      description: "Cultural program and festivities to conclude the event.",
+      icon: Music,
     },
   ],
 };
